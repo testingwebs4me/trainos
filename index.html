@@ -491,7 +491,7 @@ import { getFirestore, collection, addDoc, query, where, getDocs, serverTimestam
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut }
                             from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
 
-// FIREBASE ‚Äî same project, v2_ prefixed collections
+// FIREBASE — same project, v2_ prefixed collections
 const firebaseConfig = {
   apiKey: "AIzaSyDvCb_zia93WAe-Fe6qsHb7Xe8vcVCU8Kc",
   authDomain: "workouts-faefb.firebaseapp.com",
@@ -505,7 +505,7 @@ const db    = getFirestore(fbApp);
 const auth  = getAuth(fbApp);
 const googleProvider = new GoogleAuthProvider();
 
-// Collection names ‚Äî v2 prefix for separation
+// Collection names — v2 prefix for separation
 const COL_WEIGHT  = 'v2_weightLogs';
 const COL_PLANS   = 'v2_userPlans';
 const COL_WEEKS   = 'v2_weekLogs';
@@ -513,7 +513,7 @@ const COL_TRACK   = 'v2_weekTracking';
 const COL_REST    = 'v2_restDays';
 const COL_SETS    = 'v2_setLogs';
 
-// No hardcoded users ‚Äî Google Auth handles identity
+// No hardcoded users — Google Auth handles identity
 
 // EXPANDED EXERCISE LIBRARY
 const exerciseLibrary = [
@@ -693,7 +693,7 @@ function getDefaultPlan() {
   };
 }
 
-// Day metadata ‚Äî NO forced rest days. Focus labels for pre-filled days.
+// Day metadata — NO forced rest days. Focus labels for pre-filled days.
 const dayMeta = {
   Sunday:    { focus: "Back, Biceps & Abs" },
   Monday:    { focus: "Chest & Triceps" },
@@ -712,7 +712,7 @@ let currentUser    = null;
 let userWeightLogs = [];
 let userSetLogs    = [];  // per-set logs
 let userPlan       = null;
-let userRestDays   = {};  // { Friday: true, Saturday: true } etc ‚Äî per user
+let userRestDays   = {};  // { Friday: true, Saturday: true } etc — per user
 let currentDay     = null;
 let tracking       = {};
 let weekHistory    = [];
@@ -722,7 +722,7 @@ let activeCatTab   = null;
 
 const TRACK_KEY   = 'training_v2_track';
 
-// AUTH ‚Äî Google Sign-In
+// AUTH — Google Sign-In
 document.getElementById('googleSignInBtn').addEventListener('click', async () => {
   const btn = document.getElementById('googleSignInBtn');
   const err = document.getElementById('signInError');
@@ -747,7 +747,7 @@ document.getElementById('signOutBtn').addEventListener('click', async () => {
   document.getElementById('signInScreen').classList.remove('hidden');
 });
 
-// Firebase Auth state listener ‚Äî handles session persistence automatically
+// Firebase Auth state listener — handles session persistence automatically
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     // User is signed in (or was already signed in from previous session)
@@ -760,7 +760,7 @@ onAuthStateChanged(auth, async (user) => {
     await loadAllUserData();
     showApp();
   } else {
-    // Not signed in ‚Äî show sign-in screen
+    // Not signed in — show sign-in screen
     document.getElementById('signInScreen').classList.remove('hidden');
   }
 });
@@ -910,7 +910,7 @@ function getLastSessionSets(exerciseName) {
   const logs = userSetLogs.filter(l => l.exerciseName === exerciseName);
   if (!logs.length) return null;
   const lastWeek = logs[0].weekId || logs[0].date?.seconds;
-  // Group by weekId ‚Äî get the most recent session
+  // Group by weekId — get the most recent session
   const lastLogs = logs.filter(l => l.weekId === logs[0].weekId);
   return lastLogs.sort((a,b) => (a.setNumber||1) - (b.setNumber||1));
 }
@@ -1314,7 +1314,7 @@ function renderWeightsTab(filter) {
   logs.forEach(l => {
     if (!prMap[l.exerciseName] || l.weight > prMap[l.exerciseName]) prMap[l.exerciseName] = l.weight;
     const wid = l.weekId || 'unknown';
-    volumeMap[wid] = (volumeMap[wid] || 0) + (l.weight * l.reps);
+    volumeMap[wid] = (volumeMap[wid] || 0) + (l.weight * (l.reps||0));
   });
   const totalVolume = logs.reduce((s, l) => s + (l.weight * (l.reps||0)), 0);
   const totalSetsLogged = logs.length;
@@ -1348,7 +1348,7 @@ function renderWeightsTab(filter) {
     const ds = d.toLocaleDateString('en-GB', { day:'2-digit', month:'short' });
     const sets = sess.sets.sort((a,b) => (a.setNumber||1) - (b.setNumber||1));
     const setsText = sets.map(s => `${s.weight}\u00D7${s.reps}`).join(' <span style="color:#333;">/</span> ');
-    const sessionVol = sets.reduce((s, l) => s + (l.weight * l.reps), 0);
+    const sessionVol = sets.reduce((s, l) => s + (l.weight * (l.reps||0)), 0);
     const maxW = Math.max(...sets.map(s => s.weight));
     const isPR = maxW === prMap[sess.exerciseName];
     rows += `<tr>
@@ -1473,7 +1473,7 @@ function selectDay(day) {
       const already = todaySets.find(t => t.setNumber === s);
       const lastSet = lastSets?.[s-1];
       const isLogged = !!already;
-      const repTarget = targetReps.toString().replace(/[^\d]/g,'') || '10';
+      const repTarget = /failure/i.test(targetReps) ? '0' : (targetReps.toString().match(/\d+/)?.[0] || '10');
       setRowsHTML += `
         <div class="set-row ${isLogged?'logged':''}" data-set="${s}" data-exi="${i}">
           <div class="set-label">S${s}</div>
@@ -1782,7 +1782,7 @@ function initDragSort(listEl) {
   listEl.addEventListener('touchcancel', () => { if (dragEl) { dragEl.classList.remove('is-dragging'); dragEl = null; renderEditList(); } });
 }
 
-// BOOT ‚Äî onAuthStateChanged (above) handles sign-in state automatically
+// BOOT — onAuthStateChanged (above) handles sign-in state automatically
 </script>
 </body>
 </html>

@@ -3,7 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Training Week v2</title>
+<title>Trainos</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#060606">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Trainos">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
 <style>
@@ -367,6 +374,22 @@
   .wh-badge-perfect { display: inline-flex; align-items: center; background: rgba(232,255,71,0.1); border: 1px solid rgba(232,255,71,0.25); border-radius: 4px; padding: 2px 6px; font-size: 9px; font-weight: 700; letter-spacing: 0.1em; color: var(--accent); margin-left: 6px; }
   .prog-loading { text-align: center; padding: 40px; color: var(--muted); font-size: 12px; letter-spacing: 0.1em; }
 
+  /* FEEDBACK */
+  .feedback-section { margin-top: 40px; padding: 24px 0 40px; border-top: 1px solid var(--border); }
+  .feedback-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 0.05em; color: #2a2a2a; }
+  .feedback-sub { font-size: 11px; color: #333; margin-bottom: 14px; }
+  .feedback-input { width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; padding: 12px 14px; outline: none; resize: vertical; min-height: 70px; transition: border-color 0.2s; -webkit-appearance: none; }
+  .feedback-input::placeholder { color: #333; }
+  .feedback-input:focus { border-color: #333; }
+  .feedback-btn { margin-top: 10px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 10px 24px; border-radius: 10px; border: 1px solid rgba(232,255,71,0.25); background: rgba(232,255,71,0.06); color: var(--accent); cursor: pointer; transition: all 0.2s; touch-action: manipulation; }
+  .feedback-btn:hover { background: rgba(232,255,71,0.12); border-color: var(--accent); }
+  .feedback-btn:active { transform: scale(0.96); }
+  .feedback-btn.sending { opacity: 0.5; pointer-events: none; }
+  .feedback-msg { font-size: 11px; margin-top: 10px; min-height: 16px; }
+  .feedback-msg.success { color: var(--accent); }
+  .feedback-msg.error { color: #ff4444; }
+  @media (max-width: 600px) { .feedback-input { font-size: 16px !important; } }
+
   /* PR WALL */
   .pr-wall { display: grid; grid-template-columns: repeat(auto-fill,minmax(140px,1fr)); gap: 8px; margin-bottom: 20px; }
   .pr-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; position: relative; overflow: hidden; }
@@ -491,6 +514,13 @@
     <div class="prog-title">MY <span>PROGRESS</span></div>
     <div class="prog-filter" id="progFilter"></div>
     <div id="progContent"></div>
+    <div class="feedback-section">
+      <div class="feedback-title">Feedback</div>
+      <p class="feedback-sub">Help us improve the app</p>
+      <textarea class="feedback-input" id="feedbackInput" placeholder="What can we do better?" rows="3" maxlength="500"></textarea>
+      <button class="feedback-btn" id="feedbackBtn">Send Feedback</button>
+      <div class="feedback-msg" id="feedbackMsg"></div>
+    </div>
   </div>
 </div>
 
@@ -544,6 +574,7 @@ const COL_WEEKS   = 'v2_weekLogs';
 const COL_TRACK   = 'v2_weekTracking';
 const COL_REST    = 'v2_restDays';
 const COL_SETS    = 'v2_setLogs';
+const COL_FEEDBACK = 'v2_feedback';
 
 // No hardcoded users — Google Auth handles identity
 
@@ -857,6 +888,31 @@ document.getElementById('signOutBtn').addEventListener('click', async () => {
   currentUser = null;
   document.getElementById('app').style.cssText = 'display:none;';
   document.getElementById('signInScreen').classList.remove('hidden');
+});
+
+// Feedback
+document.getElementById('feedbackBtn').addEventListener('click', async () => {
+  const input = document.getElementById('feedbackInput');
+  const btn   = document.getElementById('feedbackBtn');
+  const msg   = document.getElementById('feedbackMsg');
+  const text  = input.value.trim();
+  if (!text) { input.style.borderColor = '#ff4444'; setTimeout(() => { input.style.borderColor = ''; }, 1000); return; }
+  btn.classList.add('sending'); btn.textContent = 'Sending\u2026'; msg.textContent = ''; msg.className = 'feedback-msg';
+  try {
+    await addDoc(collection(db, COL_FEEDBACK), {
+      userId: currentUser?.id || 'anonymous',
+      userName: currentUser?.name || 'Unknown',
+      message: text,
+      date: serverTimestamp(),
+    });
+    input.value = '';
+    btn.textContent = 'Send Feedback'; btn.classList.remove('sending');
+    msg.textContent = 'Thanks for your feedback!'; msg.className = 'feedback-msg success';
+    setTimeout(() => { msg.textContent = ''; }, 4000);
+  } catch(e) {
+    btn.textContent = 'Send Feedback'; btn.classList.remove('sending');
+    msg.textContent = 'Failed to send \u2014 try again'; msg.className = 'feedback-msg error';
+  }
 });
 
 // Firebase Auth state listener — handles session restore on page load
@@ -1520,16 +1576,16 @@ function renderWeightsTab(filter) {
   }
 
   // ── STATS ROW ──
-  const totalVolume = logs.reduce((s, l) => s + (l.weight * (l.reps||0)), 0);
   const totalSetsLogged = logs.length;
   const heaviest = logs.reduce((max, l) => l.weight > (max?.weight||0) ? l : max, null);
+  const uniqueExercises = new Set(logs.map(l => l.exerciseName)).size;
 
   const statsDiv = document.createElement('div');
   statsDiv.className = 'week-stats-row';
   statsDiv.style.marginBottom = '16px';
   statsDiv.innerHTML = `
     <div class="week-stat"><div class="week-stat-val">${totalSetsLogged}</div><div class="week-stat-lbl">Sets Logged</div></div>
-    <div class="week-stat"><div class="week-stat-val">${(totalVolume/1000).toFixed(1)}k</div><div class="week-stat-lbl">Total Vol (kg)</div></div>
+    <div class="week-stat"><div class="week-stat-val">${uniqueExercises}</div><div class="week-stat-lbl">Exercises</div></div>
     <div class="week-stat"><div class="week-stat-val">${heaviest ? heaviest.weight : 0}</div><div class="week-stat-lbl">Heaviest (kg)</div></div>
   `;
   content.appendChild(statsDiv);
@@ -1551,17 +1607,15 @@ function renderWeightsTab(filter) {
     const ds = d.toLocaleDateString('en-GB', { day:'2-digit', month:'short' });
     const sets = sess.sets.sort((a,b) => (a.setNumber||1) - (b.setNumber||1));
     const setsText = sets.map(s => `${s.weight}\u00D7${s.reps}`).join(' <span style="color:#333;">/</span> ');
-    const sessionVol = sets.reduce((s, l) => s + (l.weight * (l.reps||0)), 0);
     const maxWt = Math.max(...sets.map(s => s.weight));
     const isPR = prMap[sess.exerciseName] && maxWt === prMap[sess.exerciseName].weight;
     rows += `<tr>
       <td class="prog-date-cell">${ds}</td>
       <td>${sess.exerciseName}${isPR ? '<span class="pr-badge">PR</span>' : ''}</td>
       <td style="font-size:12px;color:var(--text);">${setsText}</td>
-      <td class="prog-weight-cell">${sessionVol}<span style="font-family:'DM Sans',sans-serif;font-size:9px;color:var(--muted);margin-left:2px;">vol</span></td>
     </tr>`;
   });
-  tableWrap.innerHTML = `<table class="prog-table"><thead><tr><th>Date</th><th>Exercise</th><th>Sets</th><th>Volume</th></tr></thead><tbody>${rows}</tbody></table>`;
+  tableWrap.innerHTML = `<table class="prog-table"><thead><tr><th>Date</th><th>Exercise</th><th>Sets</th></tr></thead><tbody>${rows}</tbody></table>`;
   content.appendChild(tableWrap);
 }
 

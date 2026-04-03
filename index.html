@@ -217,21 +217,21 @@
   .set-row { display: flex; align-items: center; gap: 6px; }
   .set-label { font-family: 'Bebas Neue', sans-serif; font-size: 13px; color: #333; min-width: 22px; text-align: center; flex-shrink: 0; }
   .set-row.logged .set-label { color: var(--accent); }
-  .set-weight-input { width: 60px; background: #0a0a0a; border: 1px solid #1e1e1e; border-radius: 7px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 7px 6px; outline: none; text-align: center; -webkit-appearance: none; appearance: none; transition: border-color 0.2s; }
+  .set-weight-input { width: 72px; background: #0a0a0a; border: 1px solid #1e1e1e; border-radius: 7px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; padding: 8px 6px; outline: none; text-align: center; -webkit-appearance: none; appearance: none; transition: border-color 0.2s; }
   .set-weight-input::placeholder { color: #2a2a2a; }
   .set-weight-input:focus { border-color: #333; }
   .set-weight-input::-webkit-outer-spin-button,.set-weight-input::-webkit-inner-spin-button { -webkit-appearance: none; }
   .set-weight-input[type=number] { -moz-appearance: textfield; }
   .set-kg { font-size: 10px; color: #333; font-weight: 600; flex-shrink: 0; }
   .set-rep-stepper { display: flex; align-items: center; gap: 2px; margin-left: auto; }
-  .set-rep-btn { width: 24px; height: 24px; border-radius: 6px; background: #141414; border: 1px solid #222; color: var(--text); font-size: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; touch-action: manipulation; transition: background 0.15s; line-height: 1; }
+  .set-rep-btn { width: 36px; height: 36px; border-radius: 8px; background: #141414; border: 1px solid #222; color: var(--text); font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; touch-action: manipulation; transition: background 0.15s; line-height: 1; }
   .set-rep-btn:active { background: #222; }
   .set-rep-val { font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: var(--text); min-width: 20px; text-align: center; }
   .set-log-btn { background: rgba(232,255,71,0.07); border: 1px solid rgba(232,255,71,0.18); border-radius: 7px; color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 10px; cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 0; touch-action: manipulation; }
   .set-log-btn:active { transform: scale(0.95); }
   .set-log-btn.logging { opacity: 0.5; pointer-events: none; }
   .set-log-btn.logged { background: rgba(232,255,71,0.12); border-color: var(--accent); color: var(--accent); pointer-events: none; }
-  @media (max-width: 600px) { .set-weight-input { font-size: 16px !important; width: 56px; } }
+  @media (max-width: 600px) { .set-weight-input { font-size: 16px !important; width: 72px; } }
 
   /* STATS */
   .stats-row { display: flex; gap: 8px; margin-top: 24px; flex-wrap: wrap; }
@@ -367,6 +367,38 @@
   .wh-badge-perfect { display: inline-flex; align-items: center; background: rgba(232,255,71,0.1); border: 1px solid rgba(232,255,71,0.25); border-radius: 4px; padding: 2px 6px; font-size: 9px; font-weight: 700; letter-spacing: 0.1em; color: var(--accent); margin-left: 6px; }
   .prog-loading { text-align: center; padding: 40px; color: var(--muted); font-size: 12px; letter-spacing: 0.1em; }
 
+  /* PR WALL */
+  .pr-wall { display: grid; grid-template-columns: repeat(auto-fill,minmax(140px,1fr)); gap: 8px; margin-bottom: 20px; }
+  .pr-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; position: relative; overflow: hidden; }
+  .pr-card::before { content: 'PR'; position: absolute; top: 8px; right: 10px; font-family: 'Bebas Neue', sans-serif; font-size: 11px; letter-spacing: 0.1em; color: rgba(232,255,71,0.2); }
+  .pr-card-name { font-size: 11px; font-weight: 600; color: var(--muted); line-height: 1.3; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%; }
+  .pr-card-weight { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--accent); letter-spacing: 0.03em; line-height: 1; }
+  .pr-card-weight span { font-size: 13px; color: var(--accent-dim); }
+  .pr-card-date { font-size: 9px; color: #333; margin-top: 4px; }
+  .pr-wall-title { font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+
+  /* STRENGTH TREND */
+  .trend-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 20px; }
+  .trend-title { font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+  .trend-svg { width: 100%; display: block; overflow: visible; }
+  .trend-line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .trend-area { fill: url(#trendGrad); }
+  .trend-dot { fill: var(--accent); }
+  .trend-dot-latest { fill: var(--accent); stroke: var(--bg); stroke-width: 2; }
+  .trend-label { font-family: "DM Sans", sans-serif; font-size: 9px; fill: var(--muted); text-anchor: middle; }
+  .trend-val { font-family: "Bebas Neue", sans-serif; font-size: 11px; fill: var(--accent); text-anchor: middle; }
+
+  /* CONSISTENCY SCORE */
+  .consistency-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 20px; }
+  .consistency-ring { position: relative; width: 80px; height: 80px; flex-shrink: 0; }
+  .consistency-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .consistency-ring-bg { fill: none; stroke: #1a1a1a; stroke-width: 6; }
+  .consistency-ring-fill { fill: none; stroke: var(--accent); stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.8s var(--ease); }
+  .consistency-pct { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--accent); }
+  .consistency-info { flex: 1; }
+  .consistency-label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .consistency-detail { font-size: 12px; color: #555; line-height: 1.5; }
+
   /* MOBILE TWEAKS */
   @media (max-width: 600px) {
     header { padding: 20px 0 16px; }
@@ -488,7 +520,7 @@
 import { initializeApp }    from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
 import { getFirestore, collection, addDoc, query, where, getDocs, serverTimestamp, doc, getDoc, setDoc }
                             from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut }
+import { getAuth, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut }
                             from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
 
 // FIREBASE — same project, v2_ prefixed collections
@@ -515,108 +547,144 @@ const COL_SETS    = 'v2_setLogs';
 
 // No hardcoded users — Google Auth handles identity
 
-// EXPANDED EXERCISE LIBRARY
+// EXPANDED EXERCISE LIBRARY — most common first per category
 const exerciseLibrary = [
-  // CHEST (15)
-  { id:"ch1",  name:"Chest Press Machine (Flat)",       category:"Chest",     search:"chest press machine" },
-  { id:"ch2",  name:"Incline Chest Press Machine",      category:"Chest",     search:"incline chest press machine" },
-  { id:"ch3",  name:"Decline Chest Press Machine",      category:"Chest",     search:"decline chest press machine" },
-  { id:"ch4",  name:"Cable Fly (Middle)",                category:"Chest",     search:"cable crossover" },
+  // CHEST (15) — most common first
+  { id:"ch13", name:"Barbell Bench Press",               category:"Chest",     search:"barbell bench press" },
+  { id:"ch12", name:"Incline Dumbbell Press",            category:"Chest",     search:"incline dumbbell press" },
+  { id:"ch11", name:"Dumbbell Bench Press (Flat)",       category:"Chest",     search:"dumbbell bench press" },
+  { id:"ch1",  name:"Chest Press Machine (Flat)",        category:"Chest",     search:"chest press machine" },
+  { id:"ch2",  name:"Incline Chest Press Machine",       category:"Chest",     search:"incline chest press machine" },
+  { id:"ch7",  name:"Pec Deck Machine",                  category:"Chest",     search:"pec deck" },
+  { id:"ch4",  name:"Cable Fly (Middle)",                category:"Chest",     search:"cable fly chest" },
   { id:"ch5",  name:"Low-to-High Cable Fly",             category:"Chest",     search:"low to high cable fly" },
   { id:"ch6",  name:"High-to-Low Cable Fly",             category:"Chest",     search:"high to low cable fly" },
-  { id:"ch7",  name:"Pec Deck Machine",                  category:"Chest",     search:"pec deck" },
+  { id:"ch14", name:"Push-Ups",                          category:"Chest",     search:"push up" },
+  { id:"ch3",  name:"Decline Chest Press Machine",       category:"Chest",     search:"decline chest press machine" },
   { id:"ch8",  name:"Single Arm Cable Press",            category:"Chest",     search:"single arm cable chest press" },
   { id:"ch9",  name:"Machine Dip (Chest Focus)",         category:"Chest",     search:"chest dip machine" },
   { id:"ch10", name:"Converging Chest Press",            category:"Chest",     search:"converging chest press machine" },
-  { id:"ch11", name:"Dumbbell Bench Press (Flat)",       category:"Chest",     search:"dumbbell bench press" },
-  { id:"ch12", name:"Incline Dumbbell Press",            category:"Chest",     search:"incline dumbbell press" },
-  { id:"ch13", name:"Barbell Bench Press",               category:"Chest",     search:"barbell bench press" },
-  { id:"ch14", name:"Push-Ups",                          category:"Chest",     search:"push up" },
   { id:"ch15", name:"Svend Press",                       category:"Chest",     search:"svend press" },
-  // BACK (15)
+  // BACK (16) — most common first
   { id:"bk1",  name:"Wide Grip Lat Pulldown",            category:"Back",      search:"lat pulldown" },
-  { id:"bk2",  name:"Close Grip Lat Pulldown",           category:"Back",      search:"close grip lat pulldown" },
+  { id:"bk11", name:"Barbell Bent-Over Row",             category:"Back",      search:"barbell bent over row" },
   { id:"bk3",  name:"Seated Cable Row (V-Bar)",          category:"Back",      search:"seated cable row" },
-  { id:"bk4",  name:"One Arm Cable Row",                 category:"Back",      search:"one arm cable row" },
-  { id:"bk5",  name:"Machine Chest Supported Row",       category:"Back",      search:"machine row" },
-  { id:"bk6",  name:"Straight Arm Cable Pulldown",       category:"Back",      search:"straight arm pulldown" },
-  { id:"bk7",  name:"T-Bar Machine Row",                 category:"Back",      search:"t bar machine row" },
-  { id:"bk8",  name:"Assisted Pull-Up Machine",          category:"Back",      search:"assisted pull up machine" },
-  { id:"bk9",  name:"Reverse Grip Lat Pulldown",         category:"Back",      search:"reverse grip lat pulldown" },
-  { id:"bk10", name:"Machine Shrugs",                    category:"Back",      search:"machine shrugs" },
-  { id:"bk11", name:"Barbell Bent-Over Row",             category:"Back",      search:"barbell row" },
+  { id:"bk15", name:"Pull-Ups",                          category:"Back",      search:"pull up" },
   { id:"bk12", name:"Dumbbell Row (Single Arm)",         category:"Back",      search:"dumbbell row" },
+  { id:"bk5",  name:"Machine Chest Supported Row",       category:"Back",      search:"chest supported row machine" },
+  { id:"bk2",  name:"Close Grip Lat Pulldown",           category:"Back",      search:"close grip lat pulldown" },
+  { id:"bk6",  name:"Straight Arm Cable Pulldown",       category:"Back",      search:"straight arm pulldown" },
+  { id:"bk4",  name:"One Arm Cable Row",                 category:"Back",      search:"one arm cable row" },
+  { id:"bk7",  name:"T-Bar Machine Row",                 category:"Back",      search:"t bar row" },
+  { id:"bk9",  name:"Reverse Grip Lat Pulldown",         category:"Back",      search:"reverse grip lat pulldown" },
+  { id:"bk8",  name:"Assisted Pull-Up Machine",          category:"Back",      search:"assisted pull up machine" },
+  { id:"bk10", name:"Machine Shrugs",                    category:"Back",      search:"machine shrug" },
   { id:"bk13", name:"Pendlay Row",                       category:"Back",      search:"pendlay row" },
   { id:"bk14", name:"Meadows Row",                       category:"Back",      search:"meadows row" },
-  { id:"bk15", name:"Pull-Ups",                          category:"Back",      search:"pull up" },
-  // SHOULDERS (14)
+  { id:"bk16", name:"Cable Face Pull (Back Focus)",      category:"Back",      search:"cable face pull" },
+  // SHOULDERS (20) — most common first, more cable variants
+  { id:"sh12", name:"Dumbbell Shoulder Press",           category:"Shoulders", search:"dumbbell shoulder press" },
+  { id:"sh11", name:"Dumbbell Lateral Raise",            category:"Shoulders", search:"dumbbell lateral raise" },
   { id:"sh1",  name:"Shoulder Press Machine",            category:"Shoulders", search:"shoulder press machine" },
-  { id:"sh2",  name:"Machine Lateral Raise",             category:"Shoulders", search:"lateral raise machine" },
+  { id:"sh14", name:"Barbell Overhead Press",            category:"Shoulders", search:"barbell overhead press" },
   { id:"sh3",  name:"Cable Lateral Raise",               category:"Shoulders", search:"cable lateral raise" },
   { id:"sh4",  name:"Rear Delt Pec Deck",                category:"Shoulders", search:"rear delt fly machine" },
-  { id:"sh5",  name:"Cable Face Pulls",                  category:"Shoulders", search:"face pull" },
+  { id:"sh5",  name:"Cable Face Pulls",                  category:"Shoulders", search:"face pull cable" },
+  { id:"sh13", name:"Arnold Press",                      category:"Shoulders", search:"arnold press" },
+  { id:"sh2",  name:"Machine Lateral Raise",             category:"Shoulders", search:"lateral raise machine" },
   { id:"sh6",  name:"Cable Front Raise",                 category:"Shoulders", search:"cable front raise" },
   { id:"sh7",  name:"Cable Upright Row",                 category:"Shoulders", search:"cable upright row" },
-  { id:"sh8",  name:"Single Arm Cable Rear Delt Fly",    category:"Shoulders", search:"cable rear delt fly" },
+  { id:"sh8",  name:"Single Arm Cable Lateral Raise",    category:"Shoulders", search:"single arm cable lateral raise" },
   { id:"sh9",  name:"Smith Machine Overhead Press",      category:"Shoulders", search:"smith machine shoulder press" },
   { id:"sh10", name:"Cable Y-Raise",                     category:"Shoulders", search:"cable y raise" },
-  { id:"sh11", name:"Dumbbell Lateral Raise",            category:"Shoulders", search:"dumbbell lateral raise" },
-  { id:"sh12", name:"Dumbbell Shoulder Press",           category:"Shoulders", search:"dumbbell shoulder press" },
-  { id:"sh13", name:"Arnold Press",                      category:"Shoulders", search:"arnold press" },
-  { id:"sh14", name:"Barbell Overhead Press",            category:"Shoulders", search:"barbell overhead press" },
-  // LEGS (16)
-  { id:"lg1",  name:"Leg Press (Horizontal)",            category:"Legs",      search:"leg press" },
-  { id:"lg2",  name:"45-Degree Leg Press",               category:"Legs",      search:"45 degree leg press" },
-  { id:"lg3",  name:"Hack Squat Machine",                category:"Legs",      search:"hack squat machine" },
-  { id:"lg4",  name:"Leg Extension Machine",             category:"Legs",      search:"leg extension" },
-  { id:"lg5",  name:"Seated Leg Curl Machine",           category:"Legs",      search:"seated leg curl" },
-  { id:"lg6",  name:"Lying Leg Curl Machine",            category:"Legs",      search:"lying leg curl" },
-  { id:"lg7",  name:"Adductor Machine",                  category:"Legs",      search:"adductor machine" },
-  { id:"lg8",  name:"Abductor Machine",                  category:"Legs",      search:"abductor machine" },
-  { id:"lg9",  name:"Standing Calf Raise Machine",       category:"Legs",      search:"calf raise machine" },
-  { id:"lg10", name:"Seated Calf Raise Machine",         category:"Legs",      search:"seated calf raise machine" },
+  { id:"sh15", name:"Cable Rear Delt Fly",               category:"Shoulders", search:"cable rear delt fly" },
+  { id:"sh16", name:"Dumbbell Front Raise",              category:"Shoulders", search:"dumbbell front raise" },
+  { id:"sh17", name:"Dumbbell Rear Delt Fly",            category:"Shoulders", search:"dumbbell rear delt fly" },
+  { id:"sh18", name:"Landmine Press",                    category:"Shoulders", search:"landmine press" },
+  { id:"sh19", name:"Cable Shrug",                       category:"Shoulders", search:"cable shrug" },
+  { id:"sh20", name:"Plate Front Raise",                 category:"Shoulders", search:"plate front raise" },
+  // LEGS (22) — most common first, more variety
   { id:"lg11", name:"Barbell Squat",                     category:"Legs",      search:"barbell squat" },
   { id:"lg12", name:"Romanian Deadlift (RDL)",           category:"Legs",      search:"romanian deadlift" },
+  { id:"lg1",  name:"Leg Press",                         category:"Legs",      search:"leg press" },
+  { id:"lg4",  name:"Leg Extension Machine",             category:"Legs",      search:"leg extension" },
+  { id:"lg5",  name:"Seated Leg Curl Machine",           category:"Legs",      search:"seated leg curl" },
+  { id:"lg3",  name:"Hack Squat Machine",                category:"Legs",      search:"hack squat machine" },
   { id:"lg13", name:"Bulgarian Split Squat",             category:"Legs",      search:"bulgarian split squat" },
-  { id:"lg14", name:"Goblet Squat",                      category:"Legs",      search:"goblet squat" },
-  { id:"lg15", name:"Walking Lunges",                    category:"Legs",      search:"walking lunges" },
   { id:"lg16", name:"Hip Thrust Machine",                category:"Legs",      search:"hip thrust" },
-  // ARMS (14)
-  { id:"ar1",  name:"Cable Bicep Curl (Straight Bar)",   category:"Arms",      search:"cable bicep curl" },
-  { id:"ar2",  name:"Cable Hammer Curl (Rope)",          category:"Arms",      search:"cable hammer curl" },
-  { id:"ar3",  name:"Machine Preacher Curl",             category:"Arms",      search:"preacher curl machine" },
+  { id:"lg6",  name:"Lying Leg Curl Machine",            category:"Legs",      search:"lying leg curl" },
+  { id:"lg9",  name:"Standing Calf Raise Machine",       category:"Legs",      search:"calf raise machine" },
+  { id:"lg15", name:"Walking Lunges",                    category:"Legs",      search:"walking lunges" },
+  { id:"lg14", name:"Goblet Squat",                      category:"Legs",      search:"goblet squat" },
+  { id:"lg2",  name:"45-Degree Leg Press",               category:"Legs",      search:"45 degree leg press" },
+  { id:"lg7",  name:"Adductor Machine",                  category:"Legs",      search:"adductor machine" },
+  { id:"lg8",  name:"Abductor Machine",                  category:"Legs",      search:"abductor machine" },
+  { id:"lg10", name:"Seated Calf Raise Machine",         category:"Legs",      search:"seated calf raise" },
+  { id:"lg17", name:"Smith Machine Squat",               category:"Legs",      search:"smith machine squat" },
+  { id:"lg18", name:"Sumo Deadlift",                     category:"Legs",      search:"sumo deadlift" },
+  { id:"lg19", name:"Leg Press Calf Raise",              category:"Legs",      search:"leg press calf raise" },
+  { id:"lg20", name:"Cable Pull-Through",                category:"Legs",      search:"cable pull through" },
+  { id:"lg21", name:"Step-Ups (Dumbbell)",               category:"Legs",      search:"dumbbell step up" },
+  { id:"lg22", name:"Single Leg Curl",                   category:"Legs",      search:"single leg curl" },
+  // ARMS (24) — most common first, many cable variants
+  { id:"ar11", name:"Dumbbell Curl",                     category:"Arms",      search:"dumbbell curl" },
   { id:"ar4",  name:"Cable Tricep Pushdown (Rope)",      category:"Arms",      search:"triceps pushdown rope" },
-  { id:"ar5",  name:"Cable Tricep Pushdown (V-Bar)",     category:"Arms",      search:"triceps pushdown" },
-  { id:"ar6",  name:"Overhead Cable Extension (Rope)",   category:"Arms",      search:"overhead triceps cable" },
-  { id:"ar7",  name:"Machine Tricep Dip",                category:"Arms",      search:"tricep dip machine" },
+  { id:"ar12", name:"Hammer Curl (Dumbbell)",            category:"Arms",      search:"hammer curl" },
+  { id:"ar1",  name:"Cable Bicep Curl (Straight Bar)",   category:"Arms",      search:"cable bicep curl" },
+  { id:"ar5",  name:"Cable Tricep Pushdown (V-Bar)",     category:"Arms",      search:"triceps pushdown v bar" },
+  { id:"ar3",  name:"Machine Preacher Curl",             category:"Arms",      search:"preacher curl machine" },
+  { id:"ar6",  name:"Overhead Cable Extension (Rope)",   category:"Arms",      search:"overhead cable tricep extension" },
+  { id:"ar14", name:"Skull Crushers",                    category:"Arms",      search:"skull crusher" },
+  { id:"ar2",  name:"Cable Hammer Curl (Rope)",          category:"Arms",      search:"cable hammer curl rope" },
+  { id:"ar13", name:"Concentration Curl",                category:"Arms",      search:"concentration curl" },
   { id:"ar8",  name:"Single Arm Cable Curl",             category:"Arms",      search:"single arm cable curl" },
   { id:"ar9",  name:"Single Arm Cable Tricep Ext.",      category:"Arms",      search:"single arm tricep pushdown" },
-  { id:"ar10", name:"Bayesian Cable Curl",               category:"Arms",      search:"bayesian cable curl" },
-  { id:"ar11", name:"Dumbbell Curl",                     category:"Arms",      search:"dumbbell curl" },
-  { id:"ar12", name:"Hammer Curl (Dumbbell)",            category:"Arms",      search:"hammer curl" },
-  { id:"ar13", name:"Concentration Curl",                category:"Arms",      search:"concentration curl" },
-  { id:"ar14", name:"Skull Crushers",                    category:"Arms",      search:"skull crusher" },
-  // ABS (8)
-  { id:"ab1",  name:"Cable Woodchopper",                 category:"Abs",       search:"cable woodchopper" },
+  { id:"ar7",  name:"Machine Tricep Dip",                category:"Arms",      search:"tricep dip machine" },
+  { id:"ar10", name:"Incline Dumbbell Curl",             category:"Arms",      search:"incline dumbbell curl" },
+  { id:"ar15", name:"Cable Overhead Bicep Curl",         category:"Arms",      search:"cable overhead curl" },
+  { id:"ar16", name:"Reverse Grip Cable Curl",           category:"Arms",      search:"reverse cable curl" },
+  { id:"ar17", name:"EZ Bar Curl",                       category:"Arms",      search:"ez bar curl" },
+  { id:"ar18", name:"Close Grip Bench Press",            category:"Arms",      search:"close grip bench press" },
+  { id:"ar19", name:"Diamond Push-Ups",                  category:"Arms",      search:"diamond push up" },
+  { id:"ar20", name:"Cable Wrist Curl",                  category:"Arms",      search:"cable wrist curl" },
+  { id:"ar21", name:"Reverse Curl (Barbell)",            category:"Arms",      search:"reverse barbell curl" },
+  { id:"ar22", name:"Dumbbell Tricep Kickback",          category:"Arms",      search:"dumbbell tricep kickback" },
+  { id:"ar23", name:"Spider Curl (Dumbbell)",            category:"Arms",      search:"spider curl dumbbell" },
+  { id:"ar24", name:"Cable Tricep Kickback",             category:"Arms",      search:"cable tricep kickback" },
+  // ABS (16) — most common first, much more variety
   { id:"ab2",  name:"Machine Crunch",                    category:"Abs",       search:"ab crunch machine" },
   { id:"ab3",  name:"Cable Rope Crunch",                 category:"Abs",       search:"cable crunch" },
-  { id:"ab4",  name:"Captain's Chair (Machine)",         category:"Abs",       search:"captains chair leg raise" },
-  { id:"ab5",  name:"Rotary Torso Machine",              category:"Abs",       search:"rotary torso machine" },
   { id:"ab6",  name:"Hanging Leg Raise",                 category:"Abs",       search:"hanging leg raise" },
-  { id:"ab7",  name:"Ab Roller",                         category:"Abs",       search:"ab wheel rollout" },
+  { id:"ab4",  name:"Captain's Chair Leg Raise",         category:"Abs",       search:"captains chair leg raise" },
   { id:"ab8",  name:"Plank",                             category:"Abs",       search:"plank exercise" },
-  // GLUTES (5)
-  { id:"gl1",  name:"Cable Kickback",                    category:"Glutes",    search:"cable kickback" },
-  { id:"gl2",  name:"Glute Bridge (Barbell)",            category:"Glutes",    search:"barbell glute bridge" },
+  { id:"ab1",  name:"Cable Woodchopper",                 category:"Abs",       search:"cable woodchopper" },
+  { id:"ab5",  name:"Rotary Torso Machine",              category:"Abs",       search:"rotary torso machine" },
+  { id:"ab7",  name:"Ab Roller",                         category:"Abs",       search:"ab wheel rollout" },
+  { id:"ab9",  name:"Decline Sit-Up",                    category:"Abs",       search:"decline sit up" },
+  { id:"ab10", name:"Russian Twist",                     category:"Abs",       search:"russian twist" },
+  { id:"ab11", name:"Mountain Climbers",                 category:"Abs",       search:"mountain climbers exercise" },
+  { id:"ab12", name:"Bicycle Crunch",                    category:"Abs",       search:"bicycle crunch" },
+  { id:"ab13", name:"Dead Bug",                          category:"Abs",       search:"dead bug exercise" },
+  { id:"ab14", name:"Cable Pallof Press",                category:"Abs",       search:"pallof press cable" },
+  { id:"ab15", name:"Toe Touches (Lying)",               category:"Abs",       search:"lying toe touch exercise" },
+  { id:"ab16", name:"V-Ups",                             category:"Abs",       search:"v up exercise" },
+  // GLUTES (8) — more variety
+  { id:"gl1",  name:"Hip Thrust (Barbell)",              category:"Glutes",    search:"barbell hip thrust" },
+  { id:"gl2",  name:"Cable Kickback",                    category:"Glutes",    search:"cable glute kickback" },
   { id:"gl3",  name:"Hip Abduction Machine",             category:"Glutes",    search:"hip abduction machine" },
-  { id:"gl4",  name:"Cable Pull-Through",                category:"Glutes",    search:"cable pull through" },
-  { id:"gl5",  name:"Smith Machine Hip Thrust",          category:"Glutes",    search:"smith machine hip thrust" },
-  // CARDIO (5)
+  { id:"gl4",  name:"Glute Bridge (Barbell)",            category:"Glutes",    search:"barbell glute bridge" },
+  { id:"gl5",  name:"Cable Pull-Through",                category:"Glutes",    search:"cable pull through glutes" },
+  { id:"gl6",  name:"Smith Machine Hip Thrust",          category:"Glutes",    search:"smith machine hip thrust" },
+  { id:"gl7",  name:"Sumo Squat",                        category:"Glutes",    search:"sumo squat" },
+  { id:"gl8",  name:"Donkey Kick (Cable)",               category:"Glutes",    search:"cable donkey kick" },
+  // CARDIO (7) — more options
   { id:"cd1",  name:"Treadmill (Incline Walk)",          category:"Cardio",    search:"treadmill walking" },
   { id:"cd2",  name:"Stairmaster",                       category:"Cardio",    search:"stairmaster" },
   { id:"cd3",  name:"Rowing Machine",                    category:"Cardio",    search:"rowing machine" },
   { id:"cd4",  name:"Stationary Bike",                   category:"Cardio",    search:"stationary bike" },
   { id:"cd5",  name:"Elliptical Trainer",                category:"Cardio",    search:"elliptical trainer" },
+  { id:"cd6",  name:"Jump Rope",                         category:"Cardio",    search:"jump rope exercise" },
+  { id:"cd7",  name:"Battle Ropes",                      category:"Cardio",    search:"battle ropes exercise" },
 ];
 
 const LIBMAP = Object.fromEntries(exerciseLibrary.map(e => [e.id, e]));
@@ -648,7 +716,7 @@ function getDefaultPlan() {
   return {
     Sunday: [
       e('d_bk1', 'Lat Pulldown',          'lat pulldown',           'Back', '3', '8\u201310'),
-      e('d_bk2', 'Lever Pronated Row',     'cable row',              'Back', '3', '8\u201310'),
+      e('d_bk2', 'Lever Pronated Row',     'lever row machine',      'Back', '3', '8\u201310'),
       e('d_bk3', 'Seated V-Bar Row',       'seated cable row',       'Back', '3', '10\u201312'),
       e('d_bk4', 'Straight Arm Pulldown',  'straight arm pulldown',  'Back', '3', '12\u201315'),
       e('d_ar1', 'Seated DB Curl',         'dumbbell curl',          'Arms', '3', '8\u201310'),
@@ -722,7 +790,25 @@ let activeCatTab   = null;
 
 const TRACK_KEY   = 'training_v2_track';
 
-// AUTH — Google Sign-In
+// AUTH — Google Sign-In (redirect on mobile, popup on desktop)
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+// Handle redirect result on page load (mobile returns here after Google sign-in)
+getRedirectResult(auth).then(result => {
+  // onAuthStateChanged handles the user — this just clears any loading state
+  if (!result?.user) {
+    const btn = document.getElementById('googleSignInBtn');
+    if (btn.classList.contains('signing-in')) {
+      btn.classList.remove('signing-in');
+      btn.innerHTML = '<svg class="google-icon" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>Sign in with Google';
+    }
+  }
+}).catch(e => {
+  if (e.code && e.code !== 'auth/popup-closed-by-user') {
+    document.getElementById('signInError').textContent = 'Sign-in failed \u2014 try again';
+  }
+});
+
 document.getElementById('googleSignInBtn').addEventListener('click', async () => {
   const btn = document.getElementById('googleSignInBtn');
   const err = document.getElementById('signInError');
@@ -730,8 +816,13 @@ document.getElementById('googleSignInBtn').addEventListener('click', async () =>
   btn.textContent = 'Signing in\u2026';
   err.textContent = '';
   try {
-    await signInWithPopup(auth, googleProvider);
-    // onAuthStateChanged handles the rest
+    if (isMobile) {
+      await signInWithRedirect(auth, googleProvider);
+      // Page redirects to Google, then back — getRedirectResult handles it
+    } else {
+      await signInWithPopup(auth, googleProvider);
+      // onAuthStateChanged handles the rest
+    }
   } catch(e) {
     console.error('Sign-in error:', e);
     err.textContent = e.code === 'auth/popup-closed-by-user' ? '' : 'Sign-in failed \u2014 try again';
@@ -1219,12 +1310,33 @@ function renderWeeklyTab() {
 
   const totalSkips = allWeeks.reduce((s,w) => s + ((w.totalTrainingDays||TOTAL) - (w.completedCount||0)), 0);
 
+  // Consistency = completed / total planned across all weeks
+  const totalPlanned = allWeeks.reduce((s,w) => s + (w.totalTrainingDays||TOTAL), 0);
+  const consistencyPct = totalPlanned > 0 ? Math.round((totalSessions / totalPlanned) * 100) : 0;
+  const circumference = 2 * Math.PI * 34;
+  const dashOffset = circumference - (circumference * consistencyPct / 100);
+
   let html = '';
+
+  // Consistency ring
+  html += `<div class="consistency-wrap">
+    <div class="consistency-ring">
+      <svg viewBox="0 0 80 80">
+        <circle class="consistency-ring-bg" cx="40" cy="40" r="34"/>
+        <circle class="consistency-ring-fill" cx="40" cy="40" r="34" stroke-dasharray="${circumference}" stroke-dashoffset="${dashOffset}"/>
+      </svg>
+      <div class="consistency-pct">${consistencyPct}%</div>
+    </div>
+    <div class="consistency-info">
+      <div class="consistency-label">Consistency</div>
+      <div class="consistency-detail">${totalSessions} of ${totalPlanned} sessions completed<br>Streak: ${streak} perfect week${streak!==1?'s':''}</div>
+    </div>
+  </div>`;
+
   html += `<div class="week-stats-row">
     <div class="week-stat"><div class="week-stat-val">${streak}</div><div class="week-stat-lbl">Streak</div></div>
     <div class="week-stat"><div class="week-stat-val">${totalSessions}</div><div class="week-stat-lbl">Sessions</div></div>
     <div class="week-stat"><div class="week-stat-val">${bestWeek}/${TOTAL}</div><div class="week-stat-lbl">Best Week</div></div>
-    <div class="week-stat"><div class="week-stat-val">${totalSkips}</div><div class="week-stat-lbl">Total Skips</div></div>
   </div>`;
 
   const chartWeeks = [...allWeeks].sort((a,b) => a.weekStart > b.weekStart ? 1 : -1).slice(-10);
@@ -1308,19 +1420,94 @@ function renderWeightsTab(filter) {
     return;
   }
 
-  // Compute stats
-  const prMap = {};
-  const volumeMap = {};  // weekId -> total volume
-  logs.forEach(l => {
-    if (!prMap[l.exerciseName] || l.weight > prMap[l.exerciseName]) prMap[l.exerciseName] = l.weight;
-    const wid = l.weekId || 'unknown';
-    volumeMap[wid] = (volumeMap[wid] || 0) + (l.weight * (l.reps||0));
+  // Compute PRs per exercise
+  const prMap = {};   // exerciseName -> { weight, date }
+  const allLogs = [...userSetLogs];
+  allLogs.forEach(l => {
+    if (!prMap[l.exerciseName] || l.weight > prMap[l.exerciseName].weight) {
+      prMap[l.exerciseName] = { weight: l.weight, date: l.date };
+    }
   });
+
+  // ── PR WALL (only on ALL view) ──
+  if (filter === 'ALL' && Object.keys(prMap).length > 0) {
+    const prDiv = document.createElement('div');
+    let prHTML = '<div class="pr-wall-title">Personal Records</div><div class="pr-wall">';
+    // Sort by weight descending
+    const prList = Object.entries(prMap).sort((a,b) => b[1].weight - a[1].weight);
+    prList.forEach(([name, pr]) => {
+      const d = pr.date?.seconds ? new Date(pr.date.seconds * 1000) : null;
+      const ds = d ? d.toLocaleDateString('en-GB', { day:'numeric', month:'short' }) : '';
+      prHTML += `<div class="pr-card">
+        <div class="pr-card-name">${name}</div>
+        <div class="pr-card-weight">${pr.weight}<span>kg</span></div>
+        ${ds ? `<div class="pr-card-date">${ds}</div>` : ''}
+      </div>`;
+    });
+    prHTML += '</div>';
+    prDiv.innerHTML = prHTML;
+    content.appendChild(prDiv);
+  }
+
+  // ── STRENGTH TREND (only when filtered to one exercise) ──
+  if (filter !== 'ALL' && logs.length >= 2) {
+    // Group by session, get max weight per session
+    const sessMap = {};
+    logs.forEach(l => {
+      const key = l.weekId || 'x';
+      if (!sessMap[key] || l.weight > sessMap[key].weight) {
+        sessMap[key] = { weight: l.weight, date: l.date, weekId: l.weekId };
+      }
+    });
+    const points = Object.values(sessMap).sort((a,b) => (a.date?.seconds||0) - (b.date?.seconds||0)).slice(-12);
+
+    if (points.length >= 2) {
+      const W = 300, H = 80, PAD = 20;
+      const minW = Math.min(...points.map(p => p.weight));
+      const maxW = Math.max(...points.map(p => p.weight));
+      const range = maxW - minW || 1;
+
+      let pathD = '', areaD = '', dots = '', labels = '';
+      points.forEach((p, i) => {
+        const x = PAD + (i / (points.length - 1)) * (W - PAD * 2);
+        const y = H - PAD - ((p.weight - minW) / range) * (H - PAD * 2);
+        pathD += (i === 0 ? 'M' : 'L') + `${x},${y}`;
+        areaD += (i === 0 ? 'M' : 'L') + `${x},${y}`;
+        const isLast = i === points.length - 1;
+        dots += `<circle class="${isLast ? 'trend-dot-latest' : 'trend-dot'}" cx="${x}" cy="${y}" r="${isLast ? 5 : 3}"/>`;
+        // Show value on first, last, and every 3rd point
+        if (i === 0 || isLast || i % 3 === 0) {
+          labels += `<text class="trend-val" x="${x}" y="${y - 10}">${p.weight}</text>`;
+        }
+        const d = p.date?.seconds ? new Date(p.date.seconds * 1000) : null;
+        if (d && (i === 0 || isLast)) {
+          labels += `<text class="trend-label" x="${x}" y="${H - 2}">${d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</text>`;
+        }
+      });
+      // Close area path
+      const lastX = PAD + ((points.length - 1) / (points.length - 1)) * (W - PAD * 2);
+      const firstX = PAD;
+      areaD += `L${lastX},${H - PAD}L${firstX},${H - PAD}Z`;
+
+      const trendDiv = document.createElement('div');
+      trendDiv.className = 'trend-wrap';
+      trendDiv.innerHTML = `
+        <div class="trend-title">Strength Trend \u2014 Heaviest Set</div>
+        <svg class="trend-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
+          <defs><linearGradient id="trendGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--accent)" stop-opacity="0.15"/><stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>
+          <path class="trend-area" d="${areaD}"/>
+          <path class="trend-line" d="${pathD}"/>
+          ${dots}${labels}
+        </svg>`;
+      content.appendChild(trendDiv);
+    }
+  }
+
+  // ── STATS ROW ──
   const totalVolume = logs.reduce((s, l) => s + (l.weight * (l.reps||0)), 0);
   const totalSetsLogged = logs.length;
   const heaviest = logs.reduce((max, l) => l.weight > (max?.weight||0) ? l : max, null);
 
-  // Stats row
   const statsDiv = document.createElement('div');
   statsDiv.className = 'week-stats-row';
   statsDiv.style.marginBottom = '16px';
@@ -1331,7 +1518,7 @@ function renderWeightsTab(filter) {
   `;
   content.appendChild(statsDiv);
 
-  // Group by session (weekId + day + exerciseName) for a nice table
+  // ── SESSION TABLE ──
   const sessions = {};
   logs.forEach(l => {
     const key = `${l.weekId || 'x'}_${l.day}_${l.exerciseName}`;
@@ -1349,8 +1536,8 @@ function renderWeightsTab(filter) {
     const sets = sess.sets.sort((a,b) => (a.setNumber||1) - (b.setNumber||1));
     const setsText = sets.map(s => `${s.weight}\u00D7${s.reps}`).join(' <span style="color:#333;">/</span> ');
     const sessionVol = sets.reduce((s, l) => s + (l.weight * (l.reps||0)), 0);
-    const maxW = Math.max(...sets.map(s => s.weight));
-    const isPR = maxW === prMap[sess.exerciseName];
+    const maxWt = Math.max(...sets.map(s => s.weight));
+    const isPR = prMap[sess.exerciseName] && maxWt === prMap[sess.exerciseName].weight;
     rows += `<tr>
       <td class="prog-date-cell">${ds}</td>
       <td>${sess.exerciseName}${isPR ? '<span class="pr-badge">PR</span>' : ''}</td>
@@ -1545,7 +1732,7 @@ function selectDay(day) {
         const inp = row.querySelector('.set-weight-input');
         const weight = parseFloat(inp.value);
         const reps = parseInt(row.querySelector('.set-rep-val').textContent);
-        if (!weight || weight <= 0 || weight > 500) { inp.style.borderColor='#ff4444'; setTimeout(()=>{inp.style.borderColor='';},1000); return; }
+        if (isNaN(weight) || weight <= 0 || weight > 500) { inp.style.borderColor='#ff4444'; setTimeout(()=>{inp.style.borderColor='';},1000); return; }
         const btn = row.querySelector('.set-log-btn');
         btn.textContent = '\u2026'; btn.classList.add('logging');
         try {
@@ -1679,7 +1866,9 @@ function renderEditList() {
     });
     item.querySelector('.edit-ex-x').addEventListener('click', e => {
       e.stopPropagation();
-      editPlanCopy.splice(parseInt(item.dataset.idx), 1);
+      const exRef = editPlanCopy[parseInt(item.dataset.idx)];
+      const realIdx = editPlanCopy.indexOf(exRef);
+      if (realIdx !== -1) editPlanCopy.splice(realIdx, 1);
       renderEditList();
       renderLibrary();
     });
@@ -1768,8 +1957,11 @@ function initDragSort(listEl) {
   function endDrag() {
     if (!dragEl) return;
     dragEl.classList.remove('is-dragging');
+    // Re-index items based on current DOM order BEFORE reading indices
+    const items = getItems();
+    items.forEach((item, i) => { item.dataset.idx = i; });
     const newOrder = [];
-    getItems().forEach(item => {
+    items.forEach(item => {
       const idx = parseInt(item.dataset.idx);
       if (!isNaN(idx) && editPlanCopy[idx]) newOrder.push({ ...editPlanCopy[idx] });
     });

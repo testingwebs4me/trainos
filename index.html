@@ -809,6 +809,18 @@ getRedirectResult(auth).then(result => {
   }
 });
 
+// Helper to set currentUser from a Firebase user object and show app
+async function handleSignedInUser(user) {
+  currentUser = {
+    id: user.uid,
+    name: user.displayName || user.email?.split('@')[0] || 'User',
+    initials: (user.displayName || user.email || 'U')[0].toUpperCase(),
+    photoURL: user.photoURL || null,
+  };
+  try { await loadAllUserData(); } catch(e) { console.warn('Data load error:', e); }
+  showApp();
+}
+
 document.getElementById('googleSignInBtn').addEventListener('click', async () => {
   const btn = document.getElementById('googleSignInBtn');
   const err = document.getElementById('signInError');
@@ -817,15 +829,16 @@ document.getElementById('googleSignInBtn').addEventListener('click', async () =>
   err.textContent = '';
   try {
     // Try popup first — works on most modern mobile + all desktop
-    await signInWithPopup(auth, googleProvider);
+    const result = await signInWithPopup(auth, googleProvider);
+    // Handle result directly — don't rely on onAuthStateChanged (iOS Safari bug)
+    if (result?.user) await handleSignedInUser(result.user);
   } catch(e) {
     if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user') {
       // Popup blocked/closed — fall back to redirect
       try {
         await signInWithRedirect(auth, googleProvider);
-        return; // Page will redirect and come back
+        return;
       } catch(e2) {
-        console.error('Redirect fallback failed:', e2);
         err.textContent = 'Sign-in failed \u2014 try again';
         resetSignInBtn();
       }
@@ -846,20 +859,15 @@ document.getElementById('signOutBtn').addEventListener('click', async () => {
   document.getElementById('signInScreen').classList.remove('hidden');
 });
 
-// Firebase Auth state listener — handles session persistence automatically
+// Firebase Auth state listener — handles session restore on page load
 onAuthStateChanged(auth, async (user) => {
   if (user) {
-    // User is signed in (or was already signed in from previous session)
-    currentUser = {
-      id: user.uid,
-      name: user.displayName || user.email?.split('@')[0] || 'User',
-      initials: (user.displayName || user.email || 'U')[0].toUpperCase(),
-      photoURL: user.photoURL || null,
-    };
-    await loadAllUserData();
-    showApp();
+    // Only handle if app isn't already showing (avoids double-init after popup)
+    if (!currentUser || currentUser.id !== user.uid) {
+      await handleSignedInUser(user);
+    }
   } else {
-    // Not signed in — show sign-in screen
+    currentUser = null;
     document.getElementById('signInScreen').classList.remove('hidden');
   }
 });

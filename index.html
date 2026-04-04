@@ -2124,92 +2124,60 @@ function renderLibrary() {
 }
 
 function initDragSort(listEl) {
-  let dragEl = null;
-  let holdTimer = null;
-  let isDragging = false;
-  let startY = 0;
-  const HOLD_MS = 200; // short hold to activate drag
-
+  let dragEl = null, holdTimer = null, isDragging = false, startY = 0;
+  const HOLD_MS = 200;
   function getItems() { return [...listEl.querySelectorAll('.edit-ex-item')]; }
-  function targetSlot(touchY) {
-    const items = getItems().filter(el => el !== dragEl);
-    for (const item of items) {
-      const r = item.getBoundingClientRect();
-      if (touchY < r.top + r.height / 2) return { before: item };
-    }
+  function targetSlot(y) {
+    for (const item of getItems().filter(el => el !== dragEl)) { const r = item.getBoundingClientRect(); if (y < r.top + r.height/2) return { before: item }; }
     return { before: null };
   }
-
-  // Use event delegation on each drag handle
-  listEl.addEventListener('touchstart', e => {
-    if (dragEl) return;
-    const handle = e.target.closest('.drag-handle');
-    if (!handle) return;
-    const target = e.target.closest('.edit-ex-item');
-    if (!target) return;
-    startY = e.touches[0].clientY;
-    // Start a hold timer — prevents accidental drags while scrolling
-    holdTimer = setTimeout(() => {
-      dragEl = target;
-      isDragging = true;
-      dragEl.classList.add('is-dragging');
-      // Disable parent scroll while dragging
-      const editBody = document.querySelector('.edit-body');
-      if (editBody) editBody.style.overflow = 'hidden';
-      // Haptic feedback on supported devices
-      if (navigator.vibrate) navigator.vibrate(30);
-    }, HOLD_MS);
-  }, { passive: true });
-
-  listEl.addEventListener('touchmove', e => {
-    const touchY = e.touches[0].clientY;
-    // If we haven't started dragging yet and finger moved too much, cancel hold
-    if (!isDragging && holdTimer) {
-      if (Math.abs(touchY - startY) > 10) {
-        clearTimeout(holdTimer);
-        holdTimer = null;
-      }
-      return;
-    }
+  function startDrag(target, y) {
+    dragEl = target; isDragging = true; startY = y;
+    dragEl.classList.add('is-dragging');
+    const eb = document.querySelector('.edit-body'); if (eb) eb.style.overflow = 'hidden';
+    if (navigator.vibrate) navigator.vibrate(30);
+  }
+  function moveDrag(y) {
     if (!isDragging || !dragEl) return;
-    e.preventDefault();
-    const { before } = targetSlot(touchY);
+    const { before } = targetSlot(y);
     if (before) { if (dragEl.nextSibling !== before) listEl.insertBefore(dragEl, before); }
     else { if (listEl.lastElementChild !== dragEl) listEl.appendChild(dragEl); }
-  }, { passive: false });
-
+  }
   function endDrag() {
-    clearTimeout(holdTimer);
-    holdTimer = null;
+    clearTimeout(holdTimer); holdTimer = null;
     if (!isDragging || !dragEl) { isDragging = false; dragEl = null; return; }
     dragEl.classList.remove('is-dragging');
-    // Re-enable parent scroll
-    const editBody = document.querySelector('.edit-body');
-    if (editBody) editBody.style.overflow = '';
-    // Re-index and save new order
-    const items = getItems();
-    items.forEach((item, i) => { item.dataset.idx = i; });
+    const eb = document.querySelector('.edit-body'); if (eb) eb.style.overflow = '';
     const newOrder = [];
-    items.forEach(item => {
-      const idx = parseInt(item.dataset.idx);
-      if (!isNaN(idx) && editPlanCopy[idx]) newOrder.push({ ...editPlanCopy[idx] });
-    });
-    editPlanCopy.length = 0;
-    newOrder.forEach(ex => editPlanCopy.push(ex));
-    dragEl = null;
-    isDragging = false;
-    renderEditList();
+    getItems().forEach(item => { const i = parseInt(item.dataset.idx); if (!isNaN(i) && editPlanCopy[i]) newOrder.push({...editPlanCopy[i]}); });
+    editPlanCopy.length = 0; newOrder.forEach(ex => editPlanCopy.push(ex));
+    dragEl = null; isDragging = false; renderEditList();
   }
+  function cancelDrag() { clearTimeout(holdTimer); holdTimer=null; if(dragEl)dragEl.classList.remove('is-dragging'); const eb=document.querySelector('.edit-body'); if(eb)eb.style.overflow=''; dragEl=null; isDragging=false; renderEditList(); }
 
+  // TOUCH events (mobile)
+  listEl.addEventListener('touchstart', e => {
+    if (dragEl) return; if (!e.target.closest('.drag-handle')) return;
+    const target = e.target.closest('.edit-ex-item'); if (!target) return;
+    startY = e.touches[0].clientY;
+    holdTimer = setTimeout(() => startDrag(target, startY), HOLD_MS);
+  }, { passive: true });
+  listEl.addEventListener('touchmove', e => {
+    const y = e.touches[0].clientY;
+    if (!isDragging && holdTimer) { if (Math.abs(y-startY)>10) { clearTimeout(holdTimer); holdTimer=null; } return; }
+    if (!isDragging) return; e.preventDefault(); moveDrag(y);
+  }, { passive: false });
   listEl.addEventListener('touchend', endDrag);
-  listEl.addEventListener('touchcancel', () => {
-    clearTimeout(holdTimer); holdTimer = null;
-    if (dragEl) { dragEl.classList.remove('is-dragging'); }
-    const editBody = document.querySelector('.edit-body');
-    if (editBody) editBody.style.overflow = '';
-    dragEl = null; isDragging = false;
-    renderEditList();
+  listEl.addEventListener('touchcancel', cancelDrag);
+
+  // MOUSE events (desktop)
+  listEl.addEventListener('mousedown', e => {
+    if (dragEl) return; if (!e.target.closest('.drag-handle')) return;
+    const target = e.target.closest('.edit-ex-item'); if (!target) return;
+    e.preventDefault(); startDrag(target, e.clientY);
   });
+  document.addEventListener('mousemove', e => { if (isDragging) { e.preventDefault(); moveDrag(e.clientY); } });
+  document.addEventListener('mouseup', () => { if (isDragging) endDrag(); });
 }
 
 // BOOT — onAuthStateChanged (above) handles sign-in state automatically

@@ -304,9 +304,9 @@
   .edit-ex-list { display: flex; flex-direction: column; gap: 6px; min-height: 50px; }
   .edit-ex-item { display: flex; align-items: center; gap: 8px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 10px; user-select: none; }
   .edit-ex-item.is-dragging { box-shadow: 0 8px 32px rgba(0,0,0,0.7); border-color: var(--accent); opacity: 0.92; transform: scale(1.02); z-index: 10; position: relative; }
-  .drag-handle { color: #333; flex-shrink: 0; cursor: grab; padding: 6px 4px; display: flex; flex-direction: column; gap: 3px; touch-action: none; align-self: stretch; justify-content: center; }
-  .drag-handle span { display: block; width: 16px; height: 2px; background: currentColor; border-radius: 1px; }
-  .drag-handle:active { color: #666; cursor: grabbing; }
+  .drag-handle { color: #444; flex-shrink: 0; cursor: grab; padding: 10px 8px; display: flex; flex-direction: column; gap: 3px; touch-action: none; align-self: stretch; justify-content: center; min-width: 32px; }
+  .drag-handle span { display: block; width: 18px; height: 2.5px; background: currentColor; border-radius: 1px; }
+  .drag-handle:active { color: #888; cursor: grabbing; }
   .edit-ex-info { flex: 1; min-width: 0; }
   .edit-ex-name { font-size: 12px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .edit-ex-cat { font-size: 10px; color: var(--muted); margin-top: 2px; }
@@ -1207,53 +1207,152 @@ function updateDayUI(day) {
   saveTracking(); updateProgress();
 }
 
-// IMAGE DB
-const IMG_BASE  = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/";
-const DB_URL    = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/dist/exercises.json";
-const CACHE_KEY = "exercise_img_cache_v3b";
-let imageMap = {};
-let dbReady  = false;
-
-const norm = s => s.toLowerCase().replace(/[^a-z0-9 ]/g,'').trim();
-const scoreMatch = (n,q) => {
-  const d=norm(n), qn=norm(q);
-  if (d===qn) return 100;
-  if (d.includes(qn)) return 80;
-  const words=qn.split(' '), hit=words.filter(w=>w.length>2 && d.includes(w)).length;
-  return Math.round((hit/words.length)*60);
+// IMAGE MAP — hardcoded exact matches, no fuzzy matching needed
+const imageMap = {
+  "barbell bench press":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Bench_Press_-_Medium_Grip/0.jpg",
+  "incline dumbbell press":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Incline_Dumbbell_Press/0.jpg",
+  "dumbbell bench press":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bench_Press/0.jpg",
+  "chest press machine":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leverage_Chest_Press/0.jpg",
+  "incline chest press machine":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leverage_Incline_Chest_Press/0.jpg",
+  "pec deck":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Butterfly/0.jpg",
+  "cable fly chest":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Flat_Bench_Cable_Flyes/0.jpg",
+  "low to high cable fly":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Low_Cable_Crossover/0.jpg",
+  "high to low cable fly":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Crossover/0.jpg",
+  "push up":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pushups/0.jpg",
+  "decline chest press machine":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leverage_Decline_Chest_Press/0.jpg",
+  "single arm cable chest press":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Cable_Chest_Press/0.jpg",
+  "chest dip machine":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dip_Machine/0.jpg",
+  "converging chest press machine":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leverage_Chest_Press/0.jpg",
+  "svend press":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Svend_Press/0.jpg",
+  "lat pulldown":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Wide-Grip_Lat_Pulldown/0.jpg",
+  "barbell bent over row":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bent_Over_Barbell_Row/0.jpg",
+  "seated cable row":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Seated_Cable_Rows/0.jpg",
+  "pull up":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pullups/0.jpg",
+  "dumbbell row":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/One-Arm_Dumbbell_Row/0.jpg",
+  "chest supported row machine":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leverage_Iso_Row/0.jpg",
+  "close grip lat pulldown":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Close-Grip_Front_Lat_Pulldown/0.jpg",
+  "straight arm pulldown":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Straight-Arm_Pulldown/0.jpg",
+  "one arm cable row":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Seated_One-arm_Cable_Pulley_Rows/0.jpg",
+  "t bar row":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/T-Bar_Row_with_Handle/0.jpg",
+  "reverse grip lat pulldown":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Underhand_Cable_Pulldowns/0.jpg",
+  "assisted pull up machine":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Band_Assisted_Pull-Up/0.jpg",
+  "machine shrug":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leverage_Shrug/0.jpg",
+  "pendlay row":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bent_Over_Barbell_Row/0.jpg",
+  "cable face pull":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Face_Pull/0.jpg",
+  "dumbbell shoulder press":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Shoulder_Press/0.jpg",
+  "dumbbell lateral raise":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Side_Lateral_Raise/0.jpg",
+  "shoulder press machine":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leverage_Shoulder_Press/0.jpg",
+  "barbell overhead press":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Military_Press/0.jpg",
+  "cable lateral raise":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Seated_Lateral_Raise/0.jpg",
+  "rear delt fly machine":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Reverse_Machine_Flyes/0.jpg",
+  "face pull cable":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Face_Pull/0.jpg",
+  "arnold press":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Arnold_Dumbbell_Press/0.jpg",
+  "cable front raise":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Front_Cable_Raise/0.jpg",
+  "cable upright row":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Upright_Cable_Row/0.jpg",
+  "single arm cable lateral raise":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/One-Arm_Incline_Lateral_Raise/0.jpg",
+  "smith machine shoulder press":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Smith_Machine_Overhead_Shoulder_Press/0.jpg",
+  "cable rear delt fly":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Rear_Delt_Fly/0.jpg",
+  "dumbbell front raise":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Front_Dumbbell_Raise/0.jpg",
+  "dumbbell rear delt fly":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Lying_Rear_Lateral_Raise/0.jpg",
+  "landmine press":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Landmine_Linear_Jammer/0.jpg",
+  "cable shrug":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Shrugs/0.jpg",
+  "plate front raise":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Front_Plate_Raise/0.jpg",
+  "barbell squat":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
+  "romanian deadlift":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Romanian_Deadlift/0.jpg",
+  "leg press":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leg_Press/0.jpg",
+  "leg extension":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leg_Extensions/0.jpg",
+  "seated leg curl":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Seated_Leg_Curl/0.jpg",
+  "hack squat machine":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hack_Squat/0.jpg",
+  "bulgarian split squat":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Split_Squat_with_Dumbbells/0.jpg",
+  "hip thrust":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Hip_Thrust/0.jpg",
+  "lying leg curl":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Lying_Leg_Curls/0.jpg",
+  "calf raise machine":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Calf_Raises/0.jpg",
+  "walking lunges":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bodyweight_Walking_Lunge/0.jpg",
+  "goblet squat":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Goblet_Squat/0.jpg",
+  "45 degree leg press":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leg_Press/0.jpg",
+  "adductor machine":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Thigh_Adductor/0.jpg",
+  "abductor machine":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Thigh_Abductor/0.jpg",
+  "seated calf raise":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Seated_Calf_Raise/0.jpg",
+  "smith machine squat":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Smith_Machine_Squat/0.jpg",
+  "sumo deadlift":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Sumo_Deadlift/0.jpg",
+  "leg press calf raise":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Calf_Press_On_The_Leg_Press_Machine/0.jpg",
+  "cable pull through":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pull_Through/0.jpg",
+  "dumbbell step up":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Step_Ups/0.jpg",
+  "single leg curl":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Leg_Curl/0.jpg",
+  "dumbbell curl":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/0.jpg",
+  "triceps pushdown rope":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Triceps_Pushdown_-_Rope_Attachment/0.jpg",
+  "hammer curl":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hammer_Curls/0.jpg",
+  "cable bicep curl":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Biceps_Cable_Curl/0.jpg",
+  "triceps pushdown v bar":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Triceps_Pushdown_-_V-Bar_Attachment/0.jpg",
+  "preacher curl machine":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Machine_Preacher_Curls/0.jpg",
+  "overhead cable tricep extension":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Rope_Overhead_Triceps_Extension/0.jpg",
+  "skull crusher":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/EZ-Bar_Skullcrusher/0.jpg",
+  "cable hammer curl rope":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Hammer_Curls_-_Rope_Attachment/0.jpg",
+  "concentration curl":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Concentration_Curls/0.jpg",
+  "single arm cable curl":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_One-Arm_Cable_Curl/0.jpg",
+  "single arm tricep pushdown":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_One_Arm_Tricep_Extension/0.jpg",
+  "tricep dip machine":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dip_Machine/0.jpg",
+  "incline dumbbell curl":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Incline_Dumbbell_Curl/0.jpg",
+  "cable overhead curl":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Overhead_Cable_Curl/0.jpg",
+  "reverse cable curl":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Reverse_Cable_Curl/0.jpg",
+  "ez bar curl":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/EZ-Bar_Curl/0.jpg",
+  "close grip bench press":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Close-Grip_Barbell_Bench_Press/0.jpg",
+  "diamond push up":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Push-Ups_-_Close_Triceps_Position/0.jpg",
+  "cable wrist curl":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Wrist_Curl/0.jpg",
+  "reverse barbell curl":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Reverse_Barbell_Curl/0.jpg",
+  "dumbbell tricep kickback":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Tricep_Dumbbell_Kickback/0.jpg",
+  "spider curl dumbbell":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Spider_Curl/0.jpg",
+  "ab crunch machine":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/0.jpg",
+  "cable crunch":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Crunch/0.jpg",
+  "hanging leg raise":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hanging_Leg_Raise/0.jpg",
+  "captains chair leg raise":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Knee_Hip_Raise_On_Parallel_Bars/0.jpg",
+  "plank exercise":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/0.jpg",
+  "cable woodchopper":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Cable_Wood_Chop/0.jpg",
+  "rotary torso machine":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Torso_Rotation/0.jpg",
+  "ab wheel rollout":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Roller/0.jpg",
+  "decline sit up":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Decline_Crunch/0.jpg",
+  "russian twist":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Russian_Twist/0.jpg",
+  "mountain climbers exercise":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Mountain_Climbers/0.jpg",
+  "bicycle crunch":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Air_Bike/0.jpg",
+  "dead bug exercise":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dead_Bug/0.jpg",
+  "pallof press cable":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pallof_Press/0.jpg",
+  "lying toe touch exercise":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Toe_Touchers/0.jpg",
+  "barbell hip thrust":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Hip_Thrust/0.jpg",
+  "cable glute kickback":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Glute_Kickback/0.jpg",
+  "hip abduction machine":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Thigh_Abductor/0.jpg",
+  "barbell glute bridge":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Glute_Bridge/0.jpg",
+  "cable pull through glutes":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pull_Through/0.jpg",
+  "smith machine hip thrust":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Smith_Machine_Hip_Raise/0.jpg",
+  "sumo squat":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plie_Dumbbell_Squat/0.jpg",
+  "cable donkey kick":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/One-Legged_Cable_Kickback/0.jpg",
+  "treadmill walking":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Walking_Treadmill/0.jpg",
+  "stairmaster":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Stairmaster/0.jpg",
+  "rowing machine":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Rowing_Stationary/0.jpg",
+  "stationary bike":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bicycling_Stationary/0.jpg",
+  "elliptical trainer":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Elliptical_Trainer/0.jpg",
+  "jump rope exercise":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Rope_Jumping/0.jpg",
+  "battle ropes exercise":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Battling_Ropes/0.jpg",
+  "lever row machine":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leverage_High_Row/0.jpg",
+  "cable curl":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Biceps_Cable_Curl/0.jpg",
+  "crunch":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Crunches/0.jpg",
+  "chest press":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leverage_Chest_Press/0.jpg",
+  "cable crossover":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Crossover/0.jpg",
+  "lateral raise":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Side_Lateral_Raise/0.jpg",
+  "triceps pushdown":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Triceps_Pushdown/0.jpg",
+  "overhead tricep cable":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Triceps_Overhead_Extension_with_Rope/0.jpg",
+  "leg curl":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Lying_Leg_Curls/0.jpg",
+  "calf raise":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Calf_Raises/0.jpg",
+  "barbell shoulder press":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Shoulder_Press/0.jpg",
+  "rear delt fly":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Reverse_Flyes/0.jpg",
+  "face pull":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Face_Pull/0.jpg",
+  "preacher curl":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Preacher_Curl/0.jpg"
 };
+let dbReady = true;
 
-function getAllSearchTerms() {
-  const terms = new Set(exerciseLibrary.map(e => e.search));
-  const plan  = getDefaultPlan();
-  Object.values(plan).forEach(exs => exs.forEach(ex => terms.add(ex.search)));
-  return terms;
-}
-
-async function loadDatabase() {
+function loadDatabase() {
   const status = document.getElementById('db-status');
-  try {
-    const cached = localStorage.getItem(CACHE_KEY);
-    if (cached) { imageMap = JSON.parse(cached); dbReady = true; status.classList.add('hidden'); return; }
-  } catch(e) {}
-  try {
-    status.textContent = "Fetching exercise images\u2026";
-    const exercises = await (await fetch(DB_URL)).json();
-    const withImages = exercises.filter(ex => ex.images && ex.images.length > 0);
-    const terms = getAllSearchTerms();
-    for (const term of terms) {
-      let best=null, bestS=0;
-      for (const ex of withImages) {
-        const s = scoreMatch(ex.name, term);
-        if (s > bestS) { bestS=s; best=ex; }
-      }
-      if (best) imageMap[term] = IMG_BASE + best.images[0];
-    }
-    try { localStorage.setItem(CACHE_KEY, JSON.stringify(imageMap)); } catch(e) {}
-    dbReady = true; status.textContent = "Images loaded \u2713";
-    setTimeout(() => status.classList.add('hidden'), 1200);
-    refreshCurrentImages();
-  } catch(e) { status.textContent = "Images unavailable"; setTimeout(() => status.classList.add('hidden'), 2500); }
+  status.classList.add('hidden');
+  refreshCurrentImages();
 }
 
 const placeholderHTML = `<div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="8" width="4" height="8" rx="1"/><rect x="17" y="8" width="4" height="8" rx="1"/><rect x="7" y="10" width="10" height="4" rx="1"/></svg><span>No image</span></div>`;
@@ -1994,7 +2093,11 @@ function renderLibrary() {
 
 function initDragSort(listEl) {
   let dragEl = null;
-  let offsetY = 0;
+  let holdTimer = null;
+  let isDragging = false;
+  let startY = 0;
+  const HOLD_MS = 200; // short hold to activate drag
+
   function getItems() { return [...listEl.querySelectorAll('.edit-ex-item')]; }
   function targetSlot(touchY) {
     const items = getItems().filter(el => el !== dragEl);
@@ -2004,30 +2107,54 @@ function initDragSort(listEl) {
     }
     return { before: null };
   }
+
+  // Use event delegation on each drag handle
   listEl.addEventListener('touchstart', e => {
     if (dragEl) return;
-    if (!e.target.closest('.drag-handle')) return;
+    const handle = e.target.closest('.drag-handle');
+    if (!handle) return;
     const target = e.target.closest('.edit-ex-item');
     if (!target) return;
-    dragEl = target;
-    const touch = e.touches[0];
-    const rect  = dragEl.getBoundingClientRect();
-    offsetY = touch.clientY - rect.top;
-    dragEl.classList.add('is-dragging');
-    e.preventDefault();
-  }, { passive: false });
+    startY = e.touches[0].clientY;
+    // Start a hold timer — prevents accidental drags while scrolling
+    holdTimer = setTimeout(() => {
+      dragEl = target;
+      isDragging = true;
+      dragEl.classList.add('is-dragging');
+      // Disable parent scroll while dragging
+      const editBody = document.querySelector('.edit-body');
+      if (editBody) editBody.style.overflow = 'hidden';
+      // Haptic feedback on supported devices
+      if (navigator.vibrate) navigator.vibrate(30);
+    }, HOLD_MS);
+  }, { passive: true });
+
   listEl.addEventListener('touchmove', e => {
-    if (!dragEl) return;
-    e.preventDefault();
     const touchY = e.touches[0].clientY;
+    // If we haven't started dragging yet and finger moved too much, cancel hold
+    if (!isDragging && holdTimer) {
+      if (Math.abs(touchY - startY) > 10) {
+        clearTimeout(holdTimer);
+        holdTimer = null;
+      }
+      return;
+    }
+    if (!isDragging || !dragEl) return;
+    e.preventDefault();
     const { before } = targetSlot(touchY);
     if (before) { if (dragEl.nextSibling !== before) listEl.insertBefore(dragEl, before); }
     else { if (listEl.lastElementChild !== dragEl) listEl.appendChild(dragEl); }
   }, { passive: false });
+
   function endDrag() {
-    if (!dragEl) return;
+    clearTimeout(holdTimer);
+    holdTimer = null;
+    if (!isDragging || !dragEl) { isDragging = false; dragEl = null; return; }
     dragEl.classList.remove('is-dragging');
-    // Re-index items based on current DOM order BEFORE reading indices
+    // Re-enable parent scroll
+    const editBody = document.querySelector('.edit-body');
+    if (editBody) editBody.style.overflow = '';
+    // Re-index and save new order
     const items = getItems();
     items.forEach((item, i) => { item.dataset.idx = i; });
     const newOrder = [];
@@ -2038,10 +2165,19 @@ function initDragSort(listEl) {
     editPlanCopy.length = 0;
     newOrder.forEach(ex => editPlanCopy.push(ex));
     dragEl = null;
+    isDragging = false;
     renderEditList();
   }
+
   listEl.addEventListener('touchend', endDrag);
-  listEl.addEventListener('touchcancel', () => { if (dragEl) { dragEl.classList.remove('is-dragging'); dragEl = null; renderEditList(); } });
+  listEl.addEventListener('touchcancel', () => {
+    clearTimeout(holdTimer); holdTimer = null;
+    if (dragEl) { dragEl.classList.remove('is-dragging'); }
+    const editBody = document.querySelector('.edit-body');
+    if (editBody) editBody.style.overflow = '';
+    dragEl = null; isDragging = false;
+    renderEditList();
+  });
 }
 
 // BOOT — onAuthStateChanged (above) handles sign-in state automatically

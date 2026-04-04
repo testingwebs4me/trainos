@@ -548,7 +548,7 @@
 
 <script type="module">
 import { initializeApp }    from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getFirestore, collection, addDoc, query, where, getDocs, serverTimestamp, doc, getDoc, setDoc }
+import { getFirestore, collection, addDoc, query, where, getDocs, serverTimestamp, doc, getDoc, setDoc, updateDoc, arrayUnion }
                             from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 import { getAuth, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut }
                             from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
@@ -575,6 +575,30 @@ const COL_TRACK   = 'v2_weekTracking';
 const COL_REST    = 'v2_restDays';
 const COL_SETS    = 'v2_setLogs';
 const COL_FEEDBACK = 'v2_feedback';
+const COL_INVITES = 'v2_invites';
+const COL_LINK    = 'v2_userCoachLink';
+const COL_COACHES = 'v2_coaches';
+
+// Invite redemption
+async function redeemInvite(code) {
+  code = code.trim().toUpperCase();
+  if (!code || code.length !== 6) return;
+  try {
+    const invSnap = await getDoc(doc(db, COL_INVITES, code));
+    if (!invSnap.exists()) { alert('Invalid invite code'); return; }
+    const inv = invSnap.data();
+    if (inv.status !== 'active') { alert('This invite code has already been used'); return; }
+    if (inv.expiresAt && new Date(inv.expiresAt) < new Date()) { alert('This invite code has expired'); return; }
+    // Check if user already has a coach
+    const linkSnap = await getDoc(doc(db, COL_LINK, currentUser.id));
+    if (linkSnap.exists()) { alert('You already have a coach. Unlink first to connect with a new one.'); return; }
+    // Redeem: update invite, create link, add to coach's roster
+    await setDoc(doc(db, COL_INVITES, code), { ...inv, status:'redeemed', redeemedBy:currentUser.id, redeemedAt:serverTimestamp() });
+    await setDoc(doc(db, COL_LINK, currentUser.id), { userId:currentUser.id, coachId:inv.coachId, coachName:inv.coachName, linkedAt:serverTimestamp() });
+    await updateDoc(doc(db, COL_COACHES, inv.coachId), { users: arrayUnion({ userId:currentUser.id, userName:currentUser.name, userEmail:currentUser.email, userPhoto:currentUser.photoURL, linkedAt:new Date().toISOString() }) });
+    alert('Connected to coach: ' + inv.coachName);
+  } catch(e) { console.error('Redeem error:', e); alert('Failed to redeem invite code'); }
+}
 
 // No hardcoded users — Google Auth handles identity
 
@@ -847,8 +871,16 @@ async function handleSignedInUser(user) {
     name: user.displayName || user.email?.split('@')[0] || 'User',
     initials: (user.displayName || user.email || 'U')[0].toUpperCase(),
     photoURL: user.photoURL || null,
+    email: user.email || '',
   };
   try { await loadAllUserData(); } catch(e) { console.warn('Data load error:', e); }
+  // Check for invite code in URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const inviteCode = urlParams.get('invite');
+  if (inviteCode) {
+    try { await redeemInvite(inviteCode); } catch(e) { console.warn('Invite redeem failed:', e); }
+    window.history.replaceState({}, '', window.location.pathname);
+  }
   showApp();
 }
 

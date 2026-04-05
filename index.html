@@ -1004,12 +1004,12 @@ async function saveUserPlan() {
 }
 
 function getDayFocus(day) {
-  return userPlan.__focus__?.[day] || dayMeta[day]?.focus || 'Custom';
+  return userPlan?.focusLabels?.[day] || dayMeta[day]?.focus || 'Custom';
 }
 
 function setDayFocus(day, label) {
-  if (!userPlan.__focus__) userPlan.__focus__ = {};
-  userPlan.__focus__[day] = label.trim() || dayMeta[day]?.focus || 'Custom';
+  if (!userPlan.focusLabels) userPlan.focusLabels = {};
+  userPlan.focusLabels[day] = label.trim() || dayMeta[day]?.focus || 'Custom';
 }
 
 async function loadRestDays() {

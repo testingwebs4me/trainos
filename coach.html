@@ -576,7 +576,7 @@ function getWeekId() {
   return `${sun.getFullYear()}-${String(sun.getMonth()+1).padStart(2,'0')}-${String(sun.getDate()).padStart(2,'0')}`;
 }
 
-function getDayFocus(day) { return selectedUserPlan?.__focus__?.[day] || dayMeta[day]?.focus || 'Custom'; }
+function getDayFocus(day) { return selectedUserPlan?.focusLabels?.[day] || dayMeta[day]?.focus || 'Custom'; }
 function isRestDay(day) { return selectedUserRest[day] === true; }
 
 // ── AUTH ──
@@ -854,8 +854,8 @@ document.getElementById('editSaveBtn').addEventListener('click', async () => {
   const btn = document.getElementById('editSaveBtn');
   btn.textContent = 'Saving\u2026'; btn.classList.add('saving');
   selectedUserPlan[editingDay] = editPlanCopy.map(ex => ({...ex}));
-  if (!selectedUserPlan.__focus__) selectedUserPlan.__focus__ = {};
-  selectedUserPlan.__focus__[editingDay] = document.getElementById('editDayFocus').value.trim() || dayMeta[editingDay]?.focus || 'Custom';
+  if (!selectedUserPlan.focusLabels) selectedUserPlan.focusLabels = {};
+  selectedUserPlan.focusLabels[editingDay] = document.getElementById('editDayFocus').value.trim() || dayMeta[editingDay]?.focus || 'Custom';
   await setDoc(doc(db, COL_PLANS, selectedUser.userId), selectedUserPlan);
   btn.textContent = '\u2713 Saved!';
   setTimeout(() => { btn.textContent='Save'; btn.classList.remove('saving'); closeEditSheet(); renderManageView(); }, 800);

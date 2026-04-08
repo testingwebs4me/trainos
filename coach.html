@@ -156,6 +156,31 @@ h1 span { color: var(--accent); }
 .ex-badge { font-family: 'Bebas Neue', sans-serif; font-size: 17px; color: var(--accent); letter-spacing: 0.04em; white-space: nowrap; }
 
 /* SET LOG DISPLAY (read-only for coach) */
+/* COACH NOTE on exercise card */
+.ex-note { padding: 6px 14px 8px; font-size: 12px; color: #888; font-style: italic; line-height: 1.4; display: flex; gap: 6px; align-items: flex-start; }
+.ex-note-icon { flex-shrink: 0; font-size: 11px; font-style: normal; margin-top: 1px; }
+
+/* SUPERSET WRAPPER */
+.superset-wrap { border-left: 3px solid var(--ss-color, #ff4466); border-radius: 4px; padding-left: 0; margin-bottom: 10px; position: relative; }
+.superset-wrap .exercise-item { border-left: none; border-top-left-radius: 0; border-bottom-left-radius: 0; margin-bottom: 0; }
+.superset-wrap .exercise-item:not(:last-child) { border-bottom: 1px dashed rgba(255,255,255,0.06); margin-bottom: 0; border-bottom-right-radius: 0; }
+.superset-wrap .exercise-item:not(:first-child) { border-top-right-radius: 0; }
+.superset-label { font-size: 9px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ss-color, #ff4466); padding: 6px 10px 4px; }
+
+/* SUPERSET PILLS in edit sheet */
+.ss-pills { display: flex; gap: 3px; margin-left: 4px; flex-shrink: 0; }
+.ss-pill { width: 24px; height: 20px; border-radius: 4px; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #222; background: #141414; color: #444; transition: all 0.15s; touch-action: manipulation; }
+.ss-pill:active { transform: scale(0.9); }
+.ss-pill.active { border-color: var(--pill-color); color: var(--pill-color); background: rgba(255,255,255,0.04); }
+.ss-pill[data-ss="1"] { --pill-color: #ff4466; }
+.ss-pill[data-ss="2"] { --pill-color: #47a0ff; }
+.ss-pill[data-ss="3"] { --pill-color: #ffaa00; }
+
+/* NOTE INPUT in edit sheet */
+.edit-note-input { width: 100%; background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 6px; color: #888; font-family: 'DM Sans', sans-serif; font-size: 11px; font-style: italic; padding: 5px 8px; outline: none; resize: none; margin-top: 4px; transition: border-color 0.2s; }
+.edit-note-input::placeholder { color: #2a2a2a; }
+.edit-note-input:focus { border-color: #333; color: var(--text); }
+
 .set-log-area { border-top: 1px solid #161616; padding: 8px 12px 10px; }
 .set-last-session { font-size: 10px; color: var(--muted); padding: 0 2px 4px; font-weight: 500; }
 .set-last-session span { color: var(--accent-dim); font-weight: 600; }
@@ -805,6 +830,7 @@ function selectDay(day) {
 
   const list = document.getElementById('exList');
   const wid = getWeekId();
+  const cards = [];
   exs.forEach((ex, i) => {
     const checked = selectedUserTracking.exercises?.[`${day}-${ex.id}`] === true;
     const todaySets = selectedUserSetLogs.filter(l => l.exerciseName===ex.name && l.day===day && l.weekId===wid).sort((a,b)=>(a.setNumber||1)-(b.setNumber||1));
@@ -827,9 +853,32 @@ function selectDay(day) {
         <div class="ex-info"><div class="ex-name">${ex.name}</div><div class="ex-sets-label">${ex.sets} sets \u00D7 ${ex.reps}</div></div>
         <div class="ex-badge">${ex.sets}\u00D7${ex.reps}</div>
       </div>
+      ${ex.note ? `<div class="ex-note"><span class="ex-note-icon">\uD83D\uDCAC</span>${ex.note.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>` : ''}
       <div class="set-log-area"><div class="set-rows">${setsHTML}</div></div>`;
-    list.appendChild(card);
+    card._exData = ex;
+    cards.push(card);
   });
+
+  // Group by supersets and append
+  const ssColors = { 1:'#ff4466', 2:'#47a0ff', 3:'#ffaa00', 4:'#a855f7' };
+  let ci = 0;
+  while (ci < cards.length) {
+    const card = cards[ci];
+    const sg = card._exData.supersetGroup;
+    if (sg) {
+      const group = [card];
+      while (ci + group.length < cards.length && cards[ci + group.length]._exData.supersetGroup === sg) group.push(cards[ci + group.length]);
+      if (group.length > 1) {
+        const wrap = document.createElement('div');
+        wrap.className = 'superset-wrap';
+        wrap.style.setProperty('--ss-color', ssColors[sg] || '#ff4466');
+        wrap.innerHTML = `<div class="superset-label">Superset</div>`;
+        group.forEach(c => wrap.appendChild(c));
+        list.appendChild(wrap);
+        ci += group.length;
+      } else { list.appendChild(card); ci++; }
+    } else { list.appendChild(card); ci++; }
+  }
 }
 
 // ── EDIT SHEET (coach edits user's plan) ──
@@ -876,7 +925,12 @@ function renderEditList() {
   editPlanCopy.forEach((ex, i) => {
     const item = document.createElement('div');
     item.className = 'edit-ex-item'; item.dataset.idx = i;
-    item.innerHTML = `<div class="drag-handle"><span></span><span></span><span></span></div><div class="edit-ex-info"><div class="edit-ex-name">${ex.name}</div><div class="edit-ex-cat">${ex.category}</div></div><div class="edit-ex-controls"><div class="sets-stepper"><button class="sets-btn" data-action="dec">\u2212</button><div class="sets-val">${ex.sets}</div><button class="sets-btn" data-action="inc">+</button></div><span style="font-size:11px;color:var(--muted);">\u00D7</span><input class="reps-input" value="${ex.reps}" placeholder="reps"></div><button class="edit-ex-x">\u2715</button>`;
+    const curSS = ex.supersetGroup || 0;
+    item.innerHTML = `<div class="drag-handle"><span></span><span></span><span></span></div><div class="edit-ex-info"><div class="edit-ex-name">${ex.name}</div><div class="edit-ex-cat">${ex.category}</div><input class="edit-note-input" value="${(ex.note||'').replace(/"/g,'&quot;')}" placeholder="Add note for trainee..." maxlength="150"></div><div class="edit-ex-controls"><div class="ss-pills"><div class="ss-pill ${curSS===0?'active':''}" data-ss="0" style="--pill-color:#555;">\u2014</div><div class="ss-pill ${curSS===1?'active':''}" data-ss="1">S1</div><div class="ss-pill ${curSS===2?'active':''}" data-ss="2">S2</div><div class="ss-pill ${curSS===3?'active':''}" data-ss="3">S3</div></div><div class="sets-stepper"><button class="sets-btn" data-action="dec">\u2212</button><div class="sets-val">${ex.sets}</div><button class="sets-btn" data-action="inc">+</button></div><span style="font-size:11px;color:var(--muted);">\u00D7</span><input class="reps-input" value="${ex.reps}" placeholder="reps"></div><button class="edit-ex-x">\u2715</button>`;
+    item.querySelectorAll('.ss-pill').forEach(pill => {
+      pill.addEventListener('click', e => { e.stopPropagation(); const val=parseInt(pill.dataset.ss); const idx=parseInt(item.dataset.idx); editPlanCopy[idx].supersetGroup=val||null; item.querySelectorAll('.ss-pill').forEach(p=>p.classList.toggle('active',parseInt(p.dataset.ss)===val)); });
+    });
+    item.querySelector('.edit-note-input').addEventListener('input', e => { editPlanCopy[parseInt(item.dataset.idx)].note=e.target.value.trim()||null; });
     item.querySelectorAll('.sets-btn').forEach(btn => {
       btn.addEventListener('click', e => { e.stopPropagation(); const idx=parseInt(item.dataset.idx); let s=parseInt(editPlanCopy[idx].sets)||3; if(btn.dataset.action==='inc'&&s<8)s++; else if(btn.dataset.action==='dec'&&s>1)s--; editPlanCopy[idx].sets=String(s); item.querySelector('.sets-val').textContent=s; });
     });

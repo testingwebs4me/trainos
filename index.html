@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#060606">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Trainos">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -631,7 +631,7 @@
 
 <script type="module">
 import { initializeApp }    from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getFirestore, collection, addDoc, query, where, getDocs, serverTimestamp, doc, getDoc, setDoc, updateDoc, arrayUnion, deleteDoc, enableIndexedDbPersistence }
+import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, query, where, getDocs, serverTimestamp, doc, getDoc, setDoc, updateDoc, arrayUnion, deleteDoc }
                             from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 import { getAuth, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut }
                             from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
@@ -646,8 +646,7 @@ const firebaseConfig = {
   appId: "1:106001114651:web:d31402096204c52afc7abe"
 };
 const fbApp = initializeApp(firebaseConfig);
-const db    = getFirestore(fbApp);
-enableIndexedDbPersistence(db).catch(() => {});
+const db    = initializeFirestore(fbApp, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) });
 const auth  = getAuth(fbApp);
 const googleProvider = new GoogleAuthProvider();
 

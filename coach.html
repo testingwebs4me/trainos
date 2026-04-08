@@ -7,7 +7,7 @@
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#060606">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Trainos Coach">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -608,7 +608,7 @@ footer { text-align: center; padding: 48px 0 calc(32px + env(safe-area-inset-bot
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getFirestore, collection, addDoc, query, where, getDocs, serverTimestamp, doc, getDoc, setDoc, deleteDoc, updateDoc, arrayUnion, arrayRemove, enableIndexedDbPersistence }
+import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, query, where, getDocs, serverTimestamp, doc, getDoc, setDoc, deleteDoc, updateDoc, arrayUnion, arrayRemove }
   from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 import { getAuth, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut }
   from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
@@ -622,8 +622,7 @@ const firebaseConfig = {
   appId: "1:106001114651:web:d31402096204c52afc7abe"
 };
 const fbApp = initializeApp(firebaseConfig);
-const db = getFirestore(fbApp);
-enableIndexedDbPersistence(db).catch(() => {});
+const db = initializeFirestore(fbApp, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) });
 const auth = getAuth(fbApp);
 const googleProvider = new GoogleAuthProvider();
 
@@ -1126,7 +1125,7 @@ function selectDay(day) {
 
   if (isRestDay(day)) {
     display.innerHTML = `<div class="rest-panel"><span class="rest-emoji">\uD83D\uDCA4</span><h2>Rest Day</h2><p>This day is marked as rest</p><button class="btn-unrest" id="btnUnrest">Remove Rest Day</button></div>`;
-    document.getElementById('btnUnrest').addEventListener('click', async () => { delete selectedUserRest[day]; await setDoc(doc(db,COL_REST,selectedUser.userId),selectedUserRest); renderManageView(); });
+    document.getElementById('btnUnrest').addEventListener('click', async () => { delete selectedUserRest[day]; if(selectedUser) await setDoc(doc(db,COL_REST,selectedUser.userId),selectedUserRest); renderManageView(); });
     return;
   }
 
@@ -1136,7 +1135,7 @@ function selectDay(day) {
   if (!exs.length) {
     display.innerHTML = `<div class="panel-header"><div class="panel-day-wrap"><div class="panel-day">${day}</div></div><div style="display:flex;gap:8px;flex-wrap:wrap;"><div class="panel-focus">${focus}</div><button class="btn-edit-day" id="btnEdit">+ Add Exercises</button><button class="btn-rest-toggle" id="btnRestToggle">Set Rest Day</button></div></div><div class="rest-panel" style="border:1px dashed #1e1e1e;"><span class="rest-emoji">\uD83D\uDCAA</span><h2 style="color:#333;">No Exercises Yet</h2><p>Add exercises for this user</p></div>`;
     document.getElementById('btnEdit').addEventListener('click', () => openEditSheet(day));
-    document.getElementById('btnRestToggle').addEventListener('click', async () => { selectedUserRest[day]=true; await setDoc(doc(db,COL_REST,selectedUser.userId),selectedUserRest); renderManageView(); });
+    document.getElementById('btnRestToggle').addEventListener('click', async () => { selectedUserRest[day]=true; if(selectedUser) await setDoc(doc(db,COL_REST,selectedUser.userId),selectedUserRest); renderManageView(); });
     return;
   }
 
@@ -1148,7 +1147,7 @@ function selectDay(day) {
   document.getElementById('btnEdit').addEventListener('click', () => openEditSheet(day));
   const applyEl = document.getElementById('btnApplyTpl');
   if (applyEl) applyEl.addEventListener('click', async () => { await loadTemplates(); if (!templates.length) { showToast('No templates yet \u2014 create one first','error'); return; } openApplyModalForUser(); });
-  document.getElementById('btnRestToggle').addEventListener('click', async () => { selectedUserRest[day]=true; await setDoc(doc(db,COL_REST,selectedUser.userId),selectedUserRest); renderManageView(); });
+  document.getElementById('btnRestToggle').addEventListener('click', async () => { selectedUserRest[day]=true; if(selectedUser) await setDoc(doc(db,COL_REST,selectedUser.userId),selectedUserRest); renderManageView(); });
 
   const list = document.getElementById('exList');
   const wid = getWeekId();
@@ -1639,11 +1638,13 @@ function openTemplateEditor(tpl) {
 // ── APPLY TEMPLATE TO USERS ──
 function openApplyModal(tpl) {
   applyingTemplate = tpl;
+  window._applyMode = 'multi';
   const users = coachData.users || [];
   const list = document.getElementById('applyUserList');
   list.innerHTML = '';
   document.getElementById('applyModalTitle').textContent = 'APPLY TEMPLATE';
   document.getElementById('applyModalSub').textContent = `Apply "${(tpl.name||'').replace(/</g,'&lt;')}" to:`;
+  document.getElementById('btnApplyConfirm').textContent = 'Apply to Selected';
   users.forEach(u => {
     const item = document.createElement('div');
     item.className = 'apply-user-item';
@@ -1672,57 +1673,53 @@ function openApplyModalForUser() {
     });
     list.appendChild(item);
   });
-  applyingTemplate = null; // will be set on confirm
+  applyingTemplate = null;
+  window._applyMode = 'single'; // flag: single user mode
   document.getElementById('btnApplyConfirm').textContent = 'Apply Template';
-  document.getElementById('btnApplyConfirm').onclick = async () => {
-    const sel = list.querySelector('.apply-user-item.selected');
-    if (!sel) { showToast('Select a template','error'); return; }
-    const tpl = templates.find(t => t.id === sel.dataset.tplId);
-    if (!tpl || !selectedUser) return;
-    const btn = document.getElementById('btnApplyConfirm');
-    btn.classList.add('applying'); btn.textContent = 'Applying...';
-    try {
-      const planData = JSON.parse(JSON.stringify(tpl.plan || getDefaultPlan()));
-      await setDoc(doc(db, COL_PLANS, selectedUser.userId), planData);
-      selectedUserPlan = planData;
-      btn.textContent = 'Applied!';
-      setTimeout(() => {
-        btn.textContent = 'Apply Template'; btn.classList.remove('applying');
-        document.getElementById('applyModal').classList.remove('open');
-        renderManageView();
-      }, 1000);
-      showToast('Template applied','success');
-    } catch(e) { btn.textContent = 'Apply Template'; btn.classList.remove('applying'); showToast('Failed to apply','error'); }
-  };
   document.getElementById('applyModal').classList.add('open');
 }
 
 document.getElementById('btnCloseApply').addEventListener('click', () => {
   document.getElementById('applyModal').classList.remove('open');
   applyingTemplate = null;
+  window._applyMode = null;
 });
 
 document.getElementById('btnApplyConfirm').addEventListener('click', async () => {
-  if (!applyingTemplate) return;
-  const selected = [...document.querySelectorAll('#applyUserList .apply-user-item.selected')].map(el => el.dataset.uid);
-  if (!selected.length) { showToast('Select at least one athlete','error'); return; }
   const btn = document.getElementById('btnApplyConfirm');
-  btn.classList.add('applying'); btn.textContent = 'Applying...';
-  try {
-    const planData = JSON.parse(JSON.stringify(applyingTemplate.plan || getDefaultPlan()));
-    // Write to each user's plan in parallel
-    await Promise.all(selected.map(uid => setDoc(doc(db, COL_PLANS, uid), planData)));
-    btn.textContent = 'Applied!';
-    setTimeout(() => {
-      btn.textContent = 'Apply to Selected'; btn.classList.remove('applying');
-      document.getElementById('applyModal').classList.remove('open');
-    }, 1200);
-    showToast(`Template applied to ${selected.length} athlete${selected.length>1?'s':''}`,'success');
-  } catch(e) {
-    btn.textContent = 'Apply to Selected'; btn.classList.remove('applying');
-    showToast('Failed to apply template','error');
+  const listEl = document.getElementById('applyUserList');
+
+  if (window._applyMode === 'single') {
+    // Apply a template TO a single user (from user management view)
+    const sel = listEl.querySelector('.apply-user-item.selected');
+    if (!sel) { showToast('Select a template','error'); return; }
+    const tpl = templates.find(t => t.id === sel.dataset.tplId);
+    if (!tpl || !selectedUser) return;
+    btn.classList.add('applying'); btn.textContent = 'Applying...';
+    try {
+      const planData = JSON.parse(JSON.stringify(tpl.plan || getDefaultPlan()));
+      await setDoc(doc(db, COL_PLANS, selectedUser.userId), planData);
+      selectedUserPlan = planData;
+      btn.textContent = 'Applied!';
+      setTimeout(() => { btn.textContent = 'Apply Template'; btn.classList.remove('applying'); document.getElementById('applyModal').classList.remove('open'); renderManageView(); }, 1000);
+      showToast('Template applied','success');
+    } catch(e) { btn.textContent = 'Apply Template'; btn.classList.remove('applying'); showToast('Failed to apply','error'); }
+  } else {
+    // Apply a template TO multiple users (from template list)
+    if (!applyingTemplate) return;
+    const selected = [...listEl.querySelectorAll('.apply-user-item.selected')].map(el => el.dataset.uid);
+    if (!selected.length) { showToast('Select at least one athlete','error'); return; }
+    btn.classList.add('applying'); btn.textContent = 'Applying...';
+    try {
+      const planData = JSON.parse(JSON.stringify(applyingTemplate.plan || getDefaultPlan()));
+      await Promise.all(selected.map(uid => setDoc(doc(db, COL_PLANS, uid), planData)));
+      btn.textContent = 'Applied!';
+      setTimeout(() => { btn.textContent = 'Apply to Selected'; btn.classList.remove('applying'); document.getElementById('applyModal').classList.remove('open'); }, 1200);
+      showToast(`Template applied to ${selected.length} athlete${selected.length>1?'s':''}`,'success');
+    } catch(e) { btn.textContent = 'Apply to Selected'; btn.classList.remove('applying'); showToast('Failed to apply template','error'); }
+    applyingTemplate = null;
   }
-  applyingTemplate = null;
+  window._applyMode = null;
 });
 
 // ── EDIT SHEET (coach edits user's plan) ──

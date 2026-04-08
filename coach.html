@@ -172,6 +172,13 @@ h1 span { color: var(--accent); }
 .ss-pill { width: 24px; height: 20px; border-radius: 4px; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #222; background: #141414; color: #444; transition: all 0.15s; touch-action: manipulation; }
 .ss-pill:active { transform: scale(0.9); }
 .ss-pill.active { border-color: var(--pill-color); color: var(--pill-color); background: rgba(255,255,255,0.04); }
+
+/* REST TIME PILLS */
+.rest-pills { display: flex; gap: 3px; flex-shrink: 0; align-items: center; }
+.rest-pill { min-width: 28px; height: 20px; border-radius: 4px; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #222; background: #141414; color: #444; transition: all 0.15s; touch-action: manipulation; padding: 0 4px; }
+.rest-pill:active { transform: scale(0.9); }
+.rest-pill.active { border-color: var(--accent); color: var(--accent); background: rgba(71,160,255,0.06); }
+.rest-label { font-size: 8px; color: #333; letter-spacing: 0.06em; text-transform: uppercase; margin-right: 4px; flex-shrink: 0; }
 .ss-pill[data-ss="1"] { --pill-color: #ff4466; }
 .ss-pill[data-ss="2"] { --pill-color: #47a0ff; }
 .ss-pill[data-ss="3"] { --pill-color: #ffaa00; }
@@ -269,6 +276,154 @@ h1 span { color: var(--accent); }
 .lib-item-cat { font-size: 10px; color: var(--muted); margin-top: 2px; }
 .lib-item-plus { width: 30px; height: 30px; border-radius: 50%; background: var(--accent-glow); border: 1px solid rgba(71,160,255,0.2); color: var(--accent); font-size: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
+/* DASHBOARD TABS (Athletes / Templates) */
+.dash-tabs { display: flex; gap: 6px; margin-bottom: 20px; }
+.dash-tab { flex: 1; text-align: center; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 12px 0; border-radius: 10px; border: 1px solid var(--border); background: var(--card); color: var(--muted); cursor: pointer; transition: all 0.2s; touch-action: manipulation; }
+.dash-tab.active { background: var(--accent-glow); border-color: var(--accent); color: var(--accent); }
+
+/* TEMPLATE CARDS */
+.template-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; touch-action: manipulation; }
+.template-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+.template-card:active { transform: scale(0.98); }
+.template-name { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.template-meta { font-size: 11px; color: var(--muted); }
+.template-actions { display: flex; gap: 6px; margin-top: 10px; }
+.template-actions button { font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 14px; border-radius: 8px; cursor: pointer; transition: all 0.2s; touch-action: manipulation; }
+.btn-tpl-edit { border: 1px solid rgba(71,160,255,0.25); background: var(--accent-glow); color: var(--accent); }
+.btn-tpl-apply { border: 1px solid rgba(74,222,128,0.25); background: rgba(74,222,128,0.06); color: #4ade80; }
+.btn-tpl-delete { border: 1px solid #2a2a2a; background: #1a1a1a; color: var(--muted); }
+.btn-tpl-delete:hover { border-color: #ff4444; color: #ff4444; }
+.btn-create-tpl { width: 100%; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 14px 0; border-radius: 10px; border: 1px dashed rgba(71,160,255,0.3); background: transparent; color: var(--accent); cursor: pointer; transition: all 0.2s; touch-action: manipulation; margin-top: 12px; }
+.btn-create-tpl:hover { background: var(--accent-glow); border-style: solid; }
+
+/* APPLY MODAL */
+.apply-modal-box { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 24px; width: 90%; max-width: 380px; }
+.apply-user-list { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; max-height: 300px; overflow-y: auto; }
+.apply-user-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #0a0a0c; border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: all 0.15s; }
+.apply-user-item.selected { border-color: var(--accent); background: var(--accent-glow); }
+.apply-user-item .apply-check { width: 20px; height: 20px; border-radius: 6px; border: 2px solid #333; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 12px; transition: all 0.15s; }
+.apply-user-item.selected .apply-check { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.apply-user-name { font-size: 13px; font-weight: 600; }
+.btn-apply-confirm { width: 100%; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 12px 0; border-radius: 10px; border: none; background: var(--accent); color: var(--bg); cursor: pointer; transition: all 0.2s; touch-action: manipulation; }
+.btn-apply-confirm:active { transform: scale(0.97); }
+.btn-apply-confirm.applying { opacity: 0.5; pointer-events: none; }
+
+/* TPL NAME INPUT */
+.tpl-name-input { width: 100%; background: #0a0a0c; border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; padding: 12px 14px; outline: none; margin-bottom: 16px; transition: border-color 0.2s; }
+.tpl-name-input::placeholder { color: #333; }
+.tpl-name-input:focus { border-color: var(--accent); }
+
+/* MANAGE TABS */
+.manage-tabs { display: flex; gap: 6px; margin: 16px 0; }
+.manage-tab { flex: 1; text-align: center; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 10px 0; border-radius: 10px; border: 1px solid var(--border); background: var(--card); color: var(--muted); cursor: pointer; transition: all 0.2s; touch-action: manipulation; }
+.manage-tab.active { background: var(--accent-glow); border-color: var(--accent); color: var(--accent); }
+
+/* ANALYTICS */
+.analytics-section { margin-bottom: 20px; }
+.analytics-title { font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+
+/* Consistency ring */
+.consistency-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 20px; }
+.consistency-ring { position: relative; width: 80px; height: 80px; flex-shrink: 0; }
+.consistency-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.consistency-ring-bg { fill: none; stroke: #1a1a1a; stroke-width: 6; }
+.consistency-ring-fill { fill: none; stroke: var(--accent); stroke-width: 6; stroke-linecap: round; }
+.consistency-pct { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--accent); }
+.consistency-info { flex: 1; }
+.consistency-label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.consistency-detail { font-size: 12px; color: #555; line-height: 1.5; }
+
+/* Stats row */
+.a-stats-row { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.a-stat { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; flex: 1; min-width: 70px; }
+.a-stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--accent); letter-spacing: 0.04em; line-height: 1; }
+.a-stat-lbl { font-size: 10px; color: var(--muted); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px; }
+
+/* Week chart */
+.week-chart-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 18px 16px 12px; margin-bottom: 20px; }
+.week-chart-title { font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+.week-chart-svg { width: 100%; display: block; overflow: visible; }
+.week-chart-bar { fill: #1e2400; }
+.week-chart-bar.full { fill: var(--accent); }
+.week-chart-bar.partial { fill: rgba(71,160,255,0.35); }
+.week-chart-label { font-family: 'DM Sans', sans-serif; font-size: 9px; fill: var(--muted); text-anchor: middle; }
+.week-chart-pct { font-family: 'Bebas Neue', sans-serif; font-size: 11px; fill: var(--accent); text-anchor: middle; }
+
+/* PR wall */
+.pr-wall { display: grid; grid-template-columns: repeat(auto-fill,minmax(130px,1fr)); gap: 8px; margin-bottom: 20px; }
+.pr-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; position: relative; overflow: hidden; }
+.pr-card::before { content: 'PR'; position: absolute; top: 8px; right: 10px; font-family: 'Bebas Neue', sans-serif; font-size: 11px; letter-spacing: 0.1em; color: rgba(71,160,255,0.2); }
+.pr-card-name { font-size: 11px; font-weight: 600; color: var(--muted); line-height: 1.3; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%; }
+.pr-card-weight { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--accent); letter-spacing: 0.03em; line-height: 1; }
+.pr-card-weight span { font-size: 13px; color: var(--accent-dim); }
+.pr-card-date { font-size: 9px; color: #333; margin-top: 4px; }
+
+/* Strength trend */
+.trend-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 20px; }
+.trend-title { font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+.trend-svg { width: 100%; display: block; overflow: visible; }
+.trend-line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.trend-area { fill: url(#trendGrad); }
+.trend-dot { fill: var(--accent); }
+.trend-dot-latest { fill: var(--accent); stroke: var(--bg); stroke-width: 2; }
+.trend-label { font-family: 'DM Sans', sans-serif; font-size: 9px; fill: var(--muted); text-anchor: middle; }
+.trend-val { font-family: 'Bebas Neue', sans-serif; font-size: 11px; fill: var(--accent); text-anchor: middle; }
+
+/* Filter pills */
+.filter-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; }
+.filter-pills::-webkit-scrollbar { height: 0; }
+.filter-pill { background: var(--card); border: 1px solid var(--border); border-radius: 999px; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; padding: 6px 14px; cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 0; touch-action: manipulation; }
+.filter-pill:hover,.filter-pill.active { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+
+/* Attendance heatmap */
+.heatmap-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 20px; }
+.heatmap-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
+.heatmap-header { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-align: center; padding: 4px 0; }
+.heatmap-cell { aspect-ratio: 1; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 600; }
+.heatmap-cell.done { background: rgba(71,160,255,0.25); color: var(--accent); }
+.heatmap-cell.missed { background: rgba(255,68,68,0.1); color: #ff4444; }
+.heatmap-cell.rest { background: #0a0a0a; color: #222; }
+.heatmap-cell.future { background: #0d0d0d; color: #1a1a1a; }
+
+/* Muscle balance */
+.muscle-bar-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 20px; }
+.muscle-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.muscle-bar-label { font-size: 11px; font-weight: 600; color: var(--muted); min-width: 70px; }
+.muscle-bar-track { flex: 1; height: 8px; background: #1a1a1a; border-radius: 4px; overflow: hidden; }
+.muscle-bar-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width 0.4s ease; }
+.muscle-bar-val { font-family: 'Bebas Neue', sans-serif; font-size: 14px; color: var(--accent); min-width: 30px; text-align: right; }
+
+/* Stale exercises */
+.stale-list { display: flex; flex-direction: column; gap: 6px; }
+.stale-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; }
+.stale-name { font-size: 13px; font-weight: 600; }
+.stale-info { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.stale-badge { font-size: 10px; font-weight: 700; color: #ff8800; background: rgba(255,136,0,0.1); border: 1px solid rgba(255,136,0,0.2); border-radius: 6px; padding: 3px 8px; white-space: nowrap; }
+
+/* Roster stats */
+.roster-stats { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+.roster-stat { font-size: 10px; color: var(--muted); display: flex; align-items: center; gap: 3px; }
+.roster-stat strong { color: var(--accent); font-weight: 700; }
+
+/* Empty state */
+.data-empty { text-align: center; padding: 40px 20px; }
+.data-empty-icon { font-size: 40px; margin-bottom: 12px; display: block; }
+.data-empty-title { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: #2a2a2a; }
+.data-empty-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+/* LOADING OVERLAY */
+.loading-overlay { position: fixed; inset: 0; z-index: 7777; background: rgba(6,6,8,0.85); display: none; align-items: center; justify-content: center; flex-direction: column; gap: 14px; backdrop-filter: blur(4px); }
+.loading-overlay.show { display: flex; }
+.loading-spinner { width: 32px; height: 32px; border: 3px solid #1a1a2a; border-top-color: var(--accent); border-radius: 50%; animation: lspin 0.7s linear infinite; }
+@keyframes lspin { to { transform: rotate(360deg); } }
+.loading-text { font-size: 11px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* ERROR TOAST */
+.toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(100px); z-index: 9500; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 12px 20px; font-size: 12px; font-weight: 600; color: var(--text); box-shadow: 0 8px 32px rgba(0,0,0,0.5); transition: transform 0.4s var(--ease), opacity 0.4s; opacity: 0; pointer-events: none; max-width: 90%; text-align: center; }
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+.toast.error { border-color: rgba(255,68,68,0.3); color: #ff6666; }
+.toast.success { border-color: rgba(71,160,255,0.3); color: var(--accent); }
+
 /* FOOTER */
 footer { text-align: center; padding: 48px 0 calc(32px + env(safe-area-inset-bottom,0px)); font-size: 11px; color: #1a1a1a; letter-spacing: 0.1em; text-transform: uppercase; }
 
@@ -277,6 +432,26 @@ footer { text-align: center; padding: 48px 0 calc(32px + env(safe-area-inset-bot
   header { padding: 20px 0 16px; }
   .panel-header { flex-direction: column; align-items: flex-start; gap: 8px; }
   .ex-img-wrap { aspect-ratio: 16/7; }
+  .edit-focus-input { font-size: 16px !important; }
+  .reps-input { font-size: 16px !important; }
+  .edit-note-input { font-size: 16px !important; }
+  .sets-btn { width: 36px; height: 36px; font-size: 18px; }
+  .edit-ex-x { width: 36px; height: 36px; }
+  .ss-pill { width: 32px; height: 28px; font-size: 10px; }
+  .heatmap-grid { gap: 2px; }
+  .pr-wall { grid-template-columns: repeat(auto-fill,minmax(110px,1fr)); }
+  .a-stats-row { gap: 6px; }
+  .a-stat { padding: 10px 10px; }
+  .a-stat-val { font-size: 22px; }
+  .consistency-wrap { padding: 16px; gap: 14px; }
+  .consistency-ring { width: 64px; height: 64px; }
+  .consistency-pct { font-size: 20px; }
+}
+@media (max-width: 375px) {
+  .heatmap-cell { font-size: 8px; }
+  .pr-wall { grid-template-columns: 1fr 1fr; }
+  .manage-tabs { gap: 4px; }
+  .manage-tab { font-size: 11px; padding: 8px 0; }
 }
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -315,11 +490,22 @@ footer { text-align: center; padding: 48px 0 calc(32px + env(safe-area-inset-bot
       <p class="header-eyebrow">Coach Dashboard</p>
       <h1>MY<br><span>ATHLETES</span></h1>
     </header>
-    <div class="invite-bar">
-      <button class="btn-invite" id="btnGenInvite">+ Generate Invite Code</button>
+    <div class="dash-tabs">
+      <button class="dash-tab active" id="dashTabAthletes">Athletes</button>
+      <button class="dash-tab" id="dashTabTemplates">Templates</button>
     </div>
-    <div class="roster-label">YOUR ATHLETES (<span id="rosterCount">0</span>)</div>
-    <div class="roster-list" id="rosterList"></div>
+    <div id="athletesSection">
+      <div class="invite-bar">
+        <button class="btn-invite" id="btnGenInvite">+ Generate Invite Code</button>
+      </div>
+      <div class="roster-label">YOUR ATHLETES (<span id="rosterCount">0</span>)</div>
+      <div class="roster-list" id="rosterList"></div>
+    </div>
+    <div id="templatesSection" style="display:none;">
+      <div class="roster-label">MY TEMPLATES (<span id="tplCount">0</span>)</div>
+      <div id="templateList"></div>
+      <button class="btn-create-tpl" id="btnCreateTpl">+ Create New Template</button>
+    </div>
     <footer>Trainos Coach</footer>
   </div>
 </div>
@@ -343,7 +529,12 @@ footer { text-align: center; padding: 48px 0 calc(32px + env(safe-area-inset-bot
       </div>
       <div class="progress-track"><div class="progress-fill" id="manageProgressFill"></div></div>
     </div>
+    <div class="manage-tabs">
+      <button class="manage-tab active" id="tabWorkout">Workout</button>
+      <button class="manage-tab" id="tabData">Data</button>
+    </div>
     <div id="manageWorkoutDisplay"></div>
+    <div id="manageDataDisplay" style="display:none;"></div>
     <button class="btn-unlink" id="btnUnlink">Unlink This User</button>
     <footer>Trainos Coach</footer>
   </div>
@@ -382,9 +573,40 @@ footer { text-align: center; padding: 48px 0 calc(32px + env(safe-area-inset-bot
   </div>
 </div>
 
+<!-- APPLY TEMPLATE MODAL -->
+<div class="modal-overlay" id="applyModal">
+  <div class="apply-modal-box">
+    <div class="modal-title" id="applyModalTitle">APPLY TEMPLATE</div>
+    <div class="modal-sub" id="applyModalSub">Select athletes to apply this template to</div>
+    <div class="apply-user-list" id="applyUserList"></div>
+    <button class="btn-apply-confirm" id="btnApplyConfirm">Apply to Selected</button>
+    <button class="btn-close-modal" id="btnCloseApply" style="display:block;margin:8px auto 0;">Cancel</button>
+  </div>
+</div>
+
+<!-- TEMPLATE NAME MODAL -->
+<div class="modal-overlay" id="tplNameModal">
+  <div class="modal-box">
+    <div class="modal-title">NAME YOUR TEMPLATE</div>
+    <div class="modal-sub">Give it a descriptive name</div>
+    <input class="tpl-name-input" id="tplNameInput" placeholder="e.g. Push/Pull/Legs 5-Day" maxlength="60">
+    <button class="btn-copy" id="btnSaveTplName" style="width:100%;">Save Template</button>
+    <button class="btn-close-modal" id="btnCloseTplName" style="display:block;margin:8px auto 0;">Cancel</button>
+  </div>
+</div>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Loading...</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getFirestore, collection, addDoc, query, where, getDocs, serverTimestamp, doc, getDoc, setDoc, deleteDoc, updateDoc, arrayUnion, arrayRemove }
+import { getFirestore, collection, addDoc, query, where, getDocs, serverTimestamp, doc, getDoc, setDoc, deleteDoc, updateDoc, arrayUnion, arrayRemove, enableIndexedDbPersistence }
   from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 import { getAuth, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut }
   from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
@@ -399,6 +621,7 @@ const firebaseConfig = {
 };
 const fbApp = initializeApp(firebaseConfig);
 const db = getFirestore(fbApp);
+enableIndexedDbPersistence(db).catch(() => {});
 const auth = getAuth(fbApp);
 const googleProvider = new GoogleAuthProvider();
 
@@ -411,6 +634,7 @@ const COL_SETS    = 'v2_setLogs';
 const COL_WEIGHT  = 'v2_weightLogs';
 const COL_WEEKS   = 'v2_weekLogs';
 const COL_TRACK   = 'v2_weekTracking';
+const COL_TPL     = 'v2_templates';
 
 let currentUser = null;
 let coachData = null;
@@ -419,7 +643,14 @@ let selectedUserPlan = null;
 let selectedUserRest = {};
 let selectedUserTracking = {};
 let selectedUserSetLogs = [];
+let selectedUserWeekHistory = [];
+let selectedUserWeightLogs = [];
 let currentDay = null;
+let activeManageTab = 'workout';
+let dataFilter = 'ALL';
+let templates = [];
+let editingTemplate = null; // null = editing user plan, object = editing template
+let applyingTemplate = null;
 let editingDay = null;
 let editPlanCopy = [];
 let activeCatTab = null;
@@ -605,9 +836,34 @@ function getDayFocus(day) { return selectedUserPlan?.focusLabels?.[day] || dayMe
 function isRestDay(day) { return selectedUserRest[day] === true; }
 
 // ── AUTH ──
+// Loading & toast helpers
+function showLoading(msg) { const el = document.getElementById('loadingOverlay'); el.querySelector('.loading-text').textContent = msg || 'Loading...'; el.classList.add('show'); }
+function hideLoading() { document.getElementById('loadingOverlay').classList.remove('show'); }
+function showToast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.className = 'toast ' + (type||'') + ' show';
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.classList.remove('show'); }, 3500);
+}
+
 const googleBtnSVG = '<svg class="google-icon" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>';
 
-getRedirectResult(auth).catch(() => {});
+getRedirectResult(auth).then(result => {
+  if (!result?.user) {
+    const btn = document.getElementById('googleSignInBtn');
+    if (btn.classList.contains('signing-in')) {
+      btn.classList.remove('signing-in');
+      btn.innerHTML = googleBtnSVG + 'Sign in with Google';
+    }
+  }
+}).catch(e => {
+  const btn = document.getElementById('googleSignInBtn');
+  btn.classList.remove('signing-in');
+  btn.innerHTML = googleBtnSVG + 'Sign in with Google';
+  if (e.code && e.code !== 'auth/popup-closed-by-user') {
+    document.getElementById('signInError').textContent = 'Sign-in failed \u2014 try again';
+  }
+});
 
 document.getElementById('googleSignInBtn').addEventListener('click', async () => {
   const btn = document.getElementById('googleSignInBtn');
@@ -637,13 +893,19 @@ onAuthStateChanged(auth, async (user) => {
 
 async function handleSignedIn(user) {
   currentUser = { id: user.uid, name: user.displayName || user.email?.split('@')[0] || 'Coach', initials: (user.displayName||'C')[0].toUpperCase(), photoURL: user.photoURL };
-  // Load or create coach doc
-  const snap = await getDoc(doc(db, COL_COACHES, currentUser.id));
-  if (snap.exists()) { coachData = snap.data(); }
-  else {
-    coachData = { coachId: currentUser.id, coachName: currentUser.name, coachEmail: user.email, coachPhoto: currentUser.photoURL, users: [], createdAt: serverTimestamp() };
-    await setDoc(doc(db, COL_COACHES, currentUser.id), coachData);
+  showLoading('Loading dashboard...');
+  try {
+    const snap = await getDoc(doc(db, COL_COACHES, currentUser.id));
+    if (snap.exists()) { coachData = snap.data(); }
+    else {
+      coachData = { coachId: currentUser.id, coachName: currentUser.name, coachEmail: user.email, coachPhoto: currentUser.photoURL, users: [], createdAt: serverTimestamp() };
+      await setDoc(doc(db, COL_COACHES, currentUser.id), coachData);
+    }
+  } catch(e) {
+    showToast('Failed to load coach data \u2014 check your connection', 'error');
+    coachData = { coachId: currentUser.id, coachName: currentUser.name, users: [] };
   }
+  hideLoading();
   showDashboard();
 }
 
@@ -658,11 +920,18 @@ function showDashboard() {
   if (currentUser.photoURL) av.innerHTML = `<img src="${currentUser.photoURL}">`;
   else av.textContent = currentUser.initials;
   renderRoster();
+  loadRosterStats();
 }
 
 function renderRoster() {
   const list = document.getElementById('rosterList');
-  const users = coachData.users || [];
+  // Deduplicate users by userId (prevents duplicate display from old bug)
+  const seen = new Set();
+  const users = (coachData.users || []).filter(u => {
+    if (seen.has(u.userId)) return false;
+    seen.add(u.userId);
+    return true;
+  });
   document.getElementById('rosterCount').textContent = users.length;
   if (!users.length) {
     list.innerHTML = `<div class="roster-empty"><span class="roster-empty-icon">\uD83D\uDCCB</span><h2>No Athletes Yet</h2><p>Generate an invite code to connect with your first athlete</p></div>`;
@@ -672,11 +941,16 @@ function renderRoster() {
   users.forEach(u => {
     const card = document.createElement('div');
     card.className = 'roster-card';
+    const hasStats = u._consistency !== undefined;
     card.innerHTML = `
       <div class="roster-avatar">${u.userPhoto ? `<img src="${u.userPhoto}">` : (u.userName||'?')[0].toUpperCase()}</div>
       <div class="roster-info">
-        <div class="roster-name">${u.userName || 'Unknown'}</div>
-        <div class="roster-sub">${u.userEmail || ''}</div>
+        <div class="roster-name">${(u.userName||'Unknown').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+        ${hasStats ? `<div class="roster-stats">
+          <div class="roster-stat"><strong>${u._consistency}%</strong> consistent</div>
+          <div class="roster-stat"><strong>${u._streak}</strong> streak</div>
+          <div class="roster-stat"><strong>${u._weekDone}/5</strong> this week</div>
+        </div>` : `<div class="roster-sub">${u.userEmail || ''}</div>`}
       </div>
       <div class="roster-arrow">\u203A</div>`;
     card.addEventListener('click', () => openUserManagement(u));
@@ -690,11 +964,13 @@ document.getElementById('btnGenInvite').addEventListener('click', async () => {
   let code = ''; const arr = new Uint8Array(6); crypto.getRandomValues(arr);
   for (let i=0;i<6;i++) code += chars[arr[i]%chars.length];
   const expires = new Date(); expires.setDate(expires.getDate()+7);
-  await setDoc(doc(db, COL_INVITES, code), {
-    code, coachId: currentUser.id, coachName: currentUser.name,
-    status: 'active', createdAt: serverTimestamp(),
-    expiresAt: expires.toISOString(), redeemedBy: null, redeemedAt: null
-  });
+  try {
+    await setDoc(doc(db, COL_INVITES, code), {
+      code, coachId: currentUser.id, coachName: currentUser.name,
+      status: 'active', createdAt: serverTimestamp(),
+      expiresAt: expires.toISOString(), redeemedBy: null, redeemedAt: null
+    });
+  } catch(e) { showToast('Failed to generate invite \u2014 try again', 'error'); return; }
   document.getElementById('inviteCodeDisplay').textContent = code;
   document.getElementById('inviteModal').classList.add('open');
 });
@@ -717,40 +993,75 @@ async function openUserManagement(userInfo) {
   selectedUser = userInfo;
   document.getElementById('dashboard').style.display = 'none';
   document.getElementById('manageView').style.display = 'block';
-  document.getElementById('manageUserName').innerHTML = `${userInfo.userPhoto ? `<div class="nav-avatar"><img src="${userInfo.userPhoto}"></div>` : ''} ${userInfo.userName}`;
-  document.getElementById('manageTitle').innerHTML = `${userInfo.userName.split(' ')[0]}'s <span>TRAINING</span>`;
+  const safeName = (userInfo.userName||'User').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  document.getElementById('manageUserName').innerHTML = `${userInfo.userPhoto ? `<div class="nav-avatar"><img src="${userInfo.userPhoto}"></div>` : ''} ${safeName}`;
+  document.getElementById('manageTitle').innerHTML = `${safeName.split(' ')[0]}'s <span>TRAINING</span>`;
 
-  // Load user data
-  try {
-    const planSnap = await getDoc(doc(db, COL_PLANS, userInfo.userId));
-    selectedUserPlan = planSnap.exists() ? planSnap.data() : getDefaultPlan();
-  } catch(e) { selectedUserPlan = getDefaultPlan(); }
+  showLoading('Loading athlete data...');
+  let loadFailed = false;
 
-  try {
-    const restSnap = await getDoc(doc(db, COL_REST, userInfo.userId));
-    selectedUserRest = restSnap.exists() ? restSnap.data() : {};
-  } catch(e) { selectedUserRest = {}; }
+  // Load all user data in parallel (6x faster)
+  const wid = getWeekId();
+  const uid = userInfo.userId;
+  const [planSnap, restSnap, trackSnap, setSnap, weekSnap, weightSnap] = await Promise.all([
+    getDoc(doc(db, COL_PLANS, uid)).catch(() => { loadFailed = true; return null; }),
+    getDoc(doc(db, COL_REST, uid)).catch(() => { loadFailed = true; return null; }),
+    getDoc(doc(db, COL_TRACK, `${uid}_${wid}`)).catch(() => { loadFailed = true; return null; }),
+    getDocs(query(collection(db, COL_SETS), where('userId','==',uid))).catch(() => { loadFailed = true; return null; }),
+    getDocs(query(collection(db, COL_WEEKS), where('userId','==',uid))).catch(() => { loadFailed = true; return null; }),
+    getDocs(query(collection(db, COL_WEIGHT), where('userId','==',uid))).catch(() => { loadFailed = true; return null; }),
+  ]);
+  selectedUserPlan = planSnap?.exists() ? planSnap.data() : getDefaultPlan();
+  selectedUserRest = restSnap?.exists() ? restSnap.data() : {};
+  selectedUserTracking = trackSnap?.exists() ? trackSnap.data() : { completed:{}, exercises:{} };
+  selectedUserSetLogs = setSnap ? setSnap.docs.map(d => ({id:d.id,...d.data()})) : [];
+  selectedUserSetLogs.sort((a,b) => (b.date?.seconds??0)-(a.date?.seconds??0));
+  selectedUserWeekHistory = weekSnap ? weekSnap.docs.map(d => ({id:d.id,...d.data()})) : [];
+  selectedUserWeekHistory.sort((a,b) => (b.weekStart > a.weekStart ? 1 : -1));
+  selectedUserWeightLogs = weightSnap ? weightSnap.docs.map(d => ({id:d.id,...d.data()})) : [];
+  selectedUserWeightLogs.sort((a,b) => (b.date?.seconds??0)-(a.date?.seconds??0));
 
-  try {
-    const wid = getWeekId();
-    const trackSnap = await getDoc(doc(db, COL_TRACK, `${userInfo.userId}_${wid}`));
-    selectedUserTracking = trackSnap.exists() ? trackSnap.data() : { completed:{}, exercises:{} };
-  } catch(e) { selectedUserTracking = { completed:{}, exercises:{} }; }
+  hideLoading();
+  if (loadFailed) showToast('Some data failed to load \u2014 showing what\u2019s available', 'error');
 
-  try {
-    const setQ = query(collection(db, COL_SETS), where('userId','==',userInfo.userId));
-    const setSnap = await getDocs(setQ);
-    selectedUserSetLogs = setSnap.docs.map(d => ({id:d.id,...d.data()}));
-    selectedUserSetLogs.sort((a,b) => (b.date?.seconds??0)-(a.date?.seconds??0));
-  } catch(e) { selectedUserSetLogs = []; }
-
+  activeManageTab = 'workout';
+  dataFilter = 'ALL';
   renderManageView();
 }
 
-document.getElementById('btnBackRoster').addEventListener('click', () => {
+document.getElementById('btnBackRoster').addEventListener('click', async () => {
+  const wasTemplate = !!editingTemplate;
   selectedUser = null;
+  editingTemplate = null;
   document.getElementById('manageView').style.display = 'none';
   document.getElementById('dashboard').style.display = 'block';
+  // Restore hidden UI
+  document.getElementById('tabData').style.display = '';
+  document.getElementById('btnUnlink').style.display = '';
+  // If coming back from template editor, refresh template list
+  if (wasTemplate) {
+    await loadTemplates();
+    renderTemplateList();
+    // Show templates tab
+    document.getElementById('dashTabTemplates').click();
+  }
+});
+
+// Tab switching
+document.getElementById('tabWorkout').addEventListener('click', () => {
+  activeManageTab = 'workout';
+  document.getElementById('tabWorkout').classList.add('active');
+  document.getElementById('tabData').classList.remove('active');
+  document.getElementById('manageWorkoutDisplay').style.display = '';
+  document.getElementById('manageDataDisplay').style.display = 'none';
+});
+document.getElementById('tabData').addEventListener('click', () => {
+  activeManageTab = 'data';
+  document.getElementById('tabData').classList.add('active');
+  document.getElementById('tabWorkout').classList.remove('active');
+  document.getElementById('manageWorkoutDisplay').style.display = 'none';
+  document.getElementById('manageDataDisplay').style.display = '';
+  renderDataTab();
 });
 
 // Unlink user
@@ -765,10 +1076,16 @@ document.getElementById('btnUnlink').addEventListener('click', async () => {
     document.getElementById('manageView').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
     renderRoster();
-  } catch(e) { alert('Failed to unlink'); }
+  } catch(e) { showToast('Failed to unlink \u2014 try again', 'error'); }
 });
 
 function renderManageView() {
+  // Reset tabs UI
+  document.getElementById('tabWorkout').classList.add('active');
+  document.getElementById('tabData').classList.remove('active');
+  document.getElementById('manageWorkoutDisplay').style.display = '';
+  document.getElementById('manageDataDisplay').style.display = 'none';
+
   // Days grid
   const grid = document.getElementById('manageDaysGrid');
   grid.innerHTML = '';
@@ -823,9 +1140,12 @@ function selectDay(day) {
 
   const totalSets = exs.reduce((s,e)=>s+parseInt(e.sets||0),0);
 
-  display.innerHTML = `<div class="panel-header"><div class="panel-day-wrap"><div class="panel-day">${day}</div></div><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;"><div class="panel-focus">${focus}</div><button class="btn-edit-day" id="btnEdit">Edit Plan</button><button class="btn-rest-toggle" id="btnRestToggle">Set Rest Day</button></div></div><div class="exercise-list" id="exList"></div><div class="stats-row"><div class="stat-chip"><span>${exs.length}</span>Exercises</div><div class="stat-chip"><span>${totalSets}</span>Total Sets</div></div>`;
+  const applyBtn = selectedUser && !editingTemplate ? `<button class="btn-edit-day" id="btnApplyTpl" style="border-color:rgba(74,222,128,0.25);color:#4ade80;background:rgba(74,222,128,0.06);">Apply Template</button>` : '';
+  display.innerHTML = `<div class="panel-header"><div class="panel-day-wrap"><div class="panel-day">${day}</div></div><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;"><div class="panel-focus">${focus}</div><button class="btn-edit-day" id="btnEdit">Edit Plan</button>${applyBtn}<button class="btn-rest-toggle" id="btnRestToggle">Set Rest Day</button></div></div><div class="exercise-list" id="exList"></div><div class="stats-row"><div class="stat-chip"><span>${exs.length}</span>Exercises</div><div class="stat-chip"><span>${totalSets}</span>Total Sets</div></div>`;
 
   document.getElementById('btnEdit').addEventListener('click', () => openEditSheet(day));
+  const applyEl = document.getElementById('btnApplyTpl');
+  if (applyEl) applyEl.addEventListener('click', async () => { await loadTemplates(); if (!templates.length) { showToast('No templates yet \u2014 create one first','error'); return; } openApplyModalForUser(); });
   document.getElementById('btnRestToggle').addEventListener('click', async () => { selectedUserRest[day]=true; await setDoc(doc(db,COL_REST,selectedUser.userId),selectedUserRest); renderManageView(); });
 
   const list = document.getElementById('exList');
@@ -881,6 +1201,528 @@ function selectDay(day) {
   }
 }
 
+// ── DATA TAB ──
+function weekLabel(wid) {
+  const [y,m,d] = wid.split('-').map(Number);
+  return new Date(y,m-1,d).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+}
+
+function renderDataTab() {
+  const content = document.getElementById('manageDataDisplay');
+  const trainingDays = days.filter(d => !isRestDay(d));
+  const TOTAL = trainingDays.length || 1;
+  const currentWid = getWeekId();
+
+  // Build week list (current + history)
+  const currentEntry = {
+    weekId: currentWid, weekStart: currentWid,
+    completed: {...(selectedUserTracking.completed||{})},
+    completedCount: trainingDays.filter(d => selectedUserTracking.completed?.[d]).length,
+    totalTrainingDays: trainingDays.length, isCurrent: true,
+  };
+  const allWeeks = [currentEntry, ...selectedUserWeekHistory.filter(w => w.weekId !== currentWid)];
+  allWeeks.sort((a,b) => b.weekStart > a.weekStart ? 1 : -1);
+
+  const totalSessions = allWeeks.reduce((s,w) => s+(w.completedCount||0), 0);
+  const totalPlanned = allWeeks.reduce((s,w) => s+(w.totalTrainingDays||TOTAL), 0);
+  const consistencyPct = totalPlanned > 0 ? Math.round((totalSessions/totalPlanned)*100) : 0;
+  const bestWeek = allWeeks.reduce((b,w) => Math.max(b,w.completedCount||0), 0);
+
+  let streak = 0;
+  for (const w of allWeeks.filter(w => !w.isCurrent).sort((a,b) => b.weekStart > a.weekStart ? 1:-1)) {
+    if ((w.completedCount||0) === (w.totalTrainingDays||TOTAL)) streak++; else break;
+  }
+
+  const circumference = 2 * Math.PI * 34;
+  const dashOffset = circumference - (circumference * consistencyPct / 100);
+
+  let html = '';
+
+  // ── CONSISTENCY RING ──
+  html += `<div class="consistency-wrap">
+    <div class="consistency-ring">
+      <svg viewBox="0 0 80 80"><circle class="consistency-ring-bg" cx="40" cy="40" r="34"/><circle class="consistency-ring-fill" cx="40" cy="40" r="34" stroke-dasharray="${circumference}" stroke-dashoffset="${dashOffset}"/></svg>
+      <div class="consistency-pct">${consistencyPct}%</div>
+    </div>
+    <div class="consistency-info">
+      <div class="consistency-label">Consistency</div>
+      <div class="consistency-detail">${totalSessions} of ${totalPlanned} sessions<br>Streak: ${streak} perfect week${streak!==1?'s':''}</div>
+    </div>
+  </div>`;
+
+  // ── STATS ROW ──
+  html += `<div class="a-stats-row">
+    <div class="a-stat"><div class="a-stat-val">${streak}</div><div class="a-stat-lbl">Streak</div></div>
+    <div class="a-stat"><div class="a-stat-val">${totalSessions}</div><div class="a-stat-lbl">Sessions</div></div>
+    <div class="a-stat"><div class="a-stat-val">${bestWeek}/${TOTAL}</div><div class="a-stat-lbl">Best Week</div></div>
+  </div>`;
+
+  // ── WEEKLY BAR CHART ──
+  const chartWeeks = [...allWeeks].sort((a,b) => a.weekStart > b.weekStart ? 1:-1).slice(-10);
+  if (chartWeeks.length > 0) {
+    const BAR_W=28, BAR_GAP=8, CHART_H=80, LABEL_H=28;
+    const totalW = chartWeeks.length*(BAR_W+BAR_GAP)-BAR_GAP;
+    let bars = '';
+    chartWeeks.forEach((w,i) => {
+      const tot = w.totalTrainingDays||TOTAL;
+      const pct = (w.completedCount||0)/tot;
+      const barH = Math.max(4, Math.round(pct*CHART_H));
+      const x = i*(BAR_W+BAR_GAP), y = CHART_H-barH;
+      const cls = pct===1?'full':pct>0?'partial':'';
+      bars += `<rect class="week-chart-bar ${cls}" x="${x}" y="${y}" width="${BAR_W}" height="${barH}" rx="4"/>`;
+      if (pct>0) bars += `<text class="week-chart-pct" x="${x+BAR_W/2}" y="${y-4}">${w.completedCount}/${tot}</text>`;
+      bars += `<text class="week-chart-label" x="${x+BAR_W/2}" y="${CHART_H+16}">${weekLabel(w.weekStart)}</text>`;
+      if (w.isCurrent) bars += `<rect x="${x}" y="${CHART_H+22}" width="${BAR_W}" height="3" rx="1.5" fill="var(--accent)" opacity="0.5"/>`;
+    });
+    html += `<div class="week-chart-wrap"><div class="week-chart-title">Last ${chartWeeks.length} Weeks</div><svg class="week-chart-svg" viewBox="-4 -12 ${totalW+8} ${CHART_H+LABEL_H+8}" preserveAspectRatio="xMidYMid meet">${bars}</svg></div>`;
+  }
+
+  // ── PR WALL ──
+  const prMap = {};
+  selectedUserSetLogs.forEach(l => {
+    if (!prMap[l.exerciseName] || l.weight > prMap[l.exerciseName].weight) prMap[l.exerciseName] = { weight:l.weight, date:l.date };
+  });
+  const prList = Object.entries(prMap).sort((a,b) => b[1].weight - a[1].weight);
+  if (prList.length > 0) {
+    html += `<div class="analytics-section"><div class="analytics-title">Personal Records</div><div class="pr-wall">`;
+    prList.forEach(([name,pr]) => {
+      const d = pr.date?.seconds ? new Date(pr.date.seconds*1000) : null;
+      const ds = d ? d.toLocaleDateString('en-GB',{day:'numeric',month:'short'}) : '';
+      html += `<div class="pr-card"><div class="pr-card-name">${name}</div><div class="pr-card-weight">${pr.weight}<span>kg</span></div>${ds?`<div class="pr-card-date">${ds}</div>`:''}</div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  // ── EXERCISE FILTER + STRENGTH TREND ──
+  const allExNames = [...new Set(selectedUserSetLogs.map(l => l.exerciseName))];
+  if (allExNames.length > 0) {
+    html += `<div class="analytics-section"><div class="analytics-title">Strength Trends</div><div class="filter-pills" id="dataFilterPills"></div><div id="trendContainer"></div></div>`;
+  }
+
+  // ── ATTENDANCE HEATMAP ──
+  html += `<div class="analytics-section"><div class="analytics-title">Attendance Pattern</div><div class="heatmap-wrap"><div class="heatmap-grid" id="heatmapGrid"></div></div></div>`;
+
+  // ── MUSCLE GROUP BALANCE ──
+  html += `<div class="analytics-section"><div class="analytics-title">Muscle Group Balance</div><div class="muscle-bar-wrap" id="muscleBalanceWrap"></div></div>`;
+
+  // ── STALE EXERCISES ──
+  html += `<div class="analytics-section"><div class="analytics-title">Plateaus</div><div class="stale-list" id="staleList"></div></div>`;
+
+  content.innerHTML = html;
+
+  // ── Render filter pills ──
+  const pillsEl = document.getElementById('dataFilterPills');
+  if (pillsEl) {
+    ['ALL',...allExNames].forEach(f => {
+      const btn = document.createElement('button');
+      btn.className = 'filter-pill' + (f===dataFilter?' active':'');
+      btn.textContent = f==='ALL'?'All Exercises':f;
+      btn.addEventListener('click', () => { dataFilter=f; renderStrengthTrend(); document.querySelectorAll('.filter-pill').forEach(p=>p.classList.toggle('active',p.textContent===(f==='ALL'?'All Exercises':f))); });
+      pillsEl.appendChild(btn);
+    });
+    renderStrengthTrend();
+  }
+
+  // ── Render attendance heatmap ──
+  renderAttendanceHeatmap(allWeeks);
+
+  // ── Render muscle balance ──
+  renderMuscleBalance();
+
+  // ── Render stale exercises ──
+  renderStaleExercises();
+}
+
+function renderStrengthTrend() {
+  const container = document.getElementById('trendContainer');
+  if (!container) return;
+  const logs = dataFilter==='ALL' ? selectedUserSetLogs : selectedUserSetLogs.filter(l => l.exerciseName===dataFilter);
+
+  if (dataFilter==='ALL' || logs.length < 2) {
+    container.innerHTML = dataFilter==='ALL' ? '<div style="font-size:11px;color:#333;padding:8px 0;">Select an exercise to see strength trend</div>' : '<div style="font-size:11px;color:#333;padding:8px 0;">Not enough data yet</div>';
+    return;
+  }
+
+  // Group by session, get max weight
+  const sessMap = {};
+  logs.forEach(l => { const k=l.weekId||'x'; if (!sessMap[k]||l.weight>sessMap[k].weight) sessMap[k]={weight:l.weight,date:l.date,weekId:l.weekId}; });
+  const points = Object.values(sessMap).sort((a,b) => (a.date?.seconds||0)-(b.date?.seconds||0)).slice(-12);
+  if (points.length < 2) { container.innerHTML = '<div style="font-size:11px;color:#333;padding:8px 0;">Not enough sessions</div>'; return; }
+
+  const W=300, H=80, PAD=20;
+  const minW = Math.min(...points.map(p=>p.weight)), maxW = Math.max(...points.map(p=>p.weight));
+  const range = maxW-minW||1;
+  let pathD='', areaD='', dots='', labels='';
+  points.forEach((p,i) => {
+    const x = PAD+(i/(points.length-1))*(W-PAD*2);
+    const y = H-PAD-((p.weight-minW)/range)*(H-PAD*2);
+    pathD += (i===0?'M':'L')+`${x},${y}`; areaD += (i===0?'M':'L')+`${x},${y}`;
+    const isLast = i===points.length-1;
+    dots += `<circle class="${isLast?'trend-dot-latest':'trend-dot'}" cx="${x}" cy="${y}" r="${isLast?5:3}"/>`;
+    if (i===0||isLast||i%3===0) labels += `<text class="trend-val" x="${x}" y="${y-10}">${p.weight}</text>`;
+    const d = p.date?.seconds ? new Date(p.date.seconds*1000) : null;
+    if (d && (i===0||isLast)) labels += `<text class="trend-label" x="${x}" y="${H-2}">${d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</text>`;
+  });
+  const lastX = PAD+((points.length-1)/(points.length-1))*(W-PAD*2), firstX = PAD;
+  areaD += `L${lastX},${H-PAD}L${firstX},${H-PAD}Z`;
+
+  container.innerHTML = `<div class="trend-wrap"><div class="trend-title">${dataFilter} \u2014 Heaviest Set</div><svg class="trend-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet"><defs><linearGradient id="trendGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--accent)" stop-opacity="0.15"/><stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs><path class="trend-area" d="${areaD}"/><path class="trend-line" d="${pathD}"/>${dots}${labels}</svg></div>`;
+}
+
+function renderAttendanceHeatmap(allWeeks) {
+  const grid = document.getElementById('heatmapGrid');
+  if (!grid) return;
+  const shortDays = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  let html = shortDays.map(d => `<div class="heatmap-header">${d}</div>`).join('');
+
+  // Count done/missed per day across all weeks
+  const dayCounts = {}; const dayTotal = {};
+  days.forEach(d => { dayCounts[d]=0; dayTotal[d]=0; });
+  const recentWeeks = [...allWeeks].sort((a,b) => b.weekStart > a.weekStart ? 1:-1).slice(0,8);
+  recentWeeks.forEach(w => {
+    days.forEach(d => {
+      if (isRestDay(d)) return;
+      dayTotal[d]++;
+      if (w.completed?.[d]) dayCounts[d]++;
+    });
+  });
+
+  // Show last 4 weeks as rows
+  const showWeeks = recentWeeks.slice(0,4);
+  showWeeks.forEach(w => {
+    days.forEach(d => {
+      const rest = isRestDay(d);
+      const done = w.completed?.[d] === true;
+      const cls = rest ? 'rest' : (done ? 'done' : 'missed');
+      const label = rest ? '\u2014' : (done ? '\u2713' : '\u2717');
+      html += `<div class="heatmap-cell ${cls}">${label}</div>`;
+    });
+  });
+
+  grid.innerHTML = html;
+}
+
+function renderMuscleBalance() {
+  const wrap = document.getElementById('muscleBalanceWrap');
+  if (!wrap) return;
+  // Count sets per muscle group from set logs (last 4 weeks)
+  const fourWeeksAgo = Date.now()/1000 - 28*86400;
+  const recentLogs = selectedUserSetLogs.filter(l => (l.date?.seconds||0) > fourWeeksAgo);
+
+  // Map exercise names to categories from the plan
+  const catMap = {};
+  if (selectedUserPlan) {
+    Object.values(selectedUserPlan).forEach(exs => {
+      if (Array.isArray(exs)) exs.forEach(ex => { if (ex.category) catMap[ex.name] = ex.category; });
+    });
+  }
+
+  const groupCounts = {};
+  recentLogs.forEach(l => {
+    const cat = catMap[l.exerciseName] || 'Other';
+    groupCounts[cat] = (groupCounts[cat]||0) + 1;
+  });
+
+  const vals = Object.values(groupCounts);
+  const maxSets = vals.length ? Math.max(...vals) : 1;
+  const sorted = Object.entries(groupCounts).sort((a,b) => b[1]-a[1]);
+
+  if (!sorted.length) { wrap.innerHTML = '<div style="font-size:11px;color:#333;padding:8px;">No data yet</div>'; return; }
+
+  let html = '';
+  sorted.forEach(([cat,count]) => {
+    const pct = Math.round((count/maxSets)*100);
+    html += `<div class="muscle-bar-row"><div class="muscle-bar-label">${cat}</div><div class="muscle-bar-track"><div class="muscle-bar-fill" style="width:${pct}%"></div></div><div class="muscle-bar-val">${count}</div></div>`;
+  });
+  wrap.innerHTML = html;
+}
+
+function renderStaleExercises() {
+  const listEl = document.getElementById('staleList');
+  if (!listEl) return;
+
+  // Group set logs by exercise, find max weight per week
+  const exWeekMax = {};
+  selectedUserSetLogs.forEach(l => {
+    if (!l.weekId) return;
+    const key = l.exerciseName;
+    if (!exWeekMax[key]) exWeekMax[key] = {};
+    if (!exWeekMax[key][l.weekId] || l.weight > exWeekMax[key][l.weekId]) exWeekMax[key][l.weekId] = l.weight;
+  });
+
+  const stale = [];
+  Object.entries(exWeekMax).forEach(([name, weeks]) => {
+    const sorted = Object.entries(weeks).sort((a,b) => b[0] > a[0] ? 1:-1);
+    if (sorted.length < 3) return; // not enough data
+    const last3 = sorted.slice(0,3).map(([_,w]) => w);
+    const allSame = last3.every(w => w === last3[0]);
+    const decreasing = last3[0] <= last3[last3.length-1];
+    if (allSame || decreasing) {
+      stale.push({ name, weight: last3[0], weeks: sorted.length });
+    }
+  });
+
+  if (!stale.length) { listEl.innerHTML = '<div style="font-size:11px;color:#333;padding:8px;">No plateaus detected</div>'; return; }
+
+  let html = '';
+  stale.forEach(s => {
+    html += `<div class="stale-item"><div><div class="stale-name">${s.name}</div><div class="stale-info">Stuck at ${s.weight}kg for 3+ weeks</div></div><div class="stale-badge">Plateau</div></div>`;
+  });
+  listEl.innerHTML = html;
+}
+
+// ── ROSTER STATS ──
+async function loadRosterStats() {
+  const wid = getWeekId();
+  const users = coachData?.users || [];
+  for (const u of users) {
+    try {
+      // Current week tracking
+      const trackSnap = await getDoc(doc(db, COL_TRACK, `${u.userId}_${wid}`));
+      const track = trackSnap.exists() ? trackSnap.data() : { completed:{} };
+      const td = days.filter(d => true); // all days for now
+      const done = Object.values(track.completed||{}).filter(v=>v).length;
+      u._weekDone = done;
+
+      // Week history for consistency
+      const weekQ = query(collection(db, COL_WEEKS), where('userId','==',u.userId));
+      const weekSnap = await getDocs(weekQ);
+      const weeks = weekSnap.docs.map(d => d.data());
+      const userTOTAL = 5; // default training days if not stored
+      const totalSess = weeks.reduce((s,w) => s+(w.completedCount||0), 0) + done;
+      const totalPlan = weeks.reduce((s,w) => s+(w.totalTrainingDays||userTOTAL), 0) + userTOTAL;
+      u._consistency = totalPlan > 0 ? Math.round((totalSess/totalPlan)*100) : 0;
+
+      let streak = 0;
+      const sorted = [...weeks].sort((a,b) => b.weekStart > a.weekStart ? 1:-1);
+      for (const w of sorted) { if ((w.completedCount||0)===(w.totalTrainingDays||userTOTAL)) streak++; else break; }
+      u._streak = streak;
+    } catch(e) { u._consistency=0; u._streak=0; u._weekDone=0; }
+  }
+  renderRoster();
+}
+
+// ── DASHBOARD TABS (Athletes / Templates) ──
+document.getElementById('dashTabAthletes').addEventListener('click', () => {
+  document.getElementById('dashTabAthletes').classList.add('active');
+  document.getElementById('dashTabTemplates').classList.remove('active');
+  document.getElementById('athletesSection').style.display = '';
+  document.getElementById('templatesSection').style.display = 'none';
+});
+document.getElementById('dashTabTemplates').addEventListener('click', async () => {
+  document.getElementById('dashTabTemplates').classList.add('active');
+  document.getElementById('dashTabAthletes').classList.remove('active');
+  document.getElementById('athletesSection').style.display = 'none';
+  document.getElementById('templatesSection').style.display = '';
+  await loadTemplates();
+  renderTemplateList();
+});
+
+// ── TEMPLATES ──
+async function loadTemplates() {
+  try {
+    const q = query(collection(db, COL_TPL), where('coachId','==',currentUser.id));
+    const snap = await getDocs(q);
+    templates = snap.docs.map(d => ({id:d.id,...d.data()}));
+    templates.sort((a,b) => (b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  } catch(e) { templates = []; showToast('Failed to load templates','error'); }
+}
+
+function renderTemplateList() {
+  const list = document.getElementById('templateList');
+  document.getElementById('tplCount').textContent = templates.length;
+  list.innerHTML = '';
+  if (!templates.length) {
+    list.innerHTML = '<div style="text-align:center;padding:40px 20px;border:1px dashed #1c1e24;border-radius:16px;"><div style="font-size:40px;margin-bottom:12px;">📋</div><div style="font-family:Bebas Neue,sans-serif;font-size:24px;color:#2a2a2a;">No Templates Yet</div><div style="font-size:12px;color:#555;margin-top:4px;">Create a template to reuse across athletes</div></div>';
+    return;
+  }
+  templates.forEach(tpl => {
+    const plan = tpl.plan || {};
+    const totalEx = Object.values(plan).reduce((s,d) => s + (Array.isArray(d)?d.length:0), 0);
+    const trainingDays = Object.entries(plan).filter(([k,v]) => Array.isArray(v) && v.length > 0).length;
+    const d = tpl.createdAt?.seconds ? new Date(tpl.createdAt.seconds*1000).toLocaleDateString('en-GB',{day:'numeric',month:'short'}) : '';
+    const card = document.createElement('div');
+    card.className = 'template-card';
+    card.innerHTML = `
+      <div class="template-name">${(tpl.name||'Untitled').replace(/</g,'&lt;')}</div>
+      <div class="template-meta">${trainingDays} training days · ${totalEx} exercises${d?' · '+d:''}</div>
+      <div class="template-actions">
+        <button class="btn-tpl-edit">Edit</button>
+        <button class="btn-tpl-apply">Apply</button>
+        <button class="btn-tpl-delete">Delete</button>
+      </div>`;
+    card.querySelector('.btn-tpl-edit').addEventListener('click', e => { e.stopPropagation(); openTemplateEditor(tpl); });
+    card.querySelector('.btn-tpl-apply').addEventListener('click', e => { e.stopPropagation(); openApplyModal(tpl); });
+    card.querySelector('.btn-tpl-delete').addEventListener('click', async e => {
+      e.stopPropagation();
+      if (!confirm(`Delete template "${tpl.name}"?`)) return;
+      try { await deleteDoc(doc(db, COL_TPL, tpl.id)); templates = templates.filter(t=>t.id!==tpl.id); renderTemplateList(); showToast('Template deleted','success'); }
+      catch(er) { showToast('Failed to delete','error'); }
+    });
+    list.appendChild(card);
+  });
+}
+
+// ── CREATE TEMPLATE ──
+document.getElementById('btnCreateTpl').addEventListener('click', () => {
+  editingTemplate = { plan: getDefaultPlan(), name: '', isNew: true };
+  document.getElementById('tplNameInput').value = '';
+  document.getElementById('tplNameModal').classList.add('open');
+});
+
+document.getElementById('btnCloseTplName').addEventListener('click', () => {
+  document.getElementById('tplNameModal').classList.remove('open');
+  editingTemplate = null;
+});
+
+document.getElementById('btnSaveTplName').addEventListener('click', async () => {
+  const name = document.getElementById('tplNameInput').value.trim();
+  if (!name) { document.getElementById('tplNameInput').style.borderColor='#ff4444'; setTimeout(()=>{document.getElementById('tplNameInput').style.borderColor='';},1000); return; }
+  document.getElementById('tplNameModal').classList.remove('open');
+
+  if (editingTemplate.isNew) {
+    showLoading('Creating template...');
+    try {
+      const ref = await addDoc(collection(db, COL_TPL), {
+        coachId: currentUser.id, name,
+        plan: editingTemplate.plan,
+        createdAt: serverTimestamp(), updatedAt: serverTimestamp()
+      });
+      editingTemplate = { id: ref.id, coachId: currentUser.id, name, plan: editingTemplate.plan };
+      await loadTemplates();
+      renderTemplateList();
+      hideLoading();
+      showToast('Template created','success');
+      // Open the template for editing
+      openTemplateEditor(editingTemplate);
+    } catch(e) { hideLoading(); showToast('Failed to create template','error'); editingTemplate = null; }
+  } else {
+    // Renaming existing template
+    try {
+      await updateDoc(doc(db, COL_TPL, editingTemplate.id), { name, updatedAt: serverTimestamp() });
+      editingTemplate.name = name;
+      await loadTemplates();
+      renderTemplateList();
+      showToast('Template renamed','success');
+    } catch(e) { showToast('Failed to rename','error'); }
+  }
+});
+
+// ── EDIT TEMPLATE (reuses the existing edit sheet) ──
+function openTemplateEditor(tpl) {
+  // Store reference so save knows to write to template, not user
+  editingTemplate = tpl;
+  // Temporarily use the template's plan as selectedUserPlan
+  selectedUserPlan = JSON.parse(JSON.stringify(tpl.plan || getDefaultPlan()));
+  selectedUser = null; // signal that we're editing a template
+  // Open day selection view for the template
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('manageView').style.display = 'block';
+  const safeName = (tpl.name||'Template').replace(/</g,'&lt;');
+  document.getElementById('manageUserName').innerHTML = `📋 ${safeName}`;
+  document.getElementById('manageTitle').innerHTML = `<span>TEMPLATE</span> Editor`;
+  // Hide data tab and unlink for templates
+  document.getElementById('tabData').style.display = 'none';
+  document.getElementById('btnUnlink').style.display = 'none';
+  selectedUserRest = {};
+  selectedUserTracking = { completed:{}, exercises:{} };
+  selectedUserSetLogs = [];
+  selectedUserWeekHistory = [];
+  selectedUserWeightLogs = [];
+  activeManageTab = 'workout';
+  dataFilter = 'ALL';
+  renderManageView();
+}
+
+// ── APPLY TEMPLATE TO USERS ──
+function openApplyModal(tpl) {
+  applyingTemplate = tpl;
+  const users = coachData.users || [];
+  const list = document.getElementById('applyUserList');
+  list.innerHTML = '';
+  document.getElementById('applyModalTitle').textContent = 'APPLY TEMPLATE';
+  document.getElementById('applyModalSub').textContent = `Apply "${(tpl.name||'').replace(/</g,'&lt;')}" to:`;
+  users.forEach(u => {
+    const item = document.createElement('div');
+    item.className = 'apply-user-item';
+    item.dataset.uid = u.userId;
+    item.innerHTML = `<div class="apply-check"></div><div class="apply-user-name">${(u.userName||'Unknown').replace(/</g,'&lt;')}</div>`;
+    item.addEventListener('click', () => item.classList.toggle('selected'));
+    list.appendChild(item);
+  });
+  document.getElementById('applyModal').classList.add('open');
+}
+
+// Apply template to current single user (from user management view)
+function openApplyModalForUser() {
+  const list = document.getElementById('applyUserList');
+  list.innerHTML = '';
+  document.getElementById('applyModalTitle').textContent = 'CHOOSE TEMPLATE';
+  document.getElementById('applyModalSub').textContent = `Apply to ${(selectedUser?.userName||'user').replace(/</g,'&lt;')}`;
+  templates.forEach(tpl => {
+    const item = document.createElement('div');
+    item.className = 'apply-user-item';
+    item.dataset.tplId = tpl.id;
+    item.innerHTML = `<div class="apply-check"></div><div class="apply-user-name">${(tpl.name||'Untitled').replace(/</g,'&lt;')}</div>`;
+    item.addEventListener('click', () => {
+      list.querySelectorAll('.apply-user-item').forEach(el => el.classList.remove('selected'));
+      item.classList.toggle('selected');
+    });
+    list.appendChild(item);
+  });
+  applyingTemplate = null; // will be set on confirm
+  document.getElementById('btnApplyConfirm').textContent = 'Apply Template';
+  document.getElementById('btnApplyConfirm').onclick = async () => {
+    const sel = list.querySelector('.apply-user-item.selected');
+    if (!sel) { showToast('Select a template','error'); return; }
+    const tpl = templates.find(t => t.id === sel.dataset.tplId);
+    if (!tpl || !selectedUser) return;
+    const btn = document.getElementById('btnApplyConfirm');
+    btn.classList.add('applying'); btn.textContent = 'Applying...';
+    try {
+      const planData = JSON.parse(JSON.stringify(tpl.plan || getDefaultPlan()));
+      await setDoc(doc(db, COL_PLANS, selectedUser.userId), planData);
+      selectedUserPlan = planData;
+      btn.textContent = 'Applied!';
+      setTimeout(() => {
+        btn.textContent = 'Apply Template'; btn.classList.remove('applying');
+        document.getElementById('applyModal').classList.remove('open');
+        renderManageView();
+      }, 1000);
+      showToast('Template applied','success');
+    } catch(e) { btn.textContent = 'Apply Template'; btn.classList.remove('applying'); showToast('Failed to apply','error'); }
+  };
+  document.getElementById('applyModal').classList.add('open');
+}
+
+document.getElementById('btnCloseApply').addEventListener('click', () => {
+  document.getElementById('applyModal').classList.remove('open');
+  applyingTemplate = null;
+});
+
+document.getElementById('btnApplyConfirm').addEventListener('click', async () => {
+  if (!applyingTemplate) return;
+  const selected = [...document.querySelectorAll('#applyUserList .apply-user-item.selected')].map(el => el.dataset.uid);
+  if (!selected.length) { showToast('Select at least one athlete','error'); return; }
+  const btn = document.getElementById('btnApplyConfirm');
+  btn.classList.add('applying'); btn.textContent = 'Applying...';
+  try {
+    const planData = JSON.parse(JSON.stringify(applyingTemplate.plan || getDefaultPlan()));
+    // Write to each user's plan in parallel
+    await Promise.all(selected.map(uid => setDoc(doc(db, COL_PLANS, uid), planData)));
+    btn.textContent = 'Applied!';
+    setTimeout(() => {
+      btn.textContent = 'Apply to Selected'; btn.classList.remove('applying');
+      document.getElementById('applyModal').classList.remove('open');
+    }, 1200);
+    showToast(`Template applied to ${selected.length} athlete${selected.length>1?'s':''}`,'success');
+  } catch(e) {
+    btn.textContent = 'Apply to Selected'; btn.classList.remove('applying');
+    showToast('Failed to apply template','error');
+  }
+  applyingTemplate = null;
+});
+
 // ── EDIT SHEET (coach edits user's plan) ──
 function openEditSheet(day) {
   editingDay = day;
@@ -905,9 +1747,21 @@ document.getElementById('editSaveBtn').addEventListener('click', async () => {
   selectedUserPlan[editingDay] = editPlanCopy.map(ex => ({...ex}));
   if (!selectedUserPlan.focusLabels) selectedUserPlan.focusLabels = {};
   selectedUserPlan.focusLabels[editingDay] = document.getElementById('editDayFocus').value.trim() || dayMeta[editingDay]?.focus || 'Custom';
-  await setDoc(doc(db, COL_PLANS, selectedUser.userId), selectedUserPlan);
-  btn.textContent = '\u2713 Saved!';
-  setTimeout(() => { btn.textContent='Save'; btn.classList.remove('saving'); closeEditSheet(); renderManageView(); }, 800);
+  try {
+    if (editingTemplate && editingTemplate.id) {
+      // Saving to template
+      await updateDoc(doc(db, COL_TPL, editingTemplate.id), { plan: selectedUserPlan, updatedAt: serverTimestamp() });
+      editingTemplate.plan = JSON.parse(JSON.stringify(selectedUserPlan));
+    } else if (selectedUser) {
+      // Saving to user's plan
+      await setDoc(doc(db, COL_PLANS, selectedUser.userId), selectedUserPlan);
+    }
+    btn.textContent = '\u2713 Saved!';
+    setTimeout(() => { btn.textContent='Save'; btn.classList.remove('saving'); closeEditSheet(); renderManageView(); }, 800);
+  } catch(e) {
+    btn.textContent = 'Save'; btn.classList.remove('saving');
+    showToast('Failed to save \u2014 check connection', 'error');
+  }
 });
 
 // Sheet swipe
@@ -926,9 +1780,13 @@ function renderEditList() {
     const item = document.createElement('div');
     item.className = 'edit-ex-item'; item.dataset.idx = i;
     const curSS = ex.supersetGroup || 0;
-    item.innerHTML = `<div class="drag-handle"><span></span><span></span><span></span></div><div class="edit-ex-info"><div class="edit-ex-name">${ex.name}</div><div class="edit-ex-cat">${ex.category}</div><input class="edit-note-input" value="${(ex.note||'').replace(/"/g,'&quot;')}" placeholder="Add note for trainee..." maxlength="150"></div><div class="edit-ex-controls"><div class="ss-pills"><div class="ss-pill ${curSS===0?'active':''}" data-ss="0" style="--pill-color:#555;">\u2014</div><div class="ss-pill ${curSS===1?'active':''}" data-ss="1">S1</div><div class="ss-pill ${curSS===2?'active':''}" data-ss="2">S2</div><div class="ss-pill ${curSS===3?'active':''}" data-ss="3">S3</div></div><div class="sets-stepper"><button class="sets-btn" data-action="dec">\u2212</button><div class="sets-val">${ex.sets}</div><button class="sets-btn" data-action="inc">+</button></div><span style="font-size:11px;color:var(--muted);">\u00D7</span><input class="reps-input" value="${ex.reps}" placeholder="reps"></div><button class="edit-ex-x">\u2715</button>`;
+    const curRest = ex.restTime || 30;
+    item.innerHTML = `<div class="drag-handle"><span></span><span></span><span></span></div><div class="edit-ex-info"><div class="edit-ex-name">${ex.name}</div><div class="edit-ex-cat">${ex.category}</div><input class="edit-note-input" value="${(ex.note||'').replace(/"/g,'&quot;')}" placeholder="Add note for trainee..." maxlength="150"></div><div class="edit-ex-controls"><div class="ss-pills"><div class="ss-pill ${curSS===0?'active':''}" data-ss="0" style="--pill-color:#555;">\u2014</div><div class="ss-pill ${curSS===1?'active':''}" data-ss="1">S1</div><div class="ss-pill ${curSS===2?'active':''}" data-ss="2">S2</div><div class="ss-pill ${curSS===3?'active':''}" data-ss="3">S3</div></div><div class="rest-pills"><span class="rest-label">Rest</span><div class="rest-pill ${curRest===15?'active':''}" data-rest="15">15</div><div class="rest-pill ${curRest===30?'active':''}" data-rest="30">30</div><div class="rest-pill ${curRest===60?'active':''}" data-rest="60">60</div><div class="rest-pill ${curRest===90?'active':''}" data-rest="90">90</div></div><div class="sets-stepper"><button class="sets-btn" data-action="dec">\u2212</button><div class="sets-val">${ex.sets}</div><button class="sets-btn" data-action="inc">+</button></div><span style="font-size:11px;color:var(--muted);">\u00D7</span><input class="reps-input" value="${ex.reps}" placeholder="reps"></div><button class="edit-ex-x">\u2715</button>`;
     item.querySelectorAll('.ss-pill').forEach(pill => {
       pill.addEventListener('click', e => { e.stopPropagation(); const val=parseInt(pill.dataset.ss); const idx=parseInt(item.dataset.idx); editPlanCopy[idx].supersetGroup=val||null; item.querySelectorAll('.ss-pill').forEach(p=>p.classList.toggle('active',parseInt(p.dataset.ss)===val)); });
+    });
+    item.querySelectorAll('.rest-pill').forEach(pill => {
+      pill.addEventListener('click', e => { e.stopPropagation(); const val=parseInt(pill.dataset.rest); const idx=parseInt(item.dataset.idx); editPlanCopy[idx].restTime=val; item.querySelectorAll('.rest-pill').forEach(p=>p.classList.toggle('active',parseInt(p.dataset.rest)===val)); });
     });
     item.querySelector('.edit-note-input').addEventListener('input', e => { editPlanCopy[parseInt(item.dataset.idx)].note=e.target.value.trim()||null; });
     item.querySelectorAll('.sets-btn').forEach(btn => {
@@ -1024,5 +1882,6 @@ function renderLibrary() {
   });
 }
 </script>
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/trainos/sw.js').catch(()=>{});}</script>
 </body>
 </html>

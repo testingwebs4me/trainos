@@ -263,6 +263,21 @@
   .set-log-btn:active { transform: scale(0.95); }
   .set-log-btn.logging { opacity: 0.5; pointer-events: none; }
   .set-log-btn.logged { background: rgba(232,255,71,0.12); border-color: var(--accent); color: var(--accent); pointer-events: none; }
+
+  /* REST TIMER */
+  .set-timer { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--accent); min-width: 48px; text-align: center; letter-spacing: 0.04em; animation: timerPulse 1s ease-in-out infinite; border-radius: 8px; padding: 2px 6px; }
+  @keyframes timerPulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+  .set-timer.done { color: #4ade80; animation: timerFlash 0.5s ease 6; background: rgba(74,222,128,0.08); }
+  @keyframes timerFlash { 0%,100% { background:rgba(74,222,128,0.04); } 50% { background:rgba(74,222,128,0.2); } }
+  .set-row.timing { background: rgba(232,255,71,0.02); border-radius: 8px; padding: 6px 4px; }
+  .set-row.timing .set-label { color: var(--accent); }
+
+  /* REST TIME PILLS in edit sheet */
+  .rest-pills { display: flex; gap: 3px; flex-shrink: 0; }
+  .rest-pill { min-width: 28px; height: 20px; border-radius: 4px; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #222; background: #141414; color: #444; transition: all 0.15s; touch-action: manipulation; padding: 0 4px; }
+  .rest-pill:active { transform: scale(0.9); }
+  .rest-pill.active { border-color: var(--accent); color: var(--accent); background: rgba(232,255,71,0.06); }
+  .rest-label { font-size: 8px; color: #333; letter-spacing: 0.06em; text-transform: uppercase; margin-right: 4px; flex-shrink: 0; }
   @media (max-width: 600px) { .set-weight-input { font-size: 16px !important; width: 72px; } }
 
   /* STATS */
@@ -400,6 +415,21 @@
   .prog-loading { text-align: center; padding: 40px; color: var(--muted); font-size: 12px; letter-spacing: 0.1em; }
 
   /* FEEDBACK */
+  /* CLEAR PROGRESS */
+  .btn-clear-progress { width: 100%; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 10px 24px; border-radius: 10px; border: 1px solid #2a2a2a; background: #1a1a1a; color: #444; cursor: pointer; transition: all 0.2s; touch-action: manipulation; }
+  .btn-clear-progress:hover { border-color: #ff4444; color: #ff4444; }
+  .confirm-overlay { position: fixed; inset: 0; z-index: 9200; background: rgba(0,0,0,0.75); display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+  .confirm-overlay.show { display: flex; }
+  .confirm-box { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 28px 24px; width: 90%; max-width: 340px; text-align: center; }
+  .confirm-icon { font-size: 40px; margin-bottom: 12px; display: block; }
+  .confirm-title { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 0.05em; margin-bottom: 8px; }
+  .confirm-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.4; }
+  .confirm-btns { display: flex; gap: 8px; }
+  .confirm-btns button { flex: 1; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 12px 0; border-radius: 10px; cursor: pointer; transition: all 0.2s; touch-action: manipulation; }
+  .btn-confirm-yes { border: 1px solid #ff4444; background: rgba(255,68,68,0.1); color: #ff4444; }
+  .btn-confirm-yes:active { transform: scale(0.96); }
+  .btn-confirm-no { border: 1px solid #2a2a2a; background: #1a1a1a; color: var(--muted); }
+
   .feedback-section { margin-top: 40px; padding: 24px 0 40px; border-top: 1px solid var(--border); }
   .feedback-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 0.05em; color: #2a2a2a; }
   .feedback-sub { font-size: 11px; color: #333; margin-bottom: 14px; }
@@ -539,6 +569,32 @@
     <div class="prog-title">MY <span>PROGRESS</span></div>
     <div class="prog-filter" id="progFilter"></div>
     <div id="progContent"></div>
+    <div class="feedback-section" style="border-top-color:#1a1a1a;">
+      <button class="btn-clear-progress" id="btnClearProgress">Clear All My Progress</button>
+    </div>
+    <!-- Double confirm modal -->
+    <div class="confirm-overlay" id="confirmOverlay1">
+      <div class="confirm-box">
+        <span class="confirm-icon">&#9888;&#65039;</span>
+        <div class="confirm-title">ARE YOU SURE?</div>
+        <div class="confirm-sub">This will delete all your set logs, weight history, week tracking, and progress data. This cannot be undone.</div>
+        <div class="confirm-btns">
+          <button class="btn-confirm-no" id="confirm1No">No, keep it</button>
+          <button class="btn-confirm-yes" id="confirm1Yes">Yes, clear it</button>
+        </div>
+      </div>
+    </div>
+    <div class="confirm-overlay" id="confirmOverlay2">
+      <div class="confirm-box">
+        <span class="confirm-icon">&#128580;</span>
+        <div class="confirm-title">SERIOUSLY, ARE YOU SURE???</div>
+        <div class="confirm-sub">All your PRs, set history, weekly streaks... gone forever. No going back.</div>
+        <div class="confirm-btns">
+          <button class="btn-confirm-no" id="confirm2No">Nah, I changed my mind</button>
+          <button class="btn-confirm-yes" id="confirm2Yes">Yes, nuke it all</button>
+        </div>
+      </div>
+    </div>
     <div class="feedback-section">
       <div class="feedback-title">Feedback</div>
       <p class="feedback-sub">Help us improve the app</p>
@@ -573,7 +629,7 @@
 
 <script type="module">
 import { initializeApp }    from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getFirestore, collection, addDoc, query, where, getDocs, serverTimestamp, doc, getDoc, setDoc, updateDoc, arrayUnion }
+import { getFirestore, collection, addDoc, query, where, getDocs, serverTimestamp, doc, getDoc, setDoc, updateDoc, arrayUnion, deleteDoc, enableIndexedDbPersistence }
                             from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 import { getAuth, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut }
                             from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
@@ -589,6 +645,7 @@ const firebaseConfig = {
 };
 const fbApp = initializeApp(firebaseConfig);
 const db    = getFirestore(fbApp);
+enableIndexedDbPersistence(db).catch(() => {});
 const auth  = getAuth(fbApp);
 const googleProvider = new GoogleAuthProvider();
 
@@ -608,21 +665,28 @@ const COL_COACHES = 'v2_coaches';
 async function redeemInvite(code) {
   code = code.trim().toUpperCase();
   if (!code || code.length !== 6) return;
+  if (localStorage.getItem(`redeemed_${code}`)) return;
   try {
     const invSnap = await getDoc(doc(db, COL_INVITES, code));
     if (!invSnap.exists()) { alert('Invalid invite code'); return; }
     const inv = invSnap.data();
     if (inv.status !== 'active') { alert('This invite code has already been used'); return; }
     if (inv.expiresAt && new Date(inv.expiresAt) < new Date()) { alert('This invite code has expired'); return; }
-    // Check if user already has a coach
     const linkSnap = await getDoc(doc(db, COL_LINK, currentUser.id));
     if (linkSnap.exists()) { alert('You already have a coach. Unlink first to connect with a new one.'); return; }
-    // Redeem: update invite, create link, add to coach's roster
+    localStorage.setItem(`redeemed_${code}`, 'true');
     await setDoc(doc(db, COL_INVITES, code), { ...inv, status:'redeemed', redeemedBy:currentUser.id, redeemedAt:serverTimestamp() });
     await setDoc(doc(db, COL_LINK, currentUser.id), { userId:currentUser.id, coachId:inv.coachId, coachName:inv.coachName, linkedAt:serverTimestamp() });
-    await updateDoc(doc(db, COL_COACHES, inv.coachId), { users: arrayUnion({ userId:currentUser.id, userName:currentUser.name, userEmail:currentUser.email, userPhoto:currentUser.photoURL, linkedAt:new Date().toISOString() }) });
+    // Read coach doc, dedup, write (prevents duplicate roster entries)
+    const coachSnap = await getDoc(doc(db, COL_COACHES, inv.coachId));
+    if (coachSnap.exists()) {
+      const cd = coachSnap.data();
+      const filtered = (cd.users||[]).filter(u => u.userId !== currentUser.id);
+      filtered.push({ userId:currentUser.id, userName:currentUser.name, userEmail:currentUser.email||'', userPhoto:currentUser.photoURL||null, linkedAt:new Date().toISOString() });
+      await updateDoc(doc(db, COL_COACHES, inv.coachId), { users: filtered });
+    }
     alert('Connected to coach: ' + inv.coachName);
-  } catch(e) { console.error('Redeem error:', e); alert('Failed to redeem invite code'); }
+  } catch(e) { console.error('Redeem error:', e); localStorage.removeItem(`redeemed_${code}`); alert('Failed to redeem invite code'); }
 }
 
 // No hardcoded users — Google Auth handles identity
@@ -947,6 +1011,51 @@ document.getElementById('signOutBtn').addEventListener('click', async () => {
   document.getElementById('signInScreen').classList.remove('hidden');
 });
 
+// Clear progress — double confirmation
+document.getElementById('btnClearProgress').addEventListener('click', () => {
+  document.getElementById('confirmOverlay1').classList.add('show');
+});
+document.getElementById('confirm1No').addEventListener('click', () => {
+  document.getElementById('confirmOverlay1').classList.remove('show');
+});
+document.getElementById('confirm1Yes').addEventListener('click', () => {
+  document.getElementById('confirmOverlay1').classList.remove('show');
+  document.getElementById('confirmOverlay2').classList.add('show');
+});
+document.getElementById('confirm2No').addEventListener('click', () => {
+  document.getElementById('confirmOverlay2').classList.remove('show');
+});
+document.getElementById('confirm2Yes').addEventListener('click', async () => {
+  document.getElementById('confirmOverlay2').classList.remove('show');
+  if (!currentUser) return;
+  try {
+    // Delete all set logs
+    const setQ = query(collection(db, COL_SETS), where('userId','==',currentUser.id));
+    const setSnap = await getDocs(setQ);
+    await Promise.all(setSnap.docs.map(d => deleteDoc(doc(db, COL_SETS, d.id))));
+    // Delete all weight logs
+    const weightQ = query(collection(db, COL_WEIGHT), where('userId','==',currentUser.id));
+    const weightSnap = await getDocs(weightQ);
+    await Promise.all(weightSnap.docs.map(d => deleteDoc(doc(db, COL_WEIGHT, d.id))));
+    // Delete all week logs
+    const weekQ = query(collection(db, COL_WEEKS), where('userId','==',currentUser.id));
+    const weekSnap = await getDocs(weekQ);
+    await Promise.all(weekSnap.docs.map(d => deleteDoc(doc(db, COL_WEEKS, d.id))));
+    // Reset current week tracking
+    const wid = getWeekId();
+    await setDoc(doc(db, COL_TRACK, `${currentUser.id}_${wid}`), { userId:currentUser.id, weekId:wid, completed:{}, exercises:{}, updatedAt:serverTimestamp() });
+    // Clear local state
+    userWeightLogs = []; userSetLogs = []; weekHistory = [];
+    tracking = { week: wid, completed:{}, exercises:{} };
+    try { localStorage.removeItem(`${TRACK_KEY}_${currentUser.id}`); } catch(e) {}
+    updateProgress();
+    alert('All progress cleared. Fresh start!');
+    // Go back to main app
+    document.getElementById('progressPage').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+  } catch(e) { console.error('Clear failed:', e); alert('Failed to clear progress \u2014 try again'); }
+});
+
 // Feedback
 document.getElementById('feedbackBtn').addEventListener('click', async () => {
   const input = document.getElementById('feedbackInput');
@@ -1170,6 +1279,86 @@ function getExercisePR(exerciseName) {
 }
 
 // TRACKING
+// REST TIMER
+function startRestTimer(row, day, exId, setNum, restSeconds, loggedWeight, loggedReps) {
+  const endTime = Date.now() + restSeconds * 1000;
+  localStorage.setItem(`timer_${day}_${exId}_${setNum}`, String(endTime));
+  showTimerOnRow(row, endTime, loggedWeight, loggedReps);
+}
+
+function showTimerOnRow(row, endTime, weight, reps) {
+  row.classList.add('timing');
+  const logBtn = row.querySelector('.set-log-btn');
+  const weightInput = row.querySelector('.set-weight-input');
+  const kgLabel = row.querySelector('.set-kg');
+  const stepper = row.querySelector('.set-rep-stepper');
+
+  // Hide input controls, show timer
+  if (weightInput) weightInput.style.display = 'none';
+  if (kgLabel) kgLabel.style.display = 'none';
+  if (stepper) stepper.style.display = 'none';
+
+  // Replace log button with timer display
+  if (logBtn) {
+    logBtn.style.display = 'none';
+  }
+
+  // Add logged data + timer element
+  let timerEl = row.querySelector('.set-timer');
+  let dataEl = row.querySelector('.set-logged-data');
+  if (!timerEl) {
+    dataEl = document.createElement('span');
+    dataEl.className = 'set-logged-data';
+    dataEl.style.cssText = 'font-size:12px;color:var(--muted);flex:1;';
+    dataEl.textContent = weight ? `${weight}kg\u00D7${reps} \u2713` : '\u2713';
+    row.appendChild(dataEl);
+
+    timerEl = document.createElement('div');
+    timerEl.className = 'set-timer';
+    row.appendChild(timerEl);
+  }
+
+  const tick = () => {
+    const remaining = Math.ceil((endTime - Date.now()) / 1000);
+    if (remaining > 0) {
+      timerEl.textContent = remaining + 's';
+      timerEl.classList.remove('done');
+      setTimeout(tick, 250);
+    } else {
+      timerEl.textContent = 'GO!';
+      timerEl.classList.add('done');
+      // Revert after 8 seconds
+      setTimeout(() => {
+        row.classList.remove('timing');
+        if (timerEl) timerEl.remove();
+        if (dataEl) dataEl.remove();
+        if (weightInput) { weightInput.style.display = ''; weightInput.disabled = true; }
+        if (kgLabel) kgLabel.style.display = '';
+        if (stepper) { stepper.style.display = ''; stepper.querySelectorAll('button').forEach(b => b.disabled = true); }
+        if (logBtn) { logBtn.style.display = ''; logBtn.textContent = '\u2713'; logBtn.classList.add('logged'); }
+        localStorage.removeItem(`timer_${row.dataset.timerKey}`);
+      }, 8000);
+    }
+  };
+  tick();
+}
+
+function checkRestoreTimers(row, day, exId, setNum, weight, reps) {
+  const key = `timer_${day}_${exId}_${setNum}`;
+  row.dataset.timerKey = key;
+  const saved = localStorage.getItem(key);
+  if (saved) {
+    const endTime = parseInt(saved);
+    if (endTime > Date.now()) {
+      showTimerOnRow(row, endTime, weight, reps);
+      return true;
+    } else {
+      localStorage.removeItem(key);
+    }
+  }
+  return false;
+}
+
 function getWeekId() {
   const now = new Date();
   const sun = new Date(now);
@@ -1402,7 +1591,12 @@ const imageMap = {
   "barbell shoulder press":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Shoulder_Press/0.jpg",
   "rear delt fly":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Reverse_Flyes/0.jpg",
   "face pull":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Face_Pull/0.jpg",
-  "preacher curl":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Preacher_Curl/0.jpg"
+  "preacher curl":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Preacher_Curl/0.jpg",
+  "lateral raise machine":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Side_Lateral_Raise/0.jpg",
+  "meadows row":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/One-Arm_Dumbbell_Row/0.jpg",
+  "cable y raise":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Front_Cable_Raise/0.jpg",
+  "v up exercise":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Jackknife_Sit-Up/0.jpg",
+  "cable tricep kickback":"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Tricep_Dumbbell_Kickback/0.jpg"
 };
 let dbReady = true;
 
@@ -1969,6 +2163,10 @@ function selectDay(day) {
           inp.disabled = true;
           row.querySelectorAll('.set-rep-btn').forEach(b => b.disabled = true);
           row.classList.add('logged');
+          row.dataset.timerKey = `timer_${day}_${ex.id}_${setNum}`;
+          // Start rest timer
+          const restSec = parseInt(ex.restTime) || 30;
+          startRestTimer(row, day, ex.id, setNum, restSec, weight, reps);
           // Auto-check exercise if all sets logged
           const allLogged = [...card.querySelectorAll('.set-log-btn')].every(b => b.classList.contains('logged'));
           if (allLogged && !isExChecked(day, ex.id)) {
@@ -1979,6 +2177,11 @@ function selectDay(day) {
           }
         } catch(err) { btn.textContent = 'ERR'; btn.classList.remove('logging'); setTimeout(()=>{btn.textContent='LOG';},2000); }
       });
+      // Restore active timer if page was reloaded
+      if (row.classList.contains('logged')) {
+        const already = todaySets.find(t => t.setNumber === setNum);
+        checkRestoreTimers(row, day, ex.id, setNum, already?.weight, already?.reps);
+      }
     });
 
     card._exData = ex;
@@ -2110,6 +2313,13 @@ function renderEditList() {
           <div class="ss-pill ${curSS===2?'active':''}" data-ss="2">S2</div>
           <div class="ss-pill ${curSS===3?'active':''}" data-ss="3">S3</div>
         </div>
+        <div class="rest-pills">
+          <span class="rest-label">Rest</span>
+          <div class="rest-pill ${(ex.restTime||30)===15?'active':''}" data-rest="15">15</div>
+          <div class="rest-pill ${(ex.restTime||30)===30?'active':''}" data-rest="30">30</div>
+          <div class="rest-pill ${(ex.restTime||30)===60?'active':''}" data-rest="60">60</div>
+          <div class="rest-pill ${(ex.restTime||30)===90?'active':''}" data-rest="90">90</div>
+        </div>
         <div class="sets-stepper">
           <button class="sets-btn" data-action="dec">\u2212</button>
           <div class="sets-val">${ex.sets}</div>
@@ -2127,6 +2337,16 @@ function renderEditList() {
         const idx = parseInt(item.dataset.idx);
         editPlanCopy[idx].supersetGroup = val || null;
         item.querySelectorAll('.ss-pill').forEach(p => p.classList.toggle('active', parseInt(p.dataset.ss) === val));
+      });
+    });
+    // Rest time pills
+    item.querySelectorAll('.rest-pill').forEach(pill => {
+      pill.addEventListener('click', e => {
+        e.stopPropagation();
+        const val = parseInt(pill.dataset.rest);
+        const idx = parseInt(item.dataset.idx);
+        editPlanCopy[idx].restTime = val;
+        item.querySelectorAll('.rest-pill').forEach(p => p.classList.toggle('active', parseInt(p.dataset.rest) === val));
       });
     });
     // Note input
@@ -2265,5 +2485,6 @@ function initDragSort(listEl) {
 
 // BOOT — onAuthStateChanged (above) handles sign-in state automatically
 </script>
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/trainos/sw.js').catch(()=>{});}</script>
 </body>
 </html>

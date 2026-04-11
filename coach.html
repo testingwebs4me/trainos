@@ -1772,26 +1772,61 @@ document.getElementById('btnApplyConfirm').addEventListener('click', async () =>
 const GEMINI_KEY = 'AIzaSyA2I1XRZ3M2jG0ewZhxNtxwDLvC4n-1FIo'; // Replace with your Gemini API key
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
 
-async function askAI(prompt) {
+// AI cache (localStorage) — same inputs skip the API entirely
+const AI_CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
+function aiCacheKey(prompt) { let h = 0; for (let i = 0; i < prompt.length; i++) { h = ((h << 5) - h + prompt.charCodeAt(i)) | 0; } return 'ai_cache_' + h; }
+function getAiCache(prompt) {
+  try { const e = JSON.parse(localStorage.getItem(aiCacheKey(prompt))); if (e && Date.now() - e.t < AI_CACHE_TTL) return e.v; } catch {} return null;
+}
+function setAiCache(prompt, value) {
+  try { localStorage.setItem(aiCacheKey(prompt), JSON.stringify({ v: value, t: Date.now() })); } catch {}
+}
+
+// AI cooldown — 30s between API calls (not cached hits)
+let aiLastCall = 0;
+const AI_COOLDOWN = 30000; // 30 seconds
+
+async function askAI(prompt, retries) {
+  retries = retries || 0;
+  // Check cache first
+  const cached = getAiCache(prompt);
+  if (cached) return cached;
+  // Enforce cooldown
+  const elapsed = Date.now() - aiLastCall;
+  if (elapsed < AI_COOLDOWN && retries === 0) {
+    const wait = Math.ceil((AI_COOLDOWN - elapsed) / 1000);
+    throw new Error(`Please wait ${wait}s before the next AI request.`);
+  }
+  aiLastCall = Date.now();
   const resp = await fetch(GEMINI_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { maxOutputTokens: 2000, temperature: 0.7 } })
+    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { maxOutputTokens: 1500, temperature: 0.7 } })
   });
-  if (!resp.ok) throw new Error('AI request failed: ' + resp.status);
+  if (resp.status === 429 && retries < 2) {
+    // Rate limited — wait and retry
+    await new Promise(r => setTimeout(r, 5000));
+    return askAI(prompt, retries + 1);
+  }
+  if (!resp.ok) throw new Error('AI request failed: ' + resp.status + '. Try again in a minute.');
   const data = await resp.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response';
+  const result = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response';
+  setAiCache(prompt, result);
+  return result;
 }
 
 // Build exercise name list for AI context (so it only suggests from our library)
-function getExerciseContext() {
-  const byCategory = {};
-  exerciseLibrary.forEach(ex => {
-    if (!byCategory[ex.category]) byCategory[ex.category] = [];
-    byCategory[ex.category].push(`${ex.name} (${ex.muscleGroup||''}, ${ex.subcategory||''})`);
+function getExerciseContext(category) {
+  // Only send relevant exercises to reduce token usage
+  const filtered = category ? exerciseLibrary.filter(e => e.category === category) : exerciseLibrary;
+  const byGroup = {};
+  filtered.forEach(ex => {
+    const g = ex.muscleGroup || ex.category;
+    if (!byGroup[g]) byGroup[g] = [];
+    byGroup[g].push(ex.name);
   });
   let ctx = '';
-  Object.entries(byCategory).forEach(([cat, exs]) => { ctx += `\n${cat}: ${exs.join(', ')}`; });
+  Object.entries(byGroup).forEach(([g, names]) => { ctx += `\n${g}: ${names.join(', ')}`; });
   return ctx;
 }
 
@@ -1832,7 +1867,7 @@ document.getElementById('btnAiGenerate').addEventListener('click', async () => {
 
 RULES:
 - ONLY use exercises from this list. Do NOT invent exercises.
-- Available exercises: ${getExerciseContext()}
+- Available exercises (pick ONLY from these): ${getExerciseContext()}
 - Assign exercises to specific days (Sunday through Saturday).
 - For each exercise specify: name, sets, reps.
 - ${level === 'Beginner' ? 'Keep it simple, 4-5 exercises per day, moderate volume.' : level === 'Advanced' ? 'High volume, 7-8 exercises per day, include supersets.' : '6-7 exercises per day, balanced volume.'}
@@ -1881,7 +1916,7 @@ document.getElementById('btnAiSuggest').addEventListener('click', async () => {
 
   const prompt = `You are a gym exercise expert. The coach asked: "${query}"
 
-ONLY suggest exercises from this list: ${getExerciseContext()}
+ONLY suggest exercises from this list: ${getExerciseContext()}\nKeep response under 200 words.
 
 Suggest 3-5 exercises that best match the request. For each, state:
 - Exercise name (exactly as listed)
@@ -1940,7 +1975,7 @@ Be direct and specific. Mention strengths, weaknesses, and 1-2 concrete recommen
 async function getPlateauAdvice(exerciseName, currentWeight) {
   const prompt = `You are a strength coach. An athlete has been stuck at ${currentWeight}kg on ${exerciseName} for 3+ weeks.
 
-Available exercises they could swap to: ${getExerciseContext()}
+Available exercises they could swap to: ${getExerciseContext()}\nKeep response under 150 words.
 
 Give 3 specific strategies to break through this plateau:
 1. A programming change (sets/reps/tempo adjustment)

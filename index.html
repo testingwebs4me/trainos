@@ -879,7 +879,7 @@ async function handleSignedInUser(user) {
       window.history.replaceState({}, '', window.location.pathname);
       // Re-check after redeem
       const recheck = await getDoc(doc(db, COL_LINK, currentUser.id)).catch(() => null);
-      if (recheck?.exists()) { showApp(); return; }
+      if (recheck?.exists()) { hasCoach = true; showApp(); return; }
     }
     // No coach — show code entry screen
     showCoachCodeScreen();
@@ -1496,7 +1496,7 @@ let progActiveTab = 'weekly';
 
 document.getElementById('goProgressBtn').addEventListener('click', () => {
   document.getElementById('app').style.display = 'none';
-  document.getElementById('btnClearProgress').style.display = hasCoach ? 'none' : '';
+  document.getElementById('btnClearProgress').style.display = 'none';
   const pg = document.getElementById('progressPage');
   pg.style.cssText = 'display:block;opacity:0;transform:translateY(20px);transition:opacity 0.4s ease,transform 0.4s ease;';
   requestAnimationFrame(() => { pg.style.opacity='1'; pg.style.transform='translateY(0)'; });
@@ -1826,8 +1826,7 @@ function selectDay(day) {
   const display = document.getElementById('workoutDisplay');
 
   if (isRestDay(day)) {
-    display.innerHTML = `<div class="rest-panel"><span class="rest-emoji">&#128164;</span><h2>Rest Day</h2><p>Recovery is part of the program. Sleep, eat, repeat.</p>${hasCoach?'':'<button class="btn-unrest" id="btnUnrest">Remove Rest Day</button>'}</div>`;
-    if (!hasCoach) document.getElementById('btnUnrest')?.addEventListener('click', () => toggleRestDay(day));
+    display.innerHTML = `<div class="rest-panel"><span class="rest-emoji">&#128164;</span><h2>Rest Day</h2><p>Recovery is part of the program. Sleep, eat, repeat.</p></div>`;
     return;
   }
 
@@ -1846,17 +1845,11 @@ function selectDay(day) {
           <div class="panel-actions">
             <div class="panel-actions-top">
               <div class="panel-focus">${focus}</div>
-              ${hasCoach?'':'<button class="btn-edit-day" id="btnEdit">+ Add Exercises</button>'}
-              ${hasCoach?'':'<button class="btn-rest-toggle" id="btnRestToggle">Set Rest Day</button>'}
-            </div>
+                                        </div>
           </div>
         </div>
-        <div class="rest-panel" style="border:1px dashed #1e1e1e;"><span class="rest-emoji">&#128170;</span><h2 style="color:#333;">${hasCoach?'No Exercises Assigned':'No Exercises Yet'}</h2><p>${hasCoach?'Your coach will add exercises for this day':'Tap "Add Exercises" to build your workout, or mark as rest day'}</p></div>
+        <div class="rest-panel" style="border:1px dashed #1e1e1e;"><span class="rest-emoji">&#128170;</span><h2 style="color:#333;">No Exercises Assigned</h2><p>Your coach will add exercises for this day</p></div>
       </div>`;
-    if (!hasCoach) {
-      document.getElementById('btnEdit')?.addEventListener('click', () => openEditSheet(day));
-      document.getElementById('btnRestToggle')?.addEventListener('click', () => toggleRestDay(day));
-    }
     return;
   }
 
@@ -1867,9 +1860,7 @@ function selectDay(day) {
         <div class="panel-actions">
           <div class="panel-actions-top">
             <div class="panel-focus">${focus}</div>
-            ${hasCoach?'':'<button class="btn-edit-day" id="btnEdit">Edit</button>'}
-            ${hasCoach?'':'<button class="btn-rest-toggle" id="btnRestToggle">Set Rest Day</button>'}
-          </div>
+                                  </div>
           <div class="panel-actions-bottom">
             <button class="btn-clear-day" id="btnClear" style="${checkedCount>0?'':'opacity:0.3;pointer-events:none;'}">Clear</button>
             <button class="btn-complete-all ${allDone?'done':''}">${allDone?'\u2713 Done':'All Done'}</button>
@@ -1886,10 +1877,6 @@ function selectDay(day) {
 
   document.getElementById('btnClear').addEventListener('click', () => clearDay(day));
   document.querySelector('.btn-complete-all').addEventListener('click', () => markDayComplete(day));
-  if (!hasCoach) {
-    document.getElementById('btnEdit')?.addEventListener('click', () => openEditSheet(day));
-    document.getElementById('btnRestToggle')?.addEventListener('click', () => toggleRestDay(day));
-  }
 
   const list = document.getElementById('exList');
   const cards = [];

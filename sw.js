@@ -1,8 +1,9 @@
-const CACHE_NAME = 'trainos-v1';
+const CACHE_NAME = 'trainos-v2';
 const URLS_TO_CACHE = [
   '/trainos/',
   '/trainos/index.html',
   '/trainos/coach.html',
+  '/trainos/exercises.js',
   '/trainos/manifest.json',
   '/trainos/favicon.png',
   '/trainos/apple-touch-icon.png',

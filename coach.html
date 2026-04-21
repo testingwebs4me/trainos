@@ -101,6 +101,95 @@ h1 span { color: var(--accent); }
 .roster-empty h2 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: #2a2a2a; }
 .roster-empty p { font-size: 12px; color: var(--muted); margin-top: 8px; }
 
+/* ROSTER CARD BADGES (last-seen + streak highlight) */
+.roster-lastseen { font-size: 10px; font-weight: 600; color: var(--muted); margin-top: 3px; letter-spacing: 0.02em; }
+.roster-lastseen.fresh { color: #4ade80; }
+.roster-lastseen.stale { color: #ffaa00; }
+.roster-lastseen.idle { color: #ff4466; }
+.roster-streak-flame { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 700; color: #ff8c3a; background: rgba(255,140,58,0.08); border: 1px solid rgba(255,140,58,0.25); border-radius: 999px; padding: 2px 7px; margin-left: 6px; vertical-align: middle; }
+
+/* ACTIVITY FEED */
+.activity-section { margin: 24px 0 20px; }
+.activity-section-title { font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.activity-list { display: flex; flex-direction: column; gap: 8px; }
+.activity-item { display: flex; align-items: center; gap: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; transition: all 0.2s; animation: activitySlideIn 0.4s var(--ease) both; }
+.activity-item:hover { border-color: #333; background: var(--card-hover); }
+.activity-item.is-pr { border-color: rgba(255,215,0,0.3); background: linear-gradient(90deg, rgba(255,215,0,0.06), transparent); }
+.activity-item.is-pr:hover { border-color: rgba(255,215,0,0.5); }
+@keyframes activitySlideIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.activity-avatar { width: 32px; height: 32px; border-radius: 50%; background: #0c0c0c; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--accent); overflow: hidden; flex-shrink: 0; }
+.activity-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.activity-body { flex: 1; min-width: 0; }
+.activity-text { font-size: 12px; color: var(--text); line-height: 1.4; }
+.activity-text strong { font-weight: 700; color: var(--text); }
+.activity-text .ex-name { color: var(--accent); font-weight: 600; }
+.activity-text .weight { color: #ffaa00; font-weight: 600; }
+.activity-item.is-pr .weight { color: #ffd700; }
+.activity-time { font-size: 10px; color: var(--muted); margin-top: 2px; letter-spacing: 0.02em; }
+.activity-pr-badge { font-size: 11px; flex-shrink: 0; }
+.activity-empty { text-align: center; padding: 24px 16px; border: 1px dashed var(--border); border-radius: 12px; color: var(--muted); font-size: 12px; }
+
+/* COACH PRIVATE NOTES \u2014 journal style (pinned + timeline of entries) */
+.notes-wrap { display: flex; flex-direction: column; gap: 16px; padding-bottom: 20px; }
+/* Pinned note card \u2014 always at top, purple accent, single textarea */
+.notes-pinned { background: rgba(168,85,247,0.05); border: 1px solid rgba(168,85,247,0.2); border-radius: 14px; padding: 14px; }
+.notes-pinned-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.notes-pinned-label { font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #a855f7; display: flex; align-items: center; gap: 6px; }
+.notes-pinned-sub { font-size: 10px; color: var(--muted); font-weight: 400; letter-spacing: 0; text-transform: none; }
+.notes-textarea { width: 100%; background: transparent; border: none; outline: none; resize: vertical; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; line-height: 1.55; min-height: 60px; max-height: 280px; padding: 0; box-sizing: border-box; }
+.notes-textarea::placeholder { color: #2a2a2a; }
+.notes-status { font-size: 10px; color: var(--muted); opacity: 0; transition: opacity 0.3s; min-height: 14px; margin-top: 6px; }
+.notes-status.saved { opacity: 1; color: #4ade80; }
+.notes-status.saving { opacity: 1; color: var(--muted); }
+.notes-status.error { opacity: 1; color: #ff4466; }
+/* Journal section header with add button */
+.notes-section-head { display: flex; justify-content: space-between; align-items: center; padding: 0 2px; }
+.notes-section-title { font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+.notes-add-btn { background: var(--accent); color: #060606; border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 7px 14px; cursor: pointer; transition: all 0.2s; touch-action: manipulation; display: inline-flex; align-items: center; gap: 5px; }
+.notes-add-btn:hover { filter: brightness(1.1); }
+.notes-add-btn:active { transform: scale(0.96); }
+.notes-add-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+/* Composer (shown when adding new entry) */
+.notes-composer { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 12px; display: none; flex-direction: column; gap: 10px; animation: notesComposerIn 0.25s var(--ease) both; }
+.notes-composer.open { display: flex; }
+@keyframes notesComposerIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+.notes-composer-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.notes-btn-secondary { background: transparent; color: var(--muted); border: 1px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; padding: 7px 14px; cursor: pointer; transition: all 0.2s; touch-action: manipulation; }
+.notes-btn-secondary:hover { color: var(--text); border-color: #333; }
+.notes-btn-primary { background: #a855f7; color: #fff; border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 7px 16px; cursor: pointer; transition: all 0.2s; touch-action: manipulation; }
+.notes-btn-primary:hover { filter: brightness(1.1); }
+.notes-btn-primary:active { transform: scale(0.96); }
+.notes-btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+/* Entry cards \u2014 timeline list */
+.notes-list { display: flex; flex-direction: column; gap: 8px; }
+.notes-entry { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; transition: all 0.2s; animation: notesEntryIn 0.3s var(--ease) both; }
+@keyframes notesEntryIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+.notes-entry:hover { border-color: #333; }
+.notes-entry-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px; }
+.notes-entry-date { font-size: 10px; color: var(--muted); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+.notes-entry-actions { display: flex; gap: 4px; }
+.notes-entry-btn { background: none; border: none; color: var(--muted); font-size: 14px; width: 24px; height: 24px; border-radius: 6px; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; padding: 0; touch-action: manipulation; }
+.notes-entry-btn:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+.notes-entry-btn.delete:hover { background: rgba(255,68,68,0.12); color: #ff4466; }
+.notes-entry-text { font-size: 13px; color: var(--text); line-height: 1.55; white-space: pre-wrap; word-wrap: break-word; }
+.notes-entry-text[contenteditable="true"] { outline: 1px dashed #333; outline-offset: 4px; border-radius: 4px; padding: 2px; }
+.notes-empty { text-align: center; padding: 40px 20px; border: 1px dashed var(--border); border-radius: 14px; color: var(--muted); font-size: 12px; }
+.notes-empty-icon { font-size: 28px; display: block; margin-bottom: 10px; opacity: 0.5; }
+/* Desktop \u2014 wider textareas, more breathing room */
+@media (min-width: 900px) {
+  .notes-wrap { gap: 20px; max-width: 760px; margin: 0 auto; }
+  .notes-pinned { padding: 18px 20px; }
+  .notes-textarea { font-size: 15px; min-height: 72px; }
+  .notes-entry { padding: 14px 18px; }
+  .notes-entry-text { font-size: 14px; }
+  .notes-add-btn, .notes-btn-primary, .notes-btn-secondary { font-size: 12px; padding: 8px 18px; }
+}
+/* Mobile tweaks \u2014 avoid iOS zoom on focus */
+@media (max-width: 600px) {
+  .notes-textarea { font-size: 16px !important; }
+  .notes-entry-btn { width: 28px; height: 28px; font-size: 16px; }
+}
+
 /* MANAGE USER VIEW */
 #manageView { display: none; }
 .manage-back { background: none; border: 1px solid #2a2a2a; border-radius: 8px; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 7px 14px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; touch-action: manipulation; }
@@ -543,6 +632,11 @@ footer { text-align: center; padding: 48px 0 calc(32px + env(safe-area-inset-bot
       <div class="invite-bar">
         <button class="btn-invite" id="btnGenInvite">+ Generate Invite Code</button>
       </div>
+      <!-- RECENT ACTIVITY FEED -->
+      <div class="activity-section" id="activitySection" style="display:none;">
+        <div class="activity-section-title">Recent Activity</div>
+        <div class="activity-list" id="activityList"></div>
+      </div>
       <div class="roster-label">YOUR ATHLETES (<span id="rosterCount">0</span>)</div>
       <div class="roster-list" id="rosterList"></div>
     </div>
@@ -577,9 +671,12 @@ footer { text-align: center; padding: 48px 0 calc(32px + env(safe-area-inset-bot
     <div class="manage-tabs">
       <button class="manage-tab active" id="tabWorkout">Workout</button>
       <button class="manage-tab" id="tabData">Data</button>
+      <button class="manage-tab" id="tabNotes">Notes</button>
     </div>
     <div id="manageWorkoutDisplay"></div>
     <div id="manageDataDisplay" style="display:none;"></div>
+    <!-- Feature 4: Private coach notes (journal style). Only the coach sees this. -->
+    <div id="manageNotesDisplay" style="display:none;"></div>
     <button class="btn-unlink" id="btnUnlink">Unlink This User</button>
     <footer>Trainos Coach</footer>
   </div>
@@ -698,7 +795,7 @@ footer { text-align: center; padding: 48px 0 calc(32px + env(safe-area-inset-bot
 <script src="exercises.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, query, where, getDocs, serverTimestamp, doc, getDoc, setDoc, deleteDoc, updateDoc, arrayUnion, arrayRemove }
+import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, query, where, getDocs, serverTimestamp, doc, getDoc, setDoc, deleteDoc, updateDoc, arrayUnion, arrayRemove, limit, orderBy, writeBatch }
   from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 import { getAuth, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut }
   from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
@@ -726,6 +823,29 @@ const COL_WEIGHT  = 'v2_weightLogs';
 const COL_WEEKS   = 'v2_weekLogs';
 const COL_TRACK   = 'v2_weekTracking';
 const COL_TPL     = 'v2_templates';
+const COL_NOTES   = 'v2_coachNotes'; // Feature 4: private coach-only notes, keyed by coachId
+
+// ── SAFETY HELPERS (XSS hardening) ──
+// Validate a URL is http/https only \u2014 rejects javascript:, data:, file:, vbscript: schemes
+function safePhotoURL(url) {
+  if (!url || typeof url !== 'string') return null;
+  try { const u = new URL(url, window.location.href); return (u.protocol === 'http:' || u.protocol === 'https:') ? url : null; }
+  catch { return null; }
+}
+function escapeHtml(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function renderAvatar(el, photoURL, initials, imgStyle) {
+  if (!el) return;
+  el.textContent = '';
+  const safe = safePhotoURL(photoURL);
+  if (safe) {
+    const img = document.createElement('img');
+    img.src = safe; img.alt = '';
+    if (imgStyle) img.style.cssText = imgStyle;
+    el.appendChild(img);
+  } else {
+    el.textContent = initials || '?';
+  }
+}
 
 let currentUser = null;
 let coachData = null;
@@ -786,6 +906,9 @@ function getDefaultPlan() {
 // Image map — same as index.html
 const placeholderHTML = `<div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="8" width="4" height="8" rx="1"/><rect x="17" y="8" width="4" height="8" rx="1"/><rect x="7" y="10" width="10" height="4" rx="1"/></svg><span>No image</span></div>`;
 
+// Fix 11: getWeekId uses LOCAL time on purpose \u2014 weeks roll over at the user's midnight.
+// Switching to UTC would break all existing week IDs in Firestore. For the Saudi-first launch,
+// coach + athletes are in the same TZ so this is consistent. Cross-TZ users may see a 1-day skew.
 function getWeekId() {
   const now = new Date(); const sun = new Date(now); sun.setDate(now.getDate()-now.getDay());
   return `${sun.getFullYear()}-${String(sun.getMonth()+1).padStart(2,'0')}-${String(sun.getDate()).padStart(2,'0')}`;
@@ -839,6 +962,9 @@ document.getElementById('googleSignInBtn').addEventListener('click', async () =>
 });
 
 document.getElementById('signOutBtn').addEventListener('click', async () => {
+  // Fix 20: zero session state so any in-flight async ops see currentUser=null and bail via their guards
+  selectedUser = null; editingTemplate = null; coachData = null;
+  coachNotesDoc = null; coachNotesLoaded = false; coachNotesLoadP = null; // Feature 4: drop cached notes so next coach doesn't inherit them
   await signOut(auth); currentUser = null;
   document.getElementById('dashboard').style.display = 'none';
   document.getElementById('manageView').style.display = 'none';
@@ -875,11 +1001,10 @@ function showDashboard() {
   dash.style.cssText = 'display:block;opacity:0;transform:translateY(20px);transition:opacity 0.5s ease,transform 0.5s ease;';
   requestAnimationFrame(() => { dash.style.opacity='1'; dash.style.transform='translateY(0)'; });
   document.getElementById('navUserName').textContent = currentUser.name;
-  const av = document.getElementById('navAvatar');
-  if (currentUser.photoURL) av.innerHTML = `<img src="${currentUser.photoURL}">`;
-  else av.textContent = currentUser.initials;
+  renderAvatar(document.getElementById('navAvatar'), currentUser.photoURL, currentUser.initials);
   renderRoster();
   loadRosterStats();
+  loadRosterActivity(); // Features 1-3: activity feed + last-seen + PR celebration
 }
 
 function renderRoster() {
@@ -901,15 +1026,26 @@ function renderRoster() {
     const card = document.createElement('div');
     card.className = 'roster-card';
     const hasStats = u._consistency !== undefined;
+    const photoSafe = safePhotoURL(u.userPhoto);
+    // Feature 2: last-seen indicator with color coding based on recency
+    let lastSeenHTML = '';
+    if (u._lastSeen) {
+      const diffS = Math.floor(Date.now()/1000 - u._lastSeen);
+      const cls = diffS < 86400 ? 'fresh' : diffS < 3*86400 ? 'stale' : 'idle';
+      lastSeenHTML = `<div class="roster-lastseen ${cls}">\u25CF Last seen ${relTime(u._lastSeen)}</div>`;
+    }
+    // Streak flame when 2+ weeks
+    const streakBadge = (u._streak && u._streak >= 2) ? `<span class="roster-streak-flame">\uD83D\uDD25 ${u._streak}w</span>` : '';
     card.innerHTML = `
-      <div class="roster-avatar">${u.userPhoto ? `<img src="${u.userPhoto}">` : (u.userName||'?')[0].toUpperCase()}</div>
+      <div class="roster-avatar">${photoSafe ? `<img src="${escapeHtml(photoSafe)}" alt="">` : escapeHtml((u.userName||'?')[0].toUpperCase())}</div>
       <div class="roster-info">
-        <div class="roster-name">${(u.userName||'Unknown').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+        <div class="roster-name">${escapeHtml(u.userName||'Unknown')}${streakBadge}</div>
         ${hasStats ? `<div class="roster-stats">
           <div class="roster-stat"><strong>${u._consistency}%</strong> consistent</div>
           <div class="roster-stat"><strong>${u._streak}</strong> streak</div>
           <div class="roster-stat"><strong>${u._weekDone}/5</strong> this week</div>
-        </div>` : `<div class="roster-sub">${u.userEmail || ''}</div>`}
+        </div>` : `<div class="roster-sub">${escapeHtml(u.userEmail || '')}</div>`}
+        ${lastSeenHTML}
       </div>
       <div class="roster-arrow">\u203A</div>`;
     card.addEventListener('click', () => openUserManagement(u));
@@ -934,13 +1070,23 @@ document.getElementById('btnGenInvite').addEventListener('click', async () => {
   document.getElementById('inviteModal').classList.add('open');
 });
 
-document.getElementById('btnCopyCode').addEventListener('click', () => {
+document.getElementById('btnCopyCode').addEventListener('click', async () => {
   const code = document.getElementById('inviteCodeDisplay').textContent;
   const link = `https://testingwebs4me.github.io/trainos/?invite=${code}`;
-  navigator.clipboard?.writeText(link).then(() => {
-    document.getElementById('btnCopyCode').textContent = 'Copied!';
-    setTimeout(() => { document.getElementById('btnCopyCode').textContent = 'Copy Link'; }, 2000);
-  });
+  const btn = document.getElementById('btnCopyCode');
+  const flash = () => { btn.textContent = 'Copied!'; setTimeout(() => { btn.textContent = 'Copy Link'; }, 2000); };
+  // Fix 18: try modern clipboard, fall back to execCommand for old browsers / insecure contexts
+  try {
+    if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(link); flash(); return; }
+  } catch {}
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = link; ta.setAttribute('readonly',''); ta.style.cssText = 'position:absolute;left:-9999px;top:0;';
+    document.body.appendChild(ta); ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    if (ok) flash(); else prompt('Copy this link:', link);
+  } catch { prompt('Copy this link:', link); }
 });
 
 document.getElementById('btnCloseModal').addEventListener('click', () => {
@@ -953,22 +1099,27 @@ async function openUserManagement(userInfo) {
   document.getElementById('dashboard').style.display = 'none';
   document.getElementById('manageView').style.display = 'block';
   const safeName = (userInfo.userName||'User').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  document.getElementById('manageUserName').innerHTML = `${userInfo.userPhoto ? `<div class="nav-avatar"><img src="${userInfo.userPhoto}"></div>` : ''} ${safeName}`;
+  const userInfoPhotoSafe = safePhotoURL(userInfo.userPhoto);
+  document.getElementById('manageUserName').innerHTML = `${userInfoPhotoSafe ? `<div class="nav-avatar"><img src="${escapeHtml(userInfoPhotoSafe)}" alt=""></div>` : ''} ${safeName}`;
   document.getElementById('manageTitle').innerHTML = `${safeName.split(' ')[0]}'s <span>TRAINING</span>`;
+  // Feature 4: load coach notes for this athlete
+  loadCoachNote(userInfo.userId);
 
   showLoading('Loading athlete data...');
-  let loadFailed = false;
+  const failures = []; // Fix 2: track which reads failed so we can surface real errors
 
   // Load all user data in parallel (6x faster)
   const wid = getWeekId();
   const uid = userInfo.userId;
   const [planSnap, restSnap, trackSnap, setSnap, weekSnap, weightSnap] = await Promise.all([
-    getDoc(doc(db, COL_PLANS, uid)).catch(() => { loadFailed = true; return null; }),
-    getDoc(doc(db, COL_REST, uid)).catch(() => { loadFailed = true; return null; }),
-    getDoc(doc(db, COL_TRACK, `${uid}_${wid}`)).catch(() => { loadFailed = true; return null; }),
-    getDocs(query(collection(db, COL_SETS), where('userId','==',uid))).catch(() => { loadFailed = true; return null; }),
-    getDocs(query(collection(db, COL_WEEKS), where('userId','==',uid))).catch(() => { loadFailed = true; return null; }),
-    getDocs(query(collection(db, COL_WEIGHT), where('userId','==',uid))).catch(() => { loadFailed = true; return null; }),
+    getDoc(doc(db, COL_PLANS, uid)).catch(e => { failures.push({ name: 'plan', critical: true, err: e }); return null; }),
+    getDoc(doc(db, COL_REST, uid)).catch(e => { failures.push({ name: 'rest', critical: false, err: e }); return null; }),
+    getDoc(doc(db, COL_TRACK, `${uid}_${wid}`)).catch(e => { failures.push({ name: 'tracking', critical: false, err: e }); return null; }),
+    // Fix 5: cap reads so athlete loads stay fast + cheap. No orderBy to avoid requiring composite indexes
+    // (data is sorted in-memory after fetch \u2014 see lines below). Add orderBy + indexes when data grows past limits.
+    getDocs(query(collection(db, COL_SETS), where('userId','==',uid), limit(500))).catch(e => { failures.push({ name: 'sets', critical: false, err: e }); return null; }),
+    getDocs(query(collection(db, COL_WEEKS), where('userId','==',uid), limit(52))).catch(e => { failures.push({ name: 'weeks', critical: false, err: e }); return null; }),
+    getDocs(query(collection(db, COL_WEIGHT), where('userId','==',uid), limit(500))).catch(e => { failures.push({ name: 'weight', critical: false, err: e }); return null; }),
   ]);
   selectedUserPlan = planSnap?.exists() ? planSnap.data() : getDefaultPlan();
   selectedUserRest = restSnap?.exists() ? restSnap.data() : {};
@@ -981,47 +1132,70 @@ async function openUserManagement(userInfo) {
   selectedUserWeightLogs.sort((a,b) => (b.date?.seconds??0)-(a.date?.seconds??0));
 
   hideLoading();
-  if (loadFailed) showToast('Some data failed to load \u2014 showing what\u2019s available', 'error');
+  // Fix 2: if the plan (critical data) failed, warn the coach loudly so they don't overwrite it with default
+  const criticalFail = failures.find(f => f.critical);
+  if (criticalFail) {
+    console.error('Critical data load failure:', criticalFail);
+    showToast('Failed to load athlete plan \u2014 do NOT edit, retry from roster', 'error');
+  } else if (failures.length) {
+    console.warn('Partial data load failure:', failures);
+    showToast(`Some data failed to load (${failures.map(f=>f.name).join(', ')}) \u2014 refresh if needed`, 'error');
+  }
 
   activeManageTab = 'workout';
   dataFilter = 'ALL';
+  // Ensure tab state resets to Workout every time we open an athlete
+  switchManageTab('workout');
   renderManageView();
 }
 
+let backRosterInFlight = false;
 document.getElementById('btnBackRoster').addEventListener('click', async () => {
-  const wasTemplate = !!editingTemplate;
-  selectedUser = null;
-  editingTemplate = null;
-  document.getElementById('manageView').style.display = 'none';
-  document.getElementById('dashboard').style.display = 'block';
-  // Restore hidden UI
-  document.getElementById('tabData').style.display = '';
-  document.getElementById('btnUnlink').style.display = '';
-  // If coming back from template editor, refresh template list
-  if (wasTemplate) {
-    await loadTemplates();
-    renderTemplateList();
-    // Show templates tab
-    document.getElementById('dashTabTemplates').click();
+  if (backRosterInFlight) return; // Fix 7: prevent concurrent back-navigation during async loadTemplates
+  backRosterInFlight = true;
+  try {
+    const wasTemplate = !!editingTemplate;
+    selectedUser = null;
+    editingTemplate = null;
+    document.getElementById('manageView').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    // Restore hidden UI (tabs + unlink are hidden during template editing)
+    document.getElementById('tabData').style.display = '';
+    document.getElementById('tabNotes').style.display = '';
+    document.getElementById('btnUnlink').style.display = '';
+    // If coming back from template editor, refresh template list
+    if (wasTemplate) {
+      await loadTemplates();
+      renderTemplateList();
+      // Show templates tab
+      document.getElementById('dashTabTemplates').click();
+    }
+  } finally {
+    backRosterInFlight = false;
   }
 });
 
 // Tab switching
-document.getElementById('tabWorkout').addEventListener('click', () => {
-  activeManageTab = 'workout';
-  document.getElementById('tabWorkout').classList.add('active');
-  document.getElementById('tabData').classList.remove('active');
-  document.getElementById('manageWorkoutDisplay').style.display = '';
-  document.getElementById('manageDataDisplay').style.display = 'none';
-});
+// Helper: switch manage-view tab and toggle the 3 displays
+function switchManageTab(tab) {
+  activeManageTab = tab;
+  const tabs = { workout:'tabWorkout', data:'tabData', notes:'tabNotes' };
+  const displays = { workout:'manageWorkoutDisplay', data:'manageDataDisplay', notes:'manageNotesDisplay' };
+  Object.entries(tabs).forEach(([k,id]) => {
+    const el = document.getElementById(id); if (el) el.classList.toggle('active', k === tab);
+  });
+  Object.entries(displays).forEach(([k,id]) => {
+    const el = document.getElementById(id); if (el) el.style.display = k === tab ? '' : 'none';
+  });
+  // Lazy-render notes on first click (avoids unnecessary work if coach never opens the tab)
+  if (tab === 'notes') renderNotesTab();
+}
+document.getElementById('tabWorkout').addEventListener('click', () => switchManageTab('workout'));
 document.getElementById('tabData').addEventListener('click', () => {
-  activeManageTab = 'data';
-  document.getElementById('tabData').classList.add('active');
-  document.getElementById('tabWorkout').classList.remove('active');
-  document.getElementById('manageWorkoutDisplay').style.display = 'none';
-  document.getElementById('manageDataDisplay').style.display = '';
+  switchManageTab('data');
   renderDataTab();
 });
+document.getElementById('tabNotes').addEventListener('click', () => switchManageTab('notes'));
 
 // Unlink user
 document.getElementById('btnUnlink').addEventListener('click', async () => {
@@ -1125,14 +1299,15 @@ function selectDay(day) {
     card.className = 'exercise-item' + (checked?' checked-ex':'');
     card.style.animationDelay = (0.03+i*0.03)+'s';
     const imgUrl = imageMap[ex.search] || null;
+    const safeImgUrl = safePhotoURL(imgUrl);
     card.innerHTML = `
-      <div class="ex-img-wrap">${imgUrl ? `<img src="${imgUrl}" alt="${ex.name}">` : placeholderHTML}</div>
+      <div class="ex-img-wrap">${safeImgUrl ? `<img src="${escapeHtml(safeImgUrl)}" alt="${escapeHtml(ex.name)}">` : placeholderHTML}</div>
       <div class="ex-body">
         <span class="ex-number">${checked?'\u2713':String(i+1).padStart(2,'0')}</span>
-        <div class="ex-info"><div class="ex-name">${ex.name}</div><div class="ex-sets-label">${ex.sets} sets \u00D7 ${ex.reps}</div></div>
-        <div class="ex-badge">${ex.sets}\u00D7${ex.reps}</div>
+        <div class="ex-info"><div class="ex-name">${escapeHtml(ex.name)}</div><div class="ex-sets-label">${escapeHtml(ex.sets)} sets \u00D7 ${escapeHtml(ex.reps)}</div></div>
+        <div class="ex-badge">${escapeHtml(ex.sets)}\u00D7${escapeHtml(ex.reps)}</div>
       </div>
-      ${ex.note ? `<div class="ex-note"><span class="ex-note-icon">\uD83D\uDCAC</span>${ex.note.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>` : ''}
+      ${ex.note ? `<div class="ex-note"><span class="ex-note-icon">\uD83D\uDCAC</span>${escapeHtml(ex.note)}</div>` : ''}
       <div class="set-log-area"><div class="set-rows">${setsHTML}</div></div>`;
     card._exData = ex;
     cards.push(card);
@@ -1178,21 +1353,34 @@ function selectDay(day) {
   const clearBtn = document.getElementById('btnClearUserLogs');
   if (clearBtn && selectedUser) {
     clearBtn.addEventListener('click', async () => {
-      if (!confirm(`Clear ALL logs for ${selectedUser.userName}?`)) return;
+      // Fix 4: snapshot user id + name BEFORE any awaits so confirms can't race with state changes
+      const clearUid = selectedUser?.userId;
+      const clearName = selectedUser?.userName;
+      if (!clearUid) { showToast('No athlete selected','error'); return; }
+      if (!confirm(`Clear ALL logs for ${clearName}?`)) return;
       if (!confirm(`Seriously? This deletes all set logs, weight logs, and week history for this athlete. Cannot be undone.`)) return;
       try {
         showLoading('Clearing logs...');
-        const uid = selectedUser.userId;
-        const [setSnap, weightSnap, weekSnap] = await Promise.all([
-          getDocs(query(collection(db, COL_SETS), where('userId','==',uid))),
-          getDocs(query(collection(db, COL_WEIGHT), where('userId','==',uid))),
-          getDocs(query(collection(db, COL_WEEKS), where('userId','==',uid))),
-        ]);
-        await Promise.all([
-          ...setSnap.docs.map(d => deleteDoc(doc(db, COL_SETS, d.id))),
-          ...weightSnap.docs.map(d => deleteDoc(doc(db, COL_WEIGHT, d.id))),
-          ...weekSnap.docs.map(d => deleteDoc(doc(db, COL_WEEKS, d.id))),
-        ]);
+        const uid = clearUid;
+        // Fix 6: paginate deletes in batches of 500 (Firestore batch limit) so huge accounts don't hang
+        const deleteAllIn = async (colName, label) => {
+          let total = 0;
+          // Loop until no more docs to delete
+          while (true) {
+            const snap = await getDocs(query(collection(db, colName), where('userId','==',uid), limit(500)));
+            if (snap.empty) break;
+            const batch = writeBatch(db);
+            snap.docs.forEach(d => batch.delete(doc(db, colName, d.id)));
+            await batch.commit();
+            total += snap.docs.length;
+            showLoading(`Clearing ${label}... ${total}`);
+            if (snap.docs.length < 500) break;
+          }
+          return total;
+        };
+        await deleteAllIn(COL_SETS, 'set logs');
+        await deleteAllIn(COL_WEIGHT, 'weight logs');
+        await deleteAllIn(COL_WEEKS, 'week history');
         // Reset current week tracking
         const wid2 = getWeekId();
         await setDoc(doc(db, COL_TRACK, `${uid}_${wid2}`), { userId:uid, weekId:wid2, completed:{}, exercises:{}, updatedAt:serverTimestamp() });
@@ -1296,8 +1484,14 @@ function renderDataTab() {
   if (prList.length > 0) {
     html += `<div class="analytics-section"><div class="analytics-title">Personal Records</div><div class="pr-wall">`;
     prList.forEach(([name,pr]) => {
-      const d = pr.date?.seconds ? new Date(pr.date.seconds*1000) : null;
-      const ds = d ? d.toLocaleDateString('en-GB',{day:'numeric',month:'short'}) : '';
+      // Fix 10: prefer athlete's local date (YYYY-MM-DD) when available, fall back to timestamp in coach's TZ
+      let ds = '';
+      if (pr.localDate) {
+        const [yy,mm,dd] = pr.localDate.split('-');
+        ds = new Date(+yy, +mm-1, +dd).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+      } else if (pr.date?.seconds) {
+        ds = new Date(pr.date.seconds*1000).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+      }
       html += `<div class="pr-card"><div class="pr-card-name">${name}</div><div class="pr-card-weight">${pr.weight}<span>kg</span></div>${ds?`<div class="pr-card-date">${ds}</div>`:''}</div>`;
     });
     html += `</div></div>`;
@@ -1549,6 +1743,323 @@ async function loadRosterStats() {
   renderRoster();
 }
 
+// ── ACTIVITY FEED + LAST-SEEN (recent sets & PRs across all athletes) ──
+// Format a past timestamp as a relative string: "just now", "12m ago", "3h ago", "2d ago"
+function relTime(seconds) {
+  if (!seconds) return '';
+  const diffS = Math.max(0, Math.floor(Date.now()/1000 - seconds));
+  if (diffS < 60) return 'just now';
+  if (diffS < 3600) return `${Math.floor(diffS/60)}m ago`;
+  if (diffS < 86400) return `${Math.floor(diffS/3600)}h ago`;
+  return `${Math.floor(diffS/86400)}d ago`;
+}
+
+async function loadRosterActivity() {
+  const users = coachData?.users || [];
+  if (!users.length) return;
+  const events = []; // {athlete info, type, exerciseName, weight, reps, timestamp}
+  // One query per athlete for recent sets + recent PRs. Capped via limit() so cost is bounded.
+  await Promise.all(users.map(async u => {
+    try {
+      const [setsSnap, prsSnap] = await Promise.all([
+        getDocs(query(collection(db, COL_SETS), where('userId','==',u.userId), limit(15))),
+        getDocs(query(collection(db, COL_WEIGHT), where('userId','==',u.userId), limit(5))),
+      ]);
+      const sets = setsSnap.docs.map(d => d.data()).sort((a,b) => (b.date?.seconds??0)-(a.date?.seconds??0));
+      const prs = prsSnap.docs.map(d => d.data()).sort((a,b) => (b.date?.seconds??0)-(a.date?.seconds??0));
+      // Compute last-seen from most recent set
+      u._lastSeen = sets[0]?.date?.seconds || 0;
+      // Collect top events
+      sets.slice(0, 5).forEach(s => s.date?.seconds && events.push({
+        userId: u.userId, userName: u.userName, userPhoto: u.userPhoto,
+        type: 'set', exerciseName: s.exerciseName, weight: s.weight, reps: s.reps,
+        timestamp: s.date.seconds,
+      }));
+      prs.slice(0, 3).forEach(p => p.date?.seconds && events.push({
+        userId: u.userId, userName: u.userName, userPhoto: u.userPhoto,
+        type: 'pr', exerciseName: p.exerciseName, weight: p.weight,
+        timestamp: p.date.seconds,
+      }));
+    } catch(e) { console.warn('Activity load failed for', u.userId, e); u._lastSeen = 0; }
+  }));
+  events.sort((a,b) => b.timestamp - a.timestamp);
+  renderActivityFeed(events.slice(0, 15));
+  renderRoster(); // re-render to show last-seen badges
+}
+
+function renderActivityFeed(events) {
+  const section = document.getElementById('activitySection');
+  const list = document.getElementById('activityList');
+  if (!section || !list) return;
+  if (!events.length) { section.style.display = 'none'; return; }
+  section.style.display = '';
+  list.innerHTML = '';
+  // Dedupe consecutive identical entries (e.g. same set recorded in both sets + weights)
+  const seen = new Set();
+  events.forEach(ev => {
+    const key = `${ev.userId}|${ev.type}|${ev.exerciseName}|${ev.weight}|${ev.timestamp}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    const photoSafe = safePhotoURL(ev.userPhoto);
+    const avatarHTML = photoSafe
+      ? `<img src="${escapeHtml(photoSafe)}" alt="">`
+      : escapeHtml((ev.userName || '?')[0].toUpperCase());
+    const item = document.createElement('div');
+    item.className = 'activity-item' + (ev.type === 'pr' ? ' is-pr' : '');
+    const actionText = ev.type === 'pr'
+      ? `<strong>${escapeHtml(ev.userName || 'Athlete')}</strong> hit a new PR on <span class="ex-name">${escapeHtml(ev.exerciseName)}</span> \u2014 <span class="weight">${escapeHtml(String(ev.weight))}kg</span>`
+      : `<strong>${escapeHtml(ev.userName || 'Athlete')}</strong> logged <span class="ex-name">${escapeHtml(ev.exerciseName)}</span> \u2014 <span class="weight">${escapeHtml(String(ev.weight))}kg</span> \u00D7 ${escapeHtml(String(ev.reps || ''))}`;
+    item.innerHTML = `
+      <div class="activity-avatar">${avatarHTML}</div>
+      <div class="activity-body">
+        <div class="activity-text">${actionText}</div>
+        <div class="activity-time">${relTime(ev.timestamp)}</div>
+      </div>
+      ${ev.type === 'pr' ? '<div class="activity-pr-badge">\uD83C\uDF89</div>' : ''}`;
+    // Click an activity row to jump into that athlete
+    item.style.cursor = 'pointer';
+    item.addEventListener('click', () => {
+      const u = (coachData?.users || []).find(x => x.userId === ev.userId);
+      if (u) openUserManagement(u);
+    });
+    list.appendChild(item);
+  });
+}
+
+// ── FEATURE 4: PRIVATE COACH NOTES \u2014 journal style ──
+// Schema (stored in v2_coachNotes/{coachId}):
+//   { coachId, notes: { [athleteId]: { pinned: string, entries: [{id,text,createdAt}] } } }
+// Backwards-compat: if notes[athleteId] is a string (old format), we auto-migrate into pinned on first read.
+let coachNotesDoc = null; // cache; loaded once per session
+let coachNotesLoaded = false; // true after first successful fetch (distinct from non-null, which could be stale)
+let coachNotesLoadP = null; // in-flight load promise, so concurrent callers share one fetch
+let notesSaveTimer = null;
+
+// Normalize a single athlete's note record to the new shape. Mutates coachNotesDoc in place.
+function normalizeAthleteNotes(athleteId) {
+  if (!coachNotesDoc) coachNotesDoc = { coachId: currentUser.id, notes: {} };
+  if (!coachNotesDoc.notes) coachNotesDoc.notes = {};
+  const cur = coachNotesDoc.notes[athleteId];
+  if (cur == null) {
+    coachNotesDoc.notes[athleteId] = { pinned: '', entries: [] };
+  } else if (typeof cur === 'string') {
+    // MIGRATION: old single-string note becomes the pinned standing note. No data lost.
+    coachNotesDoc.notes[athleteId] = { pinned: cur, entries: [] };
+  } else {
+    if (typeof cur.pinned !== 'string') cur.pinned = '';
+    if (!Array.isArray(cur.entries)) cur.entries = [];
+  }
+  return coachNotesDoc.notes[athleteId];
+}
+
+// Ensures the coach's notes doc is loaded from Firestore exactly once per session.
+// Race-safe: concurrent callers share the same in-flight promise.
+async function ensureNotesLoaded() {
+  if (coachNotesLoaded) return;
+  if (coachNotesLoadP) { await coachNotesLoadP; return; }
+  if (!currentUser?.id) return;
+  coachNotesLoadP = (async () => {
+    try {
+      const snap = await getDoc(doc(db, COL_NOTES, currentUser.id));
+      coachNotesDoc = snap.exists() ? snap.data() : { coachId: currentUser.id, notes: {} };
+    } catch(e) {
+      console.warn('Notes load failed:', e);
+      coachNotesDoc = coachNotesDoc || { coachId: currentUser.id, notes: {} };
+    } finally {
+      coachNotesLoaded = true;
+      coachNotesLoadP = null;
+    }
+  })();
+  await coachNotesLoadP;
+}
+
+async function loadCoachNote(athleteId) {
+  if (!currentUser?.id) return;
+  await ensureNotesLoaded();
+  normalizeAthleteNotes(athleteId);
+  // If the notes tab is currently visible, refresh its contents immediately
+  if (activeManageTab === 'notes' && selectedUser?.userId === athleteId) renderNotesTab();
+}
+
+// Generate a short unique ID for entries (no crypto dependency needed)
+function makeEntryId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+// Write the whole coachNotesDoc to Firestore. Debounced by the callers that need it.
+async function saveCoachNotes(statusEl) {
+  if (!currentUser?.id) return;
+  try {
+    if (statusEl) { statusEl.className = 'notes-status saving'; statusEl.textContent = 'Saving\u2026'; }
+    await setDoc(doc(db, COL_NOTES, currentUser.id), coachNotesDoc);
+    if (statusEl) {
+      statusEl.className = 'notes-status saved';
+      statusEl.textContent = '\u2713 Saved';
+      setTimeout(() => { if (statusEl.classList.contains('saved')) statusEl.className = 'notes-status'; }, 1500);
+    }
+  } catch(e) {
+    console.error('Notes save failed:', e);
+    if (statusEl) { statusEl.className = 'notes-status error'; statusEl.textContent = 'Failed \u2014 retry'; }
+  }
+}
+
+function fmtEntryDate(ts) {
+  if (!ts) return '';
+  const d = new Date(ts * 1000);
+  const now = Date.now() / 1000;
+  const diffS = Math.max(0, Math.floor(now - ts));
+  if (diffS < 60) return 'Just now';
+  if (diffS < 3600) return `${Math.floor(diffS/60)}m ago`;
+  if (diffS < 86400) return `${Math.floor(diffS/3600)}h ago`;
+  if (diffS < 7*86400) return `${Math.floor(diffS/86400)}d ago`;
+  return d.toLocaleDateString('en-GB', { day:'numeric', month:'short', year: d.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined });
+}
+
+// Render the Notes tab contents. Builds pinned + composer + entry list.
+function renderNotesTab() {
+  const container = document.getElementById('manageNotesDisplay');
+  if (!container) return;
+  // Only athletes get notes (not template editor)
+  if (!selectedUser?.userId) {
+    container.innerHTML = '<div class="notes-empty"><span class="notes-empty-icon">\uD83D\uDCDD</span>Notes are only available when viewing an athlete.</div>';
+    return;
+  }
+  const athleteId = selectedUser.userId;
+  // If notes haven't finished loading yet, show loading state and kick off the load \u2014
+  // loadCoachNote will re-call renderNotesTab when the fetch resolves.
+  if (!coachNotesLoaded) {
+    container.innerHTML = '<div class="notes-empty"><span class="notes-empty-icon">\u23F3</span>Loading notes...</div>';
+    loadCoachNote(athleteId);
+    return;
+  }
+  const rec = normalizeAthleteNotes(athleteId);
+  const entriesSorted = [...rec.entries].sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+  container.innerHTML = `
+    <div class="notes-wrap">
+      <div class="notes-pinned">
+        <div class="notes-pinned-head">
+          <div class="notes-pinned-label">\uD83D\uDCCC Pinned note <span class="notes-pinned-sub">(standing info \u2014 injuries, goals, preferences)</span></div>
+        </div>
+        <textarea class="notes-textarea" id="notesPinnedTextarea" placeholder="Standing notes that are always relevant for this athlete..." maxlength="2000"></textarea>
+        <div class="notes-status" id="notesPinnedStatus"></div>
+      </div>
+      <div class="notes-section-head">
+        <div class="notes-section-title">Journal \u2014 ${entriesSorted.length} ${entriesSorted.length === 1 ? 'entry' : 'entries'}</div>
+        <button class="notes-add-btn" id="notesAddBtn">+ Add entry</button>
+      </div>
+      <div class="notes-composer" id="notesComposer">
+        <textarea class="notes-textarea" id="notesComposerTextarea" placeholder="What happened today? Form cues, observations, wins, plans..." maxlength="2000"></textarea>
+        <div class="notes-composer-actions">
+          <button class="notes-btn-secondary" id="notesComposerCancel">Cancel</button>
+          <button class="notes-btn-primary" id="notesComposerSave">Save entry</button>
+        </div>
+      </div>
+      <div class="notes-list" id="notesEntryList"></div>
+    </div>
+  `;
+  // Fill pinned
+  const pinTa = document.getElementById('notesPinnedTextarea');
+  pinTa.value = rec.pinned || '';
+  const pinStatus = document.getElementById('notesPinnedStatus');
+  pinTa.addEventListener('input', () => {
+    pinStatus.className = 'notes-status saving';
+    pinStatus.textContent = 'Saving\u2026';
+    clearTimeout(notesSaveTimer);
+    notesSaveTimer = setTimeout(() => {
+      const cur = normalizeAthleteNotes(athleteId);
+      cur.pinned = pinTa.value.trim();
+      saveCoachNotes(pinStatus);
+    }, 700);
+  });
+  // Wire composer
+  const addBtn = document.getElementById('notesAddBtn');
+  const composer = document.getElementById('notesComposer');
+  const composerTa = document.getElementById('notesComposerTextarea');
+  const composerCancel = document.getElementById('notesComposerCancel');
+  const composerSave = document.getElementById('notesComposerSave');
+  const closeComposer = () => { composer.classList.remove('open'); composerTa.value = ''; addBtn.disabled = false; };
+  addBtn.addEventListener('click', () => {
+    composer.classList.add('open');
+    addBtn.disabled = true;
+    setTimeout(() => composerTa.focus(), 50);
+  });
+  composerCancel.addEventListener('click', closeComposer);
+  composerSave.addEventListener('click', async () => {
+    const text = composerTa.value.trim();
+    if (!text) { composerTa.focus(); return; }
+    composerSave.disabled = true;
+    composerSave.textContent = 'Saving\u2026';
+    const cur = normalizeAthleteNotes(athleteId);
+    cur.entries.push({ id: makeEntryId(), text, createdAt: Math.floor(Date.now()/1000) });
+    await saveCoachNotes(null);
+    composerSave.disabled = false; composerSave.textContent = 'Save entry';
+    closeComposer();
+    renderNotesTab(); // rebuild to show the new entry
+  });
+  // Keyboard: Ctrl/Cmd+Enter to save from composer (desktop-friendly)
+  composerTa.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); composerSave.click(); }
+    else if (e.key === 'Escape') closeComposer();
+  });
+  // Render entry list
+  const listEl = document.getElementById('notesEntryList');
+  if (!entriesSorted.length) {
+    listEl.innerHTML = '<div class="notes-empty"><span class="notes-empty-icon">\uD83D\uDDD2\uFE0F</span>No journal entries yet. Click "+ Add entry" to log your first observation.</div>';
+    return;
+  }
+  entriesSorted.forEach(entry => {
+    const item = document.createElement('div');
+    item.className = 'notes-entry';
+    item.dataset.id = entry.id;
+    item.innerHTML = `
+      <div class="notes-entry-head">
+        <div class="notes-entry-date">${escapeHtml(fmtEntryDate(entry.createdAt))}</div>
+        <div class="notes-entry-actions">
+          <button class="notes-entry-btn" data-action="edit" aria-label="Edit entry" title="Edit">\u270E</button>
+          <button class="notes-entry-btn delete" data-action="delete" aria-label="Delete entry" title="Delete">\u00D7</button>
+        </div>
+      </div>
+      <div class="notes-entry-text" data-role="text">${escapeHtml(entry.text)}</div>
+    `;
+    const textEl = item.querySelector('[data-role="text"]');
+    const editBtn = item.querySelector('[data-action="edit"]');
+    const deleteBtn = item.querySelector('[data-action="delete"]');
+    // Edit flow \u2014 contenteditable in place, save on blur
+    editBtn.addEventListener('click', () => {
+      textEl.setAttribute('contenteditable', 'true');
+      textEl.focus();
+      // Move caret to end
+      const range = document.createRange(); range.selectNodeContents(textEl); range.collapse(false);
+      const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+    });
+    textEl.addEventListener('blur', async () => {
+      if (textEl.getAttribute('contenteditable') !== 'true') return;
+      textEl.setAttribute('contenteditable', 'false');
+      const newText = textEl.textContent.trim();
+      if (!newText) { renderNotesTab(); return; } // revert if empty
+      const cur = normalizeAthleteNotes(athleteId);
+      const target = cur.entries.find(e => e.id === entry.id);
+      if (target && target.text !== newText) {
+        target.text = newText;
+        target.updatedAt = Math.floor(Date.now()/1000);
+        await saveCoachNotes(null);
+      }
+    });
+    // Escape cancels edit without saving
+    textEl.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { textEl.textContent = entry.text; textEl.blur(); }
+      else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); textEl.blur(); }
+    });
+    // Delete with confirm
+    deleteBtn.addEventListener('click', async () => {
+      if (!confirm('Delete this journal entry?')) return;
+      const cur = normalizeAthleteNotes(athleteId);
+      cur.entries = cur.entries.filter(e => e.id !== entry.id);
+      await saveCoachNotes(null);
+      renderNotesTab();
+    });
+    listEl.appendChild(item);
+  });
+}
+
 // ── DASHBOARD TABS (Athletes / Templates) ──
 document.getElementById('dashTabAthletes').addEventListener('click', () => {
   document.getElementById('dashTabAthletes').classList.add('active');
@@ -1603,8 +2114,18 @@ function renderTemplateList() {
     card.querySelector('.btn-tpl-delete').addEventListener('click', async e => {
       e.stopPropagation();
       if (!confirm(`Delete template "${tpl.name}"?`)) return;
-      try { await deleteDoc(doc(db, COL_TPL, tpl.id)); templates = templates.filter(t=>t.id!==tpl.id); renderTemplateList(); showToast('Template deleted','success'); }
-      catch(er) { showToast('Failed to delete','error'); }
+      // Fix 9: wrap the whole flow so failures anywhere (delete, re-render, toast) are caught and logged
+      try {
+        await deleteDoc(doc(db, COL_TPL, tpl.id));
+        templates = templates.filter(t=>t.id!==tpl.id);
+        // If the deleted template was being edited, clear that state too
+        if (editingTemplate && editingTemplate.id === tpl.id) editingTemplate = null;
+        renderTemplateList();
+        showToast('Template deleted','success');
+      } catch(er) {
+        console.error('Template delete failed:', er);
+        showToast('Failed to delete \u2014 check connection','error');
+      }
     });
     list.appendChild(card);
   });
@@ -1668,8 +2189,9 @@ function openTemplateEditor(tpl) {
   const safeName = (tpl.name||'Template').replace(/</g,'&lt;');
   document.getElementById('manageUserName').innerHTML = `📋 ${safeName}`;
   document.getElementById('manageTitle').innerHTML = `<span>TEMPLATE</span> Editor`;
-  // Hide data tab and unlink for templates
+  // Hide data tab, notes tab, and unlink for templates (they don't apply to templates)
   document.getElementById('tabData').style.display = 'none';
+  document.getElementById('tabNotes').style.display = 'none';
   document.getElementById('btnUnlink').style.display = 'none';
   selectedUserRest = {};
   selectedUserTracking = { completed:{}, exercises:{} };
@@ -1741,10 +2263,13 @@ document.getElementById('btnApplyConfirm').addEventListener('click', async () =>
     if (!sel) { showToast('Select a template','error'); return; }
     const tpl = templates.find(t => t.id === sel.dataset.tplId);
     if (!tpl || !selectedUser) return;
+    // Fix 4: snapshot the user ID at handler start so async ops can't write to a different athlete
+    const uidSnapshot = selectedUser.userId;
     btn.classList.add('applying'); btn.textContent = 'Applying...';
     try {
       const planData = JSON.parse(JSON.stringify(tpl.plan || getDefaultPlan()));
-      await setDoc(doc(db, COL_PLANS, selectedUser.userId), planData);
+      await setDoc(doc(db, COL_PLANS, uidSnapshot), planData);
+      if (selectedUser?.userId !== uidSnapshot) { showToast('Athlete changed \u2014 apply aborted','error'); btn.textContent='Apply Template'; btn.classList.remove('applying'); return; }
       selectedUserPlan = planData;
       btn.textContent = 'Applied!';
       setTimeout(() => { btn.textContent = 'Apply Template'; btn.classList.remove('applying'); document.getElementById('applyModal').classList.remove('open'); renderManageView(); }, 1000);
@@ -1803,9 +2328,10 @@ async function askAI(prompt, retries) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { maxOutputTokens: 1500, temperature: 0.7 } })
   });
-  if (resp.status === 429 && retries < 2) {
-    // Rate limited — wait and retry
-    await new Promise(r => setTimeout(r, 5000));
+  if (resp.status === 429 && retries < 3) {
+    // Rate limited — exponential backoff: 15s, 30s, 60s
+    const delay = [15000, 30000, 60000][retries];
+    await new Promise(r => setTimeout(r, delay));
     return askAI(prompt, retries + 1);
   }
   if (!resp.ok) throw new Error('AI request failed: ' + resp.status + '. Try again in a minute.');
@@ -1816,8 +2342,9 @@ async function askAI(prompt, retries) {
 }
 
 // Build exercise name list for AI context (so it only suggests from our library)
-function getExerciseContext(category) {
-  // Only send relevant exercises to reduce token usage
+// maxPerGroup caps names sent to Gemini to stay under token-per-minute limits
+function getExerciseContext(category, maxPerGroup) {
+  maxPerGroup = maxPerGroup || 0; // 0 = no limit
   const filtered = category ? exerciseLibrary.filter(e => e.category === category) : exerciseLibrary;
   const byGroup = {};
   filtered.forEach(ex => {
@@ -1826,7 +2353,10 @@ function getExerciseContext(category) {
     byGroup[g].push(ex.name);
   });
   let ctx = '';
-  Object.entries(byGroup).forEach(([g, names]) => { ctx += `\n${g}: ${names.join(', ')}`; });
+  Object.entries(byGroup).forEach(([g, names]) => {
+    const list = maxPerGroup ? names.slice(0, maxPerGroup) : names;
+    ctx += `\n${g}: ${list.join(', ')}`;
+  });
   return ctx;
 }
 
@@ -1841,10 +2371,11 @@ document.querySelectorAll('.ai-option-grid').forEach(grid => {
   });
 });
 
-// Add "AI Build" button to templates section
+// Add "AI Build" button to templates section — guarded so hot-reload / re-init doesn't insert it twice
 const createTplBtn = document.getElementById('btnCreateTpl');
-if (createTplBtn) {
+if (createTplBtn && !document.getElementById('btnAiBuildTpl')) {
   const aiBtn = document.createElement('button');
+  aiBtn.id = 'btnAiBuildTpl';
   aiBtn.className = 'btn-create-tpl';
   aiBtn.style.cssText = 'border-color:rgba(168,85,247,0.3);color:#a855f7;margin-top:8px;';
   aiBtn.innerHTML = '\u2728 AI Build Template';
@@ -1854,7 +2385,10 @@ if (createTplBtn) {
 
 document.getElementById('btnCloseAiBuild').addEventListener('click', () => { document.getElementById('aiBuildModal').classList.remove('open'); });
 
+let aiGenerateInFlight = false;
 document.getElementById('btnAiGenerate').addEventListener('click', async () => {
+  if (aiGenerateInFlight) return; // Fix 1: prevent duplicate requests
+  aiGenerateInFlight = true;
   const goal = document.querySelector('#aiGoalGrid .ai-option.selected')?.dataset.val || 'Hypertrophy';
   const days = document.querySelector('#aiDaysGrid .ai-option.selected')?.dataset.val || '5';
   const level = document.querySelector('#aiLevelGrid .ai-option.selected')?.dataset.val || 'Intermediate';
@@ -1867,7 +2401,7 @@ document.getElementById('btnAiGenerate').addEventListener('click', async () => {
 
 RULES:
 - ONLY use exercises from this list. Do NOT invent exercises.
-- Available exercises (pick ONLY from these): ${getExerciseContext()}
+- Available exercises (pick ONLY from these): ${getExerciseContext(null, 10)}
 - Assign exercises to specific days (Sunday through Saturday).
 - For each exercise specify: name, sets, reps.
 - ${level === 'Beginner' ? 'Keep it simple, 4-5 exercises per day, moderate volume.' : level === 'Advanced' ? 'High volume, 7-8 exercises per day, include supersets.' : '6-7 exercises per day, balanced volume.'}
@@ -1883,8 +2417,12 @@ Only output the program. No intro, no explanation.`;
   try {
     const response = await askAI(prompt);
     resultArea.innerHTML = `<div class="ai-result"><div class="ai-result-title">\u2728 AI Generated Program</div><div class="ai-result-text">${response.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div><div class="ai-result-actions"><button class="ai-btn" id="btnSaveAiTemplate">\u2713 Save as Template</button></div></div>`;
-    // Save as template handler
-    document.getElementById('btnSaveAiTemplate')?.addEventListener('click', async () => {
+    // Save as template handler — debounced so double-click doesn't save twice
+    let saveTplInFlight = false;
+    document.getElementById('btnSaveAiTemplate')?.addEventListener('click', async function() {
+      if (saveTplInFlight) return;
+      saveTplInFlight = true;
+      this.classList.add('loading');
       const name = `AI ${goal} ${days}-Day (${level})`;
       showLoading('Saving template...');
       try {
@@ -1894,21 +2432,31 @@ Only output the program. No intro, no explanation.`;
         showToast('Template saved! Edit it to customize.', 'success');
         await loadTemplates();
         renderTemplateList();
-      } catch(e) { hideLoading(); showToast('Failed to save', 'error'); }
+      } catch(e) { hideLoading(); showToast('Failed to save', 'error'); saveTplInFlight = false; this.classList.remove('loading'); }
     });
   } catch(e) {
     resultArea.innerHTML = `<div style="color:#ff4444;font-size:12px;margin-top:12px;">${e.message || 'AI request failed. Check your API key.'}</div>`;
   }
   btn.classList.remove('loading'); btn.textContent = 'Generate Program';
+  aiGenerateInFlight = false;
 });
 
 // ── AI EXERCISE SUGGEST ──
 document.getElementById('btnCloseAiSuggest').addEventListener('click', () => { document.getElementById('aiSuggestModal').classList.remove('open'); });
+// Fix 3: wire the "AI Suggest" open button ONCE at init (was previously re-attached on every openEditSheet, causing duplicate handlers)
+document.getElementById('btnAiSuggestOpen')?.addEventListener('click', () => {
+  document.getElementById('aiSuggestInput').value = '';
+  document.getElementById('aiSuggestResult').innerHTML = '';
+  document.getElementById('aiSuggestModal').classList.add('open');
+});
 
+let aiSuggestInFlight = false;
 document.getElementById('btnAiSuggest').addEventListener('click', async () => {
+  if (aiSuggestInFlight) return; // Fix 8: prevent overlapping AI requests
   const input = document.getElementById('aiSuggestInput');
   const query = input.value.trim();
   if (!query) { input.style.borderColor = '#ff4444'; setTimeout(() => { input.style.borderColor = ''; }, 1000); return; }
+  aiSuggestInFlight = true;
   const btn = document.getElementById('btnAiSuggest');
   const resultArea = document.getElementById('aiSuggestResult');
   btn.classList.add('loading'); btn.textContent = 'Thinking...';
@@ -1916,7 +2464,7 @@ document.getElementById('btnAiSuggest').addEventListener('click', async () => {
 
   const prompt = `You are a gym exercise expert. The coach asked: "${query}"
 
-ONLY suggest exercises from this list: ${getExerciseContext()}\nKeep response under 200 words.
+ONLY suggest exercises from this list: ${getExerciseContext(null, 10)}\nKeep response under 200 words.
 
 Suggest 3-5 exercises that best match the request. For each, state:
 - Exercise name (exactly as listed)
@@ -1932,6 +2480,7 @@ Keep it short and practical.`;
     resultArea.innerHTML = `<div style="color:#ff4444;font-size:12px;margin-top:12px;">${e.message || 'AI request failed.'}</div>`;
   }
   btn.classList.remove('loading'); btn.textContent = 'Suggest';
+  aiSuggestInFlight = false; // Fix 8: release guard
 });
 
 // ── AI TRAINEE SUMMARY (in data tab) ──
@@ -2000,13 +2549,16 @@ function openEditSheet(day) {
   activeSubTab = 'All';
   activeMuscleGroup = 'All';
   document.getElementById('editSearchInput').value = '';
+  // Fix 5: reset sheet transform so it never opens half-dragged from a prior session
+  const panelEl = document.getElementById('editPanel');
+  if (panelEl) { panelEl.style.transition = ''; panelEl.style.transform = ''; }
+  // Fix 2: reset any stale scroll-lock from a drag that didn't end cleanly
+  const editBodyEl = document.querySelector('.edit-body');
+  if (editBodyEl) editBodyEl.style.overflow = '';
   renderEditList(); renderCatTabs(); renderMuscleGroupTabs(); renderSubTabs(); renderLibrary();
-  // Wire AI suggest button
-  document.getElementById('btnAiSuggestOpen')?.addEventListener('click', () => {
-    document.getElementById('aiSuggestInput').value = '';
-    document.getElementById('aiSuggestResult').innerHTML = '';
-    document.getElementById('aiSuggestModal').classList.add('open');
-  });
+  // Fix 1: init drag sort once (guard inside initDragSort prevents double-binding)
+  const listEl = document.getElementById('editExList');
+  if (listEl) initDragSort(listEl);
   document.getElementById('editSheet').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -2014,29 +2566,50 @@ function openEditSheet(day) {
 function closeEditSheet() {
   document.getElementById('editSheet').classList.remove('open');
   document.body.style.overflow = '';
+  // Fix 10: belt-and-suspenders — always restore edit-body scroll so a stuck drag can't lock the list next time
+  const eb = document.querySelector('.edit-body');
+  if (eb) eb.style.overflow = '';
+  // And reset any sheet-swipe transform in case touchend didn't fire cleanly
+  const panelEl = document.getElementById('editPanel');
+  if (panelEl) panelEl.style.transform = '';
 }
 
 document.getElementById('editBackdrop').addEventListener('click', closeEditSheet);
+let editSaveInFlight = false;
 document.getElementById('editSaveBtn').addEventListener('click', async () => {
+  if (editSaveInFlight) return; // Fix 5: JS-level guard on top of CSS pointer-events
+  editSaveInFlight = true;
   const btn = document.getElementById('editSaveBtn');
   btn.textContent = 'Saving\u2026'; btn.classList.add('saving');
-  selectedUserPlan[editingDay] = editPlanCopy.map(ex => ({...ex}));
-  if (!selectedUserPlan.focusLabels) selectedUserPlan.focusLabels = {};
-  selectedUserPlan.focusLabels[editingDay] = document.getElementById('editDayFocus').value.trim() || dayMeta[editingDay]?.focus || 'Custom';
+  const TIMEOUT_MS = 7000;
+  let secondsLeft = 7;
+  let countdown = null;
   try {
-    if (editingTemplate && editingTemplate.id) {
-      // Saving to template
-      await updateDoc(doc(db, COL_TPL, editingTemplate.id), { plan: selectedUserPlan, updatedAt: serverTimestamp() });
-      editingTemplate.plan = JSON.parse(JSON.stringify(selectedUserPlan));
-    } else if (selectedUser) {
-      // Saving to user's plan
-      await setDoc(doc(db, COL_PLANS, selectedUser.userId), selectedUserPlan);
-    }
+    selectedUserPlan[editingDay] = editPlanCopy.map(ex => ({...ex}));
+    if (!selectedUserPlan.focusLabels) selectedUserPlan.focusLabels = {};
+    selectedUserPlan.focusLabels[editingDay] = document.getElementById('editDayFocus').value.trim() || dayMeta[editingDay]?.focus || 'Custom';
+    // Fix 3: countdown setup inside try so any early throw is caught and interval can be cleared
+    countdown = setInterval(() => {
+      secondsLeft--;
+      if (secondsLeft > 0 && btn.classList.contains('saving')) btn.textContent = `Saving\u2026 ${secondsLeft}s`;
+    }, 1000);
+    // Fix 4: snapshot IDs so async save can't write to a different athlete/template if selectedUser changes mid-save
+    const saveUidSnapshot = selectedUser?.userId;
+    const saveTplSnapshot = editingTemplate?.id;
+    const saveOp = saveTplSnapshot
+      ? updateDoc(doc(db, COL_TPL, saveTplSnapshot), { plan: selectedUserPlan, updatedAt: serverTimestamp() }).then(() => { if (editingTemplate && editingTemplate.id === saveTplSnapshot) editingTemplate.plan = JSON.parse(JSON.stringify(selectedUserPlan)); })
+      : (saveUidSnapshot ? setDoc(doc(db, COL_PLANS, saveUidSnapshot), selectedUserPlan) : Promise.resolve());
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), TIMEOUT_MS));
+    await Promise.race([saveOp, timeout]);
     btn.textContent = '\u2713 Saved!';
-    setTimeout(() => { btn.textContent='Save'; btn.classList.remove('saving'); closeEditSheet(); renderManageView(); }, 800);
+    setTimeout(() => { btn.textContent='Save'; btn.classList.remove('saving'); closeEditSheet(); renderManageView(); editSaveInFlight = false; }, 800);
   } catch(e) {
     btn.textContent = 'Save'; btn.classList.remove('saving');
-    showToast('Failed to save \u2014 check connection', 'error');
+    showToast(e.message === 'timeout' ? 'Save timed out \u2014 check connection' : 'Failed to save \u2014 check connection', 'error');
+    editSaveInFlight = false;
+  } finally {
+    // Fix 3: guaranteed cleanup regardless of path
+    if (countdown) clearInterval(countdown);
   }
 });
 
@@ -2057,7 +2630,8 @@ function renderEditList() {
     item.className = 'edit-ex-item'; item.dataset.idx = i;
     const curSS = ex.supersetGroup || 0;
     const curRest = ex.restTime || 30;
-    item.innerHTML = `<div class="edit-ex-row1"><div class="drag-handle"><span></span><span></span><span></span></div><div class="edit-ex-info"><div class="edit-ex-name">${ex.name}</div><div class="edit-ex-cat">${ex.category}</div></div><div class="sets-stepper"><button class="sets-btn" data-action="dec">\u2212</button><div class="sets-val">${ex.sets}</div><button class="sets-btn" data-action="inc">+</button></div><span style="font-size:11px;color:var(--muted);">\u00D7</span><input class="reps-input" value="${ex.reps}" placeholder="reps"><button class="edit-ex-x">\u2715</button></div><div class="edit-ex-row2"><div class="ss-pills"><div class="ss-pill ${curSS===0?'active':''}" data-ss="0" style="--pill-color:#555;">\u2014</div><div class="ss-pill ${curSS===1?'active':''}" data-ss="1">S1</div><div class="ss-pill ${curSS===2?'active':''}" data-ss="2">S2</div><div class="ss-pill ${curSS===3?'active':''}" data-ss="3">S3</div></div><div class="rest-pills"><span class="rest-label">Rest</span><div class="rest-pill ${curRest===15?'active':''}" data-rest="15">15</div><div class="rest-pill ${curRest===30?'active':''}" data-rest="30">30</div><div class="rest-pill ${curRest===60?'active':''}" data-rest="60">60</div><div class="rest-pill ${curRest===90?'active':''}" data-rest="90">90</div></div><input class="edit-note-input" value="${(ex.note||'').replace(/"/g,'&quot;')}" placeholder="Add note for trainee..." maxlength="150" style="flex:1;min-width:100px;"></div>`;
+    // Fix 16: a11y labels on icon-only buttons + role on drag handle
+    item.innerHTML = `<div class="edit-ex-row1"><div class="drag-handle" role="button" tabindex="0" aria-label="Drag to reorder"><span></span><span></span><span></span></div><div class="edit-ex-info"><div class="edit-ex-name">${escapeHtml(ex.name)}</div><div class="edit-ex-cat">${escapeHtml(ex.category)}</div></div><div class="sets-stepper"><button class="sets-btn" data-action="dec" aria-label="Decrease sets">\u2212</button><div class="sets-val">${ex.sets}</div><button class="sets-btn" data-action="inc" aria-label="Increase sets">+</button></div><span style="font-size:11px;color:var(--muted);">\u00D7</span><input class="reps-input" value="${escapeHtml(ex.reps)}" placeholder="reps" aria-label="Reps"><button class="edit-ex-x" aria-label="Remove exercise">\u2715</button></div><div class="edit-ex-row2"><div class="ss-pills" role="group" aria-label="Superset group"><div class="ss-pill ${curSS===0?'active':''}" data-ss="0" style="--pill-color:#555;" role="button" tabindex="0" aria-label="No superset">\u2014</div><div class="ss-pill ${curSS===1?'active':''}" data-ss="1" role="button" tabindex="0" aria-label="Superset 1">S1</div><div class="ss-pill ${curSS===2?'active':''}" data-ss="2" role="button" tabindex="0" aria-label="Superset 2">S2</div><div class="ss-pill ${curSS===3?'active':''}" data-ss="3" role="button" tabindex="0" aria-label="Superset 3">S3</div></div><div class="rest-pills" role="group" aria-label="Rest time"><span class="rest-label">Rest</span><div class="rest-pill ${curRest===15?'active':''}" data-rest="15" role="button" tabindex="0" aria-label="15 seconds">15</div><div class="rest-pill ${curRest===30?'active':''}" data-rest="30" role="button" tabindex="0" aria-label="30 seconds">30</div><div class="rest-pill ${curRest===60?'active':''}" data-rest="60" role="button" tabindex="0" aria-label="60 seconds">60</div><div class="rest-pill ${curRest===90?'active':''}" data-rest="90" role="button" tabindex="0" aria-label="90 seconds">90</div></div><input class="edit-note-input" value="${(ex.note||'').replace(/"/g,'&quot;')}" placeholder="Add note for trainee..." maxlength="150" style="flex:1;min-width:100px;" aria-label="Note for trainee"></div>`;
     item.querySelectorAll('.ss-pill').forEach(pill => {
       pill.addEventListener('click', e => { e.stopPropagation(); const val=parseInt(pill.dataset.ss); const idx=parseInt(item.dataset.idx); editPlanCopy[idx].supersetGroup=val||null; item.querySelectorAll('.ss-pill').forEach(p=>p.classList.toggle('active',parseInt(p.dataset.ss)===val)); });
     });
@@ -2072,10 +2646,12 @@ function renderEditList() {
     item.querySelector('.edit-ex-x').addEventListener('click', e => { e.stopPropagation(); const exRef=editPlanCopy[parseInt(item.dataset.idx)]; const ri=editPlanCopy.indexOf(exRef); if(ri!==-1)editPlanCopy.splice(ri,1); renderEditList(); renderLibrary(); });
     listEl.appendChild(item);
   });
-  initDragSort(listEl);
 }
 
 function initDragSort(listEl) {
+  // Guard: only attach listeners once per element (prevents memory leak on re-renders)
+  if (listEl.dataset.dragInit === 'true') return;
+  listEl.dataset.dragInit = 'true';
   let dragEl = null, holdTimer = null, isDragging = false, startY = 0;
   const HOLD_MS = 200;
   function getItems() { return [...listEl.querySelectorAll('.edit-ex-item')]; }
@@ -2100,9 +2676,21 @@ function initDragSort(listEl) {
     if (!isDragging || !dragEl) { isDragging = false; dragEl = null; return; }
     dragEl.classList.remove('is-dragging');
     const eb = document.querySelector('.edit-body'); if (eb) eb.style.overflow = '';
+    // Fix 4: rebuild order defensively — skip any item whose idx doesn't resolve to a real exercise
     const newOrder = [];
-    getItems().forEach(item => { const i = parseInt(item.dataset.idx); if (!isNaN(i) && editPlanCopy[i]) newOrder.push({...editPlanCopy[i]}); });
-    editPlanCopy.length = 0; newOrder.forEach(ex => editPlanCopy.push(ex));
+    const seen = new Set();
+    getItems().forEach(item => {
+      const i = parseInt(item.dataset.idx);
+      if (isNaN(i) || seen.has(i)) return;
+      const ex = editPlanCopy[i];
+      if (ex && typeof ex === 'object' && ex.id) { newOrder.push({...ex}); seen.add(i); }
+    });
+    // Safety: if rebuild lost exercises, abort the reorder rather than corrupt the plan
+    if (newOrder.length === editPlanCopy.length) {
+      editPlanCopy.length = 0; newOrder.forEach(ex => editPlanCopy.push(ex));
+    } else {
+      console.warn('Drag reorder aborted — item count mismatch', { before: editPlanCopy.length, after: newOrder.length });
+    }
     dragEl = null; isDragging = false; renderEditList();
   }
   function cancelDrag() { clearTimeout(holdTimer); holdTimer=null; if(dragEl)dragEl.classList.remove('is-dragging'); const eb=document.querySelector('.edit-body'); if(eb)eb.style.overflow=''; dragEl=null; isDragging=false; renderEditList(); }
@@ -2128,6 +2716,9 @@ function initDragSort(listEl) {
   });
   document.addEventListener('mousemove', e => { if (isDragging) { e.preventDefault(); moveDrag(e.clientY); } });
   document.addEventListener('mouseup', () => { if (isDragging) endDrag(); });
+  // Safety net — if tab hidden or window loses focus mid-drag, clean up so UI doesn't stay locked
+  document.addEventListener('visibilitychange', () => { if (document.hidden && (isDragging || holdTimer)) cancelDrag(); });
+  window.addEventListener('blur', () => { if (isDragging || holdTimer) cancelDrag(); });
 }
 
 function renderCatTabs() {
@@ -2207,9 +2798,9 @@ function renderLibrary() {
     item.className='lib-item'+(addedIds.has(ex.id)?' already-added':'');
     // Coach view: show difficulty + muscles + description
     const diffColor = ex.difficulty==='Beginner'?'#4ade80':ex.difficulty==='Advanced'?'#ff4466':'#ffaa00';
-    const muscles = ex.secondaryMuscles?.length ? `<div style="font-size:9px;color:#444;margin-top:2px;">Secondary: ${ex.secondaryMuscles.join(', ')}</div>` : '';
-    const desc = ex.description ? `<div style="font-size:10px;color:#555;margin-top:3px;font-style:italic;">${ex.description.replace(/</g,'&lt;')}</div>` : '';
-    item.innerHTML=`<div class="lib-item-info"><div class="lib-item-name">${ex.name} <span style="font-size:9px;color:${diffColor};font-weight:700;margin-left:4px;">${ex.difficulty||''}</span></div><div class="lib-item-cat">${ex.muscleGroup||ex.category} \u00B7 ${ex.subcategory||''} ${ex.primaryMuscle?'\u00B7 '+ex.primaryMuscle:''}</div>${muscles}${desc}</div><div class="lib-item-plus">${addedIds.has(ex.id)?'\u2713':'+'}</div>`;
+    const muscles = ex.secondaryMuscles?.length ? `<div style="font-size:9px;color:#444;margin-top:2px;">Secondary: ${escapeHtml(ex.secondaryMuscles.join(', '))}</div>` : '';
+    const desc = ex.description ? `<div style="font-size:10px;color:#555;margin-top:3px;font-style:italic;">${escapeHtml(ex.description)}</div>` : '';
+    item.innerHTML=`<div class="lib-item-info"><div class="lib-item-name">${escapeHtml(ex.name)} <span style="font-size:9px;color:${diffColor};font-weight:700;margin-left:4px;">${escapeHtml(ex.difficulty||'')}</span></div><div class="lib-item-cat">${escapeHtml(ex.muscleGroup||ex.category)} \u00B7 ${escapeHtml(ex.subcategory||'')} ${ex.primaryMuscle?'\u00B7 '+escapeHtml(ex.primaryMuscle):''}</div>${muscles}${desc}</div><div class="lib-item-plus">${addedIds.has(ex.id)?'\u2713':'+'}</div>`;
     if(!addedIds.has(ex.id)) {
       item.addEventListener('click', () => { const def=CAT_DEFAULTS[ex.category]||{sets:'3',reps:'10\u201312'}; editPlanCopy.push({id:ex.id,name:ex.name,search:ex.search,category:ex.category,subcategory:ex.subcategory,muscleGroup:ex.muscleGroup,sets:def.sets,reps:def.reps}); renderEditList(); renderLibrary(); });
     }

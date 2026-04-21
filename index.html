@@ -553,7 +553,7 @@
     </div>
     <div class="user-select-title">ENTER COACH CODE</div>
     <p class="user-select-sub">Ask your coach for a 6-digit invite code</p>
-    <input class="code-input" id="coachCodeInput" placeholder="------" maxlength="6" autocomplete="off" spellcheck="false">
+    <input class="code-input" id="coachCodeInput" placeholder="------" maxlength="6" autocomplete="off" spellcheck="false" pattern="[A-Z0-9]{6}" inputmode="text">
     <button class="btn-connect" id="btnConnect">Connect</button>
     <div class="code-error" id="codeError"></div>
     <button class="code-signout" id="codeSignOut">Sign out</button>
@@ -675,7 +675,7 @@
 <script src="exercises.js"></script>
 <script type="module">
 import { initializeApp }    from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, query, where, getDocs, serverTimestamp, doc, getDoc, setDoc, updateDoc, arrayUnion, deleteDoc }
+import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, query, where, getDocs, serverTimestamp, doc, getDoc, setDoc, updateDoc, arrayUnion, deleteDoc, limit, orderBy, writeBatch }
                             from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 import { getAuth, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut }
                             from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
@@ -712,22 +712,37 @@ async function redeemInvite(code) {
   if (!code || code.length !== 6) return;
   if (localStorage.getItem(`redeemed_${code}`)) return;
   const errEl = document.getElementById('codeError');
+  // Fix 3: snapshot the user identity at start. If currentUser becomes null (signed out mid-flow),
+  // abort rather than writing to wrong/missing user's docs.
+  if (!currentUser?.id) { if (errEl) errEl.textContent = 'Sign in required'; return; }
+  const userSnapshot = {
+    id: currentUser.id,
+    name: currentUser.name,
+    email: currentUser.email || '',
+    photoURL: currentUser.photoURL || null,
+  };
+  const requireSameUser = () => currentUser?.id === userSnapshot.id;
   try {
     const invSnap = await getDoc(doc(db, COL_INVITES, code));
+    if (!requireSameUser()) throw new Error('User changed mid-redeem');
     if (!invSnap.exists()) { if (errEl) errEl.textContent = 'Invalid code'; return; }
     const inv = invSnap.data();
     if (inv.status !== 'active') { if (errEl) errEl.textContent = 'This code has already been used'; return; }
     if (inv.expiresAt && new Date(inv.expiresAt) < new Date()) { if (errEl) errEl.textContent = 'This code has expired'; return; }
-    const linkSnap = await getDoc(doc(db, COL_LINK, currentUser.id)).catch(() => null);
-    if (linkSnap.exists()) { if (errEl) errEl.textContent = 'You already have a coach'; return; }
+    const linkSnap = await getDoc(doc(db, COL_LINK, userSnapshot.id)).catch(() => null);
+    if (!requireSameUser()) throw new Error('User changed mid-redeem');
+    if (linkSnap?.exists()) { if (errEl) errEl.textContent = 'You already have a coach'; return; }
     localStorage.setItem(`redeemed_${code}`, 'true');
-    await setDoc(doc(db, COL_INVITES, code), { ...inv, status:'redeemed', redeemedBy:currentUser.id, redeemedAt:serverTimestamp() });
-    await setDoc(doc(db, COL_LINK, currentUser.id), { userId:currentUser.id, coachId:inv.coachId, coachName:inv.coachName, linkedAt:serverTimestamp() });
+    await setDoc(doc(db, COL_INVITES, code), { ...inv, status:'redeemed', redeemedBy:userSnapshot.id, redeemedAt:serverTimestamp() });
+    if (!requireSameUser()) throw new Error('User changed mid-redeem');
+    await setDoc(doc(db, COL_LINK, userSnapshot.id), { userId:userSnapshot.id, coachId:inv.coachId, coachName:inv.coachName, linkedAt:serverTimestamp() });
+    if (!requireSameUser()) throw new Error('User changed mid-redeem');
     const coachSnap = await getDoc(doc(db, COL_COACHES, inv.coachId));
+    if (!requireSameUser()) throw new Error('User changed mid-redeem');
     if (coachSnap.exists()) {
       const cd = coachSnap.data();
-      const filtered = (cd.users||[]).filter(u => u.userId !== currentUser.id);
-      filtered.push({ userId:currentUser.id, userName:currentUser.name, userEmail:currentUser.email||'', userPhoto:currentUser.photoURL||null, linkedAt:new Date().toISOString() });
+      const filtered = (cd.users||[]).filter(u => u.userId !== userSnapshot.id);
+      filtered.push({ userId:userSnapshot.id, userName:userSnapshot.name, userEmail:userSnapshot.email, userPhoto:userSnapshot.photoURL, linkedAt:new Date().toISOString() });
       await updateDoc(doc(db, COL_COACHES, inv.coachId), { users: filtered });
     }
   } catch(e) { console.error('Redeem error:', e); localStorage.removeItem(`redeemed_${code}`); if (errEl) errEl.textContent = 'Failed \u2014 try again'; }
@@ -822,6 +837,30 @@ const dayMeta = {
 const days  = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const short = { Sunday:"SUN", Monday:"MON", Tuesday:"TUE", Wednesday:"WED", Thursday:"THU", Friday:"FRI", Saturday:"SAT" };
 
+// ── SAFETY HELPERS (XSS hardening) ──
+// Validate a URL is http/https only \u2014 rejects javascript:, data:, file:, vbscript: schemes that could execute
+function safePhotoURL(url) {
+  if (!url || typeof url !== 'string') return null;
+  try { const u = new URL(url, window.location.href); return (u.protocol === 'http:' || u.protocol === 'https:') ? url : null; }
+  catch { return null; }
+}
+// Escape user-controlled strings before inserting into innerHTML templates
+function escapeHtml(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+// Safely render an avatar (photo or initials fallback) into an element without innerHTML injection risk
+function renderAvatar(el, photoURL, initials, imgStyle) {
+  if (!el) return;
+  el.textContent = ''; // clear
+  const safe = safePhotoURL(photoURL);
+  if (safe) {
+    const img = document.createElement('img');
+    img.src = safe; img.alt = '';
+    if (imgStyle) img.style.cssText = imgStyle;
+    el.appendChild(img);
+  } else {
+    el.textContent = initials || '?';
+  }
+}
+
 // STATE
 let currentUser    = null;
 let hasCoach       = false; // true when user is linked to a coach
@@ -896,9 +935,7 @@ function showCoachCodeScreen() {
   document.getElementById('coachCodeScreen').classList.remove('hidden');
   document.getElementById('app').style.display = 'none';
   // Show user info
-  const av = document.getElementById('codeAvatar');
-  if (currentUser.photoURL) av.innerHTML = `<img src="${currentUser.photoURL}">`;
-  else av.textContent = currentUser.initials;
+  renderAvatar(document.getElementById('codeAvatar'), currentUser.photoURL, currentUser.initials);
   document.getElementById('codeName').textContent = currentUser.name;
   document.getElementById('coachCodeInput').value = '';
   document.getElementById('codeError').textContent = '';
@@ -937,9 +974,27 @@ document.getElementById('coachCodeInput').addEventListener('input', e => {
   if (e.target.value.length === 6) document.getElementById('btnConnect').click();
 });
 
+// Fix 19: Clear all user-scoped localStorage keys on sign-out so the next user doesn't inherit stale state
+function clearUserScopedStorage(uid) {
+  try {
+    if (uid) {
+      localStorage.removeItem(`${TRACK_KEY}_${uid}`);
+    }
+    // Also sweep any timer_* keys (per-day/exercise/set rest timers)
+    const toDelete = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && (k.startsWith('timer_') || k.startsWith('redeemed_'))) toDelete.push(k);
+    }
+    toDelete.forEach(k => localStorage.removeItem(k));
+  } catch(e) { console.warn('Storage cleanup failed:', e); }
+}
+
 // Sign out from code screen
 document.getElementById('codeSignOut').addEventListener('click', async () => {
+  const prevUid = currentUser?.id;
   await signOut(auth);
+  clearUserScopedStorage(prevUid);
   currentUser = null;
   document.getElementById('coachCodeScreen').classList.add('hidden');
   document.getElementById('signInScreen').classList.remove('hidden');
@@ -977,7 +1032,9 @@ document.getElementById('googleSignInBtn').addEventListener('click', async () =>
 });
 
 document.getElementById('signOutBtn').addEventListener('click', async () => {
+  const prevUid = currentUser?.id;
   await signOut(auth);
+  clearUserScopedStorage(prevUid); // Fix 19
   currentUser = null;
   document.getElementById('app').style.cssText = 'display:none;';
   document.getElementById('signInScreen').classList.remove('hidden');
@@ -1000,26 +1057,29 @@ document.getElementById('confirm2No').addEventListener('click', () => {
 document.getElementById('confirm2Yes').addEventListener('click', async () => {
   document.getElementById('confirmOverlay2').classList.remove('show');
   if (!currentUser) return;
+  const clearUid = currentUser.id; // Fix 4: snapshot id in case auth changes mid-clear
   try {
-    // Delete all set logs
-    const setQ = query(collection(db, COL_SETS), where('userId','==',currentUser.id));
-    const setSnap = await getDocs(setQ);
-    await Promise.all(setSnap.docs.map(d => deleteDoc(doc(db, COL_SETS, d.id))));
-    // Delete all weight logs
-    const weightQ = query(collection(db, COL_WEIGHT), where('userId','==',currentUser.id));
-    const weightSnap = await getDocs(weightQ);
-    await Promise.all(weightSnap.docs.map(d => deleteDoc(doc(db, COL_WEIGHT, d.id))));
-    // Delete all week logs
-    const weekQ = query(collection(db, COL_WEEKS), where('userId','==',currentUser.id));
-    const weekSnap = await getDocs(weekQ);
-    await Promise.all(weekSnap.docs.map(d => deleteDoc(doc(db, COL_WEEKS, d.id))));
+    // Fix 6: paginate deletes in batches of 500 so huge accounts don't hang or hit Firestore limits
+    const deleteAllIn = async (colName) => {
+      while (true) {
+        const snap = await getDocs(query(collection(db, colName), where('userId','==',clearUid), limit(500)));
+        if (snap.empty) break;
+        const batch = writeBatch(db);
+        snap.docs.forEach(d => batch.delete(doc(db, colName, d.id)));
+        await batch.commit();
+        if (snap.docs.length < 500) break;
+      }
+    };
+    await deleteAllIn(COL_SETS);
+    await deleteAllIn(COL_WEIGHT);
+    await deleteAllIn(COL_WEEKS);
     // Reset current week tracking
     const wid = getWeekId();
-    await setDoc(doc(db, COL_TRACK, `${currentUser.id}_${wid}`), { userId:currentUser.id, weekId:wid, completed:{}, exercises:{}, updatedAt:serverTimestamp() });
+    await setDoc(doc(db, COL_TRACK, `${clearUid}_${wid}`), { userId:clearUid, weekId:wid, completed:{}, exercises:{}, updatedAt:serverTimestamp() });
     // Clear local state
     userWeightLogs = []; userSetLogs = []; weekHistory = [];
     tracking = { week: wid, completed:{}, exercises:{} };
-    try { localStorage.removeItem(`${TRACK_KEY}_${currentUser.id}`); } catch(e) {}
+    try { localStorage.removeItem(`${TRACK_KEY}_${clearUid}`); } catch(e) {}
     updateProgress();
     alert('All progress cleared. Fresh start!');
     // Go back to main app
@@ -1072,13 +1132,8 @@ function showApp() {
   document.getElementById('coachCodeScreen').classList.add('hidden');
   document.getElementById('progressPage').style.display = 'none';
   document.getElementById('navUserName').textContent = currentUser.name;
-  // Show Google avatar image if available, otherwise initials
-  const avatarEl = document.getElementById('navAvatar');
-  if (currentUser.photoURL) {
-    avatarEl.innerHTML = `<img src="${currentUser.photoURL}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
-  } else {
-    avatarEl.textContent = currentUser.initials;
-  }
+  // Safely render avatar via DOM (no innerHTML injection)
+  renderAvatar(document.getElementById('navAvatar'), currentUser.photoURL, currentUser.initials, 'width:100%;height:100%;border-radius:50%;object-fit:cover;');
   const appEl = document.getElementById('app');
   appEl.style.cssText = 'display:block;opacity:0;transform:translateY(20px);transition:opacity 0.5s ease,transform 0.5s ease;';
   requestAnimationFrame(() => { appEl.style.opacity = '1'; appEl.style.transform = 'translateY(0)'; });
@@ -1092,7 +1147,8 @@ async function loadAllUserData() {
 
 async function loadWeightLogs() {
   try {
-    const q    = query(collection(db, COL_WEIGHT), where('userId','==',currentUser.id));
+    // Fix 5: cap at 500 to keep loads cheap. No orderBy \u2014 in-memory sort below handles ordering
+    const q    = query(collection(db, COL_WEIGHT), where('userId','==',currentUser.id), limit(500));
     const snap = await getDocs(q);
     userWeightLogs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     userWeightLogs.sort((a,b) => (b.date?.seconds??0) - (a.date?.seconds??0));
@@ -1143,7 +1199,8 @@ async function toggleRestDay(day) {
 
 async function loadWeekHistory() {
   try {
-    const q    = query(collection(db, COL_WEEKS), where('userId','==',currentUser.id));
+    // Fix 5: cap at 52 (1 year). No orderBy \u2014 in-memory sort below handles ordering
+    const q    = query(collection(db, COL_WEEKS), where('userId','==',currentUser.id), limit(52));
     const snap = await getDocs(q);
     weekHistory = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     weekHistory.sort((a,b) => (b.weekStart > a.weekStart ? 1 : -1));
@@ -1200,7 +1257,8 @@ async function archiveWeek(wid) {
 
 async function loadSetLogs() {
   try {
-    const q    = query(collection(db, COL_SETS), where('userId','==',currentUser.id));
+    // Fix 5: cap at 500 to keep loads cheap. No orderBy \u2014 in-memory sort handles ordering
+    const q    = query(collection(db, COL_SETS), where('userId','==',currentUser.id), limit(500));
     const snap = await getDocs(q);
     userSetLogs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     userSetLogs.sort((a,b) => (b.date?.seconds??0) - (a.date?.seconds??0));
@@ -1226,19 +1284,28 @@ function getTodaysSets(exerciseName, day) {
 }
 
 async function logSet(exerciseName, day, setNumber, weight, reps) {
+  // Fix 15: defensive validation at the boundary \u2014 reject garbage even if caller skipped checks
+  const w = parseFloat(weight), r = parseInt(reps);
+  if (isNaN(w) || w <= 0 || w > 500) throw new Error('Invalid weight');
+  if (isNaN(r) || r <= 0 || r > 100) throw new Error('Invalid reps');
   const wid = getWeekId();
+  // Fix 10: store athlete's local date + tz offset so coach sees the date from athlete's POV, not their own
+  const now = new Date();
+  const localDate = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  const tzOffsetMin = now.getTimezoneOffset(); // minutes behind UTC (negative = ahead)
   const entry = {
     userId: currentUser.id, userName: currentUser.name,
     exerciseName, day, setNumber,
-    weight: parseFloat(weight), reps: parseInt(reps),
-    weekId: wid, date: serverTimestamp()
+    weight: w, reps: r,
+    weekId: wid, date: serverTimestamp(),
+    localDate, tzOffsetMin,
   };
   const ref = await addDoc(collection(db, COL_SETS), entry);
   userSetLogs.unshift({ ...entry, id: ref.id, date: { seconds: Date.now()/1000 } });
   // Also write to old weightLogs for backward compat (best set)
   const existing = userWeightLogs.find(l => l.exerciseName === exerciseName);
-  if (!existing || weight > existing.weight) {
-    const wEntry = { userId: currentUser.id, userName: currentUser.name, exerciseName, day, weight: parseFloat(weight), date: serverTimestamp() };
+  if (!existing || w > existing.weight) {
+    const wEntry = { userId: currentUser.id, userName: currentUser.name, exerciseName, day, weight: w, date: serverTimestamp(), localDate, tzOffsetMin };
     await addDoc(collection(db, COL_WEIGHT), wEntry);
     userWeightLogs.unshift({ ...wEntry, date: { seconds: Date.now()/1000 } });
   }
@@ -1332,6 +1399,8 @@ function checkRestoreTimers(row, day, exId, setNum, weight, reps) {
   return false;
 }
 
+// Fix 11: getWeekId uses LOCAL time on purpose \u2014 weeks roll over at the user's midnight.
+// Switching to UTC would break all existing week IDs in Firestore.
 function getWeekId() {
   const now = new Date();
   const sun = new Date(now);
@@ -1500,12 +1569,7 @@ document.getElementById('goProgressBtn').addEventListener('click', () => {
   const pg = document.getElementById('progressPage');
   pg.style.cssText = 'display:block;opacity:0;transform:translateY(20px);transition:opacity 0.4s ease,transform 0.4s ease;';
   requestAnimationFrame(() => { pg.style.opacity='1'; pg.style.transform='translateY(0)'; });
-  const progAv = document.getElementById('progAvatar');
-  if (currentUser.photoURL) {
-    progAv.innerHTML = `<img src="${currentUser.photoURL}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
-  } else {
-    progAv.textContent = currentUser.initials;
-  }
+  renderAvatar(document.getElementById('progAvatar'), currentUser.photoURL, currentUser.initials, 'width:100%;height:100%;border-radius:50%;object-fit:cover;');
   document.getElementById('progUserName').textContent = currentUser.name;
   renderProgPage(progActiveTab);
 });
@@ -2307,8 +2371,8 @@ function renderLibrary() {
     item.className = 'lib-item' + (addedIds.has(ex.id)?' already-added':'');
     item.innerHTML = `
       <div class="lib-item-info">
-        <div class="lib-item-name">${ex.name}</div>
-        <div class="lib-item-cat">${ex.muscleGroup||ex.category} \u00B7 ${ex.subcategory||''}</div>
+        <div class="lib-item-name">${escapeHtml(ex.name)}</div>
+        <div class="lib-item-cat">${escapeHtml(ex.muscleGroup||ex.category)} \u00B7 ${escapeHtml(ex.subcategory||'')}</div>
       </div>
       <div class="lib-item-plus">${addedIds.has(ex.id)?'\u2713':'+'}</div>`;
     if (!addedIds.has(ex.id)) {

@@ -110,7 +110,20 @@ h1 span { color: var(--accent); }
 
 /* ACTIVITY FEED */
 .activity-section { margin: 24px 0 20px; }
-.activity-section-title { font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.activity-section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.activity-section-title { font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+.activity-viewall-btn { background: none; border: none; color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.03em; cursor: pointer; padding: 4px 8px; border-radius: 6px; transition: all 0.2s; touch-action: manipulation; }
+.activity-viewall-btn:hover { background: rgba(71,160,255,0.08); }
+.activity-viewall-btn:active { transform: scale(0.96); }
+/* Pagination bar (full Activity tab) */
+.activity-pager { display: flex; justify-content: center; align-items: center; gap: 4px; margin: 16px 0 8px; flex-wrap: wrap; }
+.activity-pager-btn { background: var(--card); border: 1px solid var(--border); color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; min-width: 32px; height: 32px; padding: 0 10px; border-radius: 8px; cursor: pointer; transition: all 0.15s; touch-action: manipulation; }
+.activity-pager-btn:hover:not(:disabled) { color: var(--text); border-color: #333; }
+.activity-pager-btn.active { background: var(--accent); color: #060606; border-color: var(--accent); cursor: default; }
+.activity-pager-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.activity-pager-ellipsis { color: var(--muted); padding: 0 4px; font-size: 14px; }
+.activity-pager-info { font-size: 10px; color: var(--muted); text-align: center; margin-top: 4px; letter-spacing: 0.05em; }
+@media (max-width: 500px) { .activity-pager-btn { min-width: 30px; height: 30px; font-size: 11px; padding: 0 8px; } }
 .activity-list { display: flex; flex-direction: column; gap: 8px; }
 .activity-item { display: flex; align-items: center; gap: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; transition: all 0.2s; animation: activitySlideIn 0.4s var(--ease) both; }
 .activity-item:hover { border-color: #333; background: var(--card-hover); }
@@ -257,13 +270,13 @@ h1 span { color: var(--accent); }
 .superset-label { font-size: 9px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ss-color, #ff4466); padding: 6px 10px 4px; }
 
 /* SUPERSET PILLS in edit sheet */
-.ss-pills { display: flex; gap: 3px; margin-left: 4px; flex-shrink: 0; }
+.ss-pills { display: flex; gap: 3px; margin-left: 4px; flex-wrap: wrap; align-items: center; }
 .ss-pill { width: 24px; height: 20px; border-radius: 4px; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #222; background: #141414; color: #444; transition: all 0.15s; touch-action: manipulation; }
 .ss-pill:active { transform: scale(0.9); }
 .ss-pill.active { border-color: var(--pill-color); color: var(--pill-color); background: rgba(255,255,255,0.04); }
 
 /* REST TIME PILLS */
-.rest-pills { display: flex; gap: 3px; flex-shrink: 0; align-items: center; }
+.rest-pills { display: flex; gap: 3px; flex-wrap: wrap; align-items: center; }
 .rest-pill { min-width: 28px; height: 20px; border-radius: 4px; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #222; background: #141414; color: #444; transition: all 0.15s; touch-action: manipulation; padding: 0 4px; }
 .rest-pill:active { transform: scale(0.9); }
 .rest-pill.active { border-color: var(--accent); color: var(--accent); background: rgba(71,160,255,0.06); }
@@ -271,6 +284,13 @@ h1 span { color: var(--accent); }
 .ss-pill[data-ss="1"] { --pill-color: #ff4466; }
 .ss-pill[data-ss="2"] { --pill-color: #47a0ff; }
 .ss-pill[data-ss="3"] { --pill-color: #ffaa00; }
+.ss-pill[data-ss="4"] { --pill-color: #10b981; }
+.ss-pill[data-ss="5"] { --pill-color: #a855f7; }
+.ss-pill[data-ss="6"] { --pill-color: #ec4899; }
+.ss-pill-add { width: 24px; height: 20px; border-radius: 4px; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px dashed #333; background: transparent; color: var(--muted); transition: all 0.15s; touch-action: manipulation; padding: 0; line-height: 1; }
+.ss-pill-add:hover { border-color: var(--accent); color: var(--accent); }
+.ss-pill-add:active { transform: scale(0.9); }
+@media (max-width: 600px) { .ss-pill-add { width: 32px; height: 28px; font-size: 16px; } }
 
 /* NOTE INPUT in edit sheet */
 .edit-note-input { width: 100%; background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 6px; color: #888; font-family: 'DM Sans', sans-serif; font-size: 11px; font-style: italic; padding: 5px 8px; outline: none; resize: none; margin-top: 4px; transition: border-color 0.2s; }
@@ -626,6 +646,7 @@ footer { text-align: center; padding: 48px 0 calc(32px + env(safe-area-inset-bot
     </header>
     <div class="dash-tabs">
       <button class="dash-tab active" id="dashTabAthletes">Athletes</button>
+      <button class="dash-tab" id="dashTabActivity">Activity</button>
       <button class="dash-tab" id="dashTabTemplates">Templates</button>
     </div>
     <div id="athletesSection">
@@ -634,11 +655,21 @@ footer { text-align: center; padding: 48px 0 calc(32px + env(safe-area-inset-bot
       </div>
       <div class="roster-label">YOUR ATHLETES (<span id="rosterCount">0</span>)</div>
       <div class="roster-list" id="rosterList"></div>
-      <!-- RECENT ACTIVITY FEED -->
+      <!-- RECENT ACTIVITY PREVIEW (top 5 + View all link) -->
       <div class="activity-section" id="activitySection" style="display:none;">
-        <div class="activity-section-title">Recent Activity</div>
+        <div class="activity-section-head">
+          <div class="activity-section-title">Recent Activity</div>
+          <button class="activity-viewall-btn" id="btnActivityViewAll">View all \u203A</button>
+        </div>
         <div class="activity-list" id="activityList"></div>
       </div>
+    </div>
+    <!-- ACTIVITY FULL TAB \u2014 complete feed with client-side pagination -->
+    <div id="activityFullSection" style="display:none;">
+      <div class="roster-label">ALL ACTIVITY (<span id="activityFullCount">0</span>)</div>
+      <div class="activity-list" id="activityFullList"></div>
+      <div class="activity-pager" id="activityPager"></div>
+      <div class="activity-pager-info" id="activityPagerInfo"></div>
     </div>
     <div id="templatesSection" style="display:none;">
       <div class="roster-label">MY TEMPLATES (<span id="tplCount">0</span>)</div>
@@ -1754,28 +1785,32 @@ function relTime(seconds) {
   return `${Math.floor(diffS/86400)}d ago`;
 }
 
+let allActivityEvents = []; // cached full list \u2014 used by both preview (top 10) and full tab
+const PREVIEW_LIMIT = 10; // how many rows show on Athletes tab before "View all"
+const ACTIVITY_PAGE_SIZE = 20; // rows per page on the full Activity tab
+let activityCurrentPage = 1;
+
 async function loadRosterActivity() {
   const users = coachData?.users || [];
   if (!users.length) return;
-  const events = []; // {athlete info, type, exerciseName, weight, reps, timestamp}
+  const events = [];
   // One query per athlete for recent sets + recent PRs. Capped via limit() so cost is bounded.
+  // Fetch more per athlete so the "View all" tab has deeper history.
   await Promise.all(users.map(async u => {
     try {
       const [setsSnap, prsSnap] = await Promise.all([
-        getDocs(query(collection(db, COL_SETS), where('userId','==',u.userId), limit(15))),
-        getDocs(query(collection(db, COL_WEIGHT), where('userId','==',u.userId), limit(5))),
+        getDocs(query(collection(db, COL_SETS), where('userId','==',u.userId), limit(30))),
+        getDocs(query(collection(db, COL_WEIGHT), where('userId','==',u.userId), limit(10))),
       ]);
       const sets = setsSnap.docs.map(d => d.data()).sort((a,b) => (b.date?.seconds??0)-(a.date?.seconds??0));
       const prs = prsSnap.docs.map(d => d.data()).sort((a,b) => (b.date?.seconds??0)-(a.date?.seconds??0));
-      // Compute last-seen from most recent set
       u._lastSeen = sets[0]?.date?.seconds || 0;
-      // Collect top events
-      sets.slice(0, 5).forEach(s => s.date?.seconds && events.push({
+      sets.forEach(s => s.date?.seconds && events.push({
         userId: u.userId, userName: u.userName, userPhoto: u.userPhoto,
         type: 'set', exerciseName: s.exerciseName, weight: s.weight, reps: s.reps,
         timestamp: s.date.seconds,
       }));
-      prs.slice(0, 3).forEach(p => p.date?.seconds && events.push({
+      prs.forEach(p => p.date?.seconds && events.push({
         userId: u.userId, userName: u.userName, userPhoto: u.userPhoto,
         type: 'pr', exerciseName: p.exerciseName, weight: p.weight,
         timestamp: p.date.seconds,
@@ -1783,47 +1818,113 @@ async function loadRosterActivity() {
     } catch(e) { console.warn('Activity load failed for', u.userId, e); u._lastSeen = 0; }
   }));
   events.sort((a,b) => b.timestamp - a.timestamp);
-  renderActivityFeed(events.slice(0, 15));
+  // Dedupe once here (same set written to both COL_SETS + COL_WEIGHT on PR)
+  const seen = new Set();
+  allActivityEvents = events.filter(ev => {
+    const key = `${ev.userId}|${ev.type}|${ev.exerciseName}|${ev.weight}|${ev.timestamp}`;
+    if (seen.has(key)) return false;
+    seen.add(key); return true;
+  });
+  activityCurrentPage = 1; // reset pagination when data refreshes
+  renderActivityPreview();
   renderRoster(); // re-render to show last-seen badges
 }
 
-function renderActivityFeed(events) {
+// Build one activity row (shared by preview + full list renderers)
+function buildActivityItem(ev) {
+  const photoSafe = safePhotoURL(ev.userPhoto);
+  const avatarHTML = photoSafe
+    ? `<img src="${escapeHtml(photoSafe)}" alt="">`
+    : escapeHtml((ev.userName || '?')[0].toUpperCase());
+  const item = document.createElement('div');
+  item.className = 'activity-item' + (ev.type === 'pr' ? ' is-pr' : '');
+  const actionText = ev.type === 'pr'
+    ? `<strong>${escapeHtml(ev.userName || 'Athlete')}</strong> hit a new PR on <span class="ex-name">${escapeHtml(ev.exerciseName)}</span> \u2014 <span class="weight">${escapeHtml(String(ev.weight))}kg</span>`
+    : `<strong>${escapeHtml(ev.userName || 'Athlete')}</strong> logged <span class="ex-name">${escapeHtml(ev.exerciseName)}</span> \u2014 <span class="weight">${escapeHtml(String(ev.weight))}kg</span> \u00D7 ${escapeHtml(String(ev.reps || ''))}`;
+  item.innerHTML = `
+    <div class="activity-avatar">${avatarHTML}</div>
+    <div class="activity-body">
+      <div class="activity-text">${actionText}</div>
+      <div class="activity-time">${relTime(ev.timestamp)}</div>
+    </div>
+    ${ev.type === 'pr' ? '<div class="activity-pr-badge">\uD83C\uDF89</div>' : ''}`;
+  item.style.cursor = 'pointer';
+  item.addEventListener('click', () => {
+    const u = (coachData?.users || []).find(x => x.userId === ev.userId);
+    if (u) openUserManagement(u);
+  });
+  return item;
+}
+
+// Athletes tab: compact preview (top PREVIEW_LIMIT) + "View all" link
+function renderActivityPreview() {
   const section = document.getElementById('activitySection');
   const list = document.getElementById('activityList');
+  const viewAllBtn = document.getElementById('btnActivityViewAll');
   if (!section || !list) return;
-  if (!events.length) { section.style.display = 'none'; return; }
+  if (!allActivityEvents.length) { section.style.display = 'none'; return; }
   section.style.display = '';
   list.innerHTML = '';
-  // Dedupe consecutive identical entries (e.g. same set recorded in both sets + weights)
-  const seen = new Set();
-  events.forEach(ev => {
-    const key = `${ev.userId}|${ev.type}|${ev.exerciseName}|${ev.weight}|${ev.timestamp}`;
-    if (seen.has(key)) return;
-    seen.add(key);
-    const photoSafe = safePhotoURL(ev.userPhoto);
-    const avatarHTML = photoSafe
-      ? `<img src="${escapeHtml(photoSafe)}" alt="">`
-      : escapeHtml((ev.userName || '?')[0].toUpperCase());
-    const item = document.createElement('div');
-    item.className = 'activity-item' + (ev.type === 'pr' ? ' is-pr' : '');
-    const actionText = ev.type === 'pr'
-      ? `<strong>${escapeHtml(ev.userName || 'Athlete')}</strong> hit a new PR on <span class="ex-name">${escapeHtml(ev.exerciseName)}</span> \u2014 <span class="weight">${escapeHtml(String(ev.weight))}kg</span>`
-      : `<strong>${escapeHtml(ev.userName || 'Athlete')}</strong> logged <span class="ex-name">${escapeHtml(ev.exerciseName)}</span> \u2014 <span class="weight">${escapeHtml(String(ev.weight))}kg</span> \u00D7 ${escapeHtml(String(ev.reps || ''))}`;
-    item.innerHTML = `
-      <div class="activity-avatar">${avatarHTML}</div>
-      <div class="activity-body">
-        <div class="activity-text">${actionText}</div>
-        <div class="activity-time">${relTime(ev.timestamp)}</div>
-      </div>
-      ${ev.type === 'pr' ? '<div class="activity-pr-badge">\uD83C\uDF89</div>' : ''}`;
-    // Click an activity row to jump into that athlete
-    item.style.cursor = 'pointer';
-    item.addEventListener('click', () => {
-      const u = (coachData?.users || []).find(x => x.userId === ev.userId);
-      if (u) openUserManagement(u);
+  allActivityEvents.slice(0, PREVIEW_LIMIT).forEach(ev => list.appendChild(buildActivityItem(ev)));
+  // Only show "View all" if there's more than the preview shows
+  if (viewAllBtn) viewAllBtn.style.display = allActivityEvents.length > PREVIEW_LIMIT ? '' : 'none';
+}
+
+// Activity tab: full feed with client-side pagination (data already in memory \u2014 no extra Firestore reads)
+function renderActivityFull() {
+  const list = document.getElementById('activityFullList');
+  const countEl = document.getElementById('activityFullCount');
+  const pager = document.getElementById('activityPager');
+  const pagerInfo = document.getElementById('activityPagerInfo');
+  if (!list) return;
+  if (countEl) countEl.textContent = allActivityEvents.length;
+  list.innerHTML = '';
+  if (!allActivityEvents.length) {
+    list.innerHTML = '<div class="notes-empty"><span class="notes-empty-icon">\uD83D\uDCCA</span>No activity yet. Once your athletes log workouts, their sessions appear here.</div>';
+    if (pager) pager.innerHTML = '';
+    if (pagerInfo) pagerInfo.textContent = '';
+    return;
+  }
+  const total = allActivityEvents.length;
+  const totalPages = Math.max(1, Math.ceil(total / ACTIVITY_PAGE_SIZE));
+  // Clamp page in case data shrinks
+  if (activityCurrentPage > totalPages) activityCurrentPage = totalPages;
+  if (activityCurrentPage < 1) activityCurrentPage = 1;
+  const start = (activityCurrentPage - 1) * ACTIVITY_PAGE_SIZE;
+  const end = Math.min(start + ACTIVITY_PAGE_SIZE, total);
+  const pageSlice = allActivityEvents.slice(start, end);
+  pageSlice.forEach(ev => list.appendChild(buildActivityItem(ev)));
+  // Build pagination controls with ellipsis for long ranges
+  if (pager) pager.innerHTML = '';
+  if (totalPages > 1 && pager) {
+    const addBtn = (label, page, opts = {}) => {
+      const b = document.createElement('button');
+      b.className = 'activity-pager-btn' + (opts.active ? ' active' : '');
+      b.textContent = label;
+      b.disabled = !!opts.disabled;
+      if (!opts.disabled && !opts.active) {
+        b.addEventListener('click', () => { activityCurrentPage = page; renderActivityFull(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+      }
+      pager.appendChild(b);
+    };
+    const addEllipsis = () => {
+      const e = document.createElement('span');
+      e.className = 'activity-pager-ellipsis'; e.textContent = '\u2026';
+      pager.appendChild(e);
+    };
+    addBtn('\u2039', activityCurrentPage - 1, { disabled: activityCurrentPage === 1 });
+    // Smart page number rendering: always show 1 + last + window around current
+    const showPages = new Set([1, totalPages, activityCurrentPage - 1, activityCurrentPage, activityCurrentPage + 1]);
+    const sorted = [...showPages].filter(p => p >= 1 && p <= totalPages).sort((a,b) => a-b);
+    let prev = 0;
+    sorted.forEach(p => {
+      if (prev && p - prev > 1) addEllipsis();
+      addBtn(String(p), p, { active: p === activityCurrentPage });
+      prev = p;
     });
-    list.appendChild(item);
-  });
+    addBtn('\u203A', activityCurrentPage + 1, { disabled: activityCurrentPage === totalPages });
+  }
+  if (pagerInfo) pagerInfo.textContent = `Showing ${start + 1}\u2013${end} of ${total}`;
 }
 
 // ── FEATURE 4: PRIVATE COACH NOTES \u2014 journal style ──
@@ -2060,20 +2161,31 @@ function renderNotesTab() {
   });
 }
 
-// ── DASHBOARD TABS (Athletes / Templates) ──
-document.getElementById('dashTabAthletes').addEventListener('click', () => {
-  document.getElementById('dashTabAthletes').classList.add('active');
-  document.getElementById('dashTabTemplates').classList.remove('active');
-  document.getElementById('athletesSection').style.display = '';
-  document.getElementById('templatesSection').style.display = 'none';
+// ── DASHBOARD TABS (Athletes / Activity / Templates) ──
+function switchDashTab(tab) {
+  const tabIds = { athletes:'dashTabAthletes', activity:'dashTabActivity', templates:'dashTabTemplates' };
+  const sectIds = { athletes:'athletesSection', activity:'activityFullSection', templates:'templatesSection' };
+  Object.entries(tabIds).forEach(([k,id]) => {
+    const el = document.getElementById(id); if (el) el.classList.toggle('active', k === tab);
+  });
+  Object.entries(sectIds).forEach(([k,id]) => {
+    const el = document.getElementById(id); if (el) el.style.display = k === tab ? '' : 'none';
+  });
+}
+document.getElementById('dashTabAthletes').addEventListener('click', () => switchDashTab('athletes'));
+document.getElementById('dashTabActivity').addEventListener('click', () => {
+  switchDashTab('activity');
+  renderActivityFull();
 });
 document.getElementById('dashTabTemplates').addEventListener('click', async () => {
-  document.getElementById('dashTabTemplates').classList.add('active');
-  document.getElementById('dashTabAthletes').classList.remove('active');
-  document.getElementById('athletesSection').style.display = 'none';
-  document.getElementById('templatesSection').style.display = '';
+  switchDashTab('templates');
   await loadTemplates();
   renderTemplateList();
+});
+// "View all" link inside the Athletes-tab preview
+document.getElementById('btnActivityViewAll').addEventListener('click', () => {
+  switchDashTab('activity');
+  renderActivityFull();
 });
 
 // ── TEMPLATES ──
@@ -2540,9 +2652,16 @@ Keep each strategy to 1-2 sentences. Be practical.`;
 // Will be added dynamically when edit sheet opens
 
 // ── EDIT SHEET (coach edits user's plan) ──
+// Superset slots state \u2014 start at 3, can expand to max 6 via + button on any exercise
+let visibleSupersetSlots = 3;
+const MAX_SUPERSET_SLOTS = 6;
+
 function openEditSheet(day) {
   editingDay = day;
   editPlanCopy = (selectedUserPlan[day]||[]).map(ex => ({...ex}));
+  // Re-compute slot visibility: show at least 3, or enough to reveal all in-use groups (max 6)
+  const maxUsed = editPlanCopy.reduce((m, ex) => Math.max(m, ex.supersetGroup || 0), 0);
+  visibleSupersetSlots = Math.max(3, Math.min(MAX_SUPERSET_SLOTS, maxUsed));
   activeCatTab = DAY_CATEGORIES[day]?.[0] || 'Chest';
   document.getElementById('editDayTitle').textContent = day;
   document.getElementById('editDayFocus').value = getDayFocus(day);
@@ -2630,10 +2749,23 @@ function renderEditList() {
     item.className = 'edit-ex-item'; item.dataset.idx = i;
     const curSS = ex.supersetGroup || 0;
     const curRest = ex.restTime || 30;
+    // Build superset pill HTML dynamically so we can expand up to 6 slots via the + button
+    let ssPillsHTML = `<div class="ss-pill ${curSS===0?'active':''}" data-ss="0" style="--pill-color:#555;" role="button" tabindex="0" aria-label="No superset">\u2014</div>`;
+    for (let s = 1; s <= visibleSupersetSlots; s++) {
+      ssPillsHTML += `<div class="ss-pill ${curSS===s?'active':''}" data-ss="${s}" role="button" tabindex="0" aria-label="Superset ${s}">S${s}</div>`;
+    }
+    if (visibleSupersetSlots < MAX_SUPERSET_SLOTS) {
+      ssPillsHTML += `<button class="ss-pill-add" aria-label="Add superset slot" title="Add another superset (max 6)">+</button>`;
+    }
     // Fix 16: a11y labels on icon-only buttons + role on drag handle
-    item.innerHTML = `<div class="edit-ex-row1"><div class="drag-handle" role="button" tabindex="0" aria-label="Drag to reorder"><span></span><span></span><span></span></div><div class="edit-ex-info"><div class="edit-ex-name">${escapeHtml(ex.name)}</div><div class="edit-ex-cat">${escapeHtml(ex.category)}</div></div><div class="sets-stepper"><button class="sets-btn" data-action="dec" aria-label="Decrease sets">\u2212</button><div class="sets-val">${ex.sets}</div><button class="sets-btn" data-action="inc" aria-label="Increase sets">+</button></div><span style="font-size:11px;color:var(--muted);">\u00D7</span><input class="reps-input" value="${escapeHtml(ex.reps)}" placeholder="reps" aria-label="Reps"><button class="edit-ex-x" aria-label="Remove exercise">\u2715</button></div><div class="edit-ex-row2"><div class="ss-pills" role="group" aria-label="Superset group"><div class="ss-pill ${curSS===0?'active':''}" data-ss="0" style="--pill-color:#555;" role="button" tabindex="0" aria-label="No superset">\u2014</div><div class="ss-pill ${curSS===1?'active':''}" data-ss="1" role="button" tabindex="0" aria-label="Superset 1">S1</div><div class="ss-pill ${curSS===2?'active':''}" data-ss="2" role="button" tabindex="0" aria-label="Superset 2">S2</div><div class="ss-pill ${curSS===3?'active':''}" data-ss="3" role="button" tabindex="0" aria-label="Superset 3">S3</div></div><div class="rest-pills" role="group" aria-label="Rest time"><span class="rest-label">Rest</span><div class="rest-pill ${curRest===15?'active':''}" data-rest="15" role="button" tabindex="0" aria-label="15 seconds">15</div><div class="rest-pill ${curRest===30?'active':''}" data-rest="30" role="button" tabindex="0" aria-label="30 seconds">30</div><div class="rest-pill ${curRest===60?'active':''}" data-rest="60" role="button" tabindex="0" aria-label="60 seconds">60</div><div class="rest-pill ${curRest===90?'active':''}" data-rest="90" role="button" tabindex="0" aria-label="90 seconds">90</div></div><input class="edit-note-input" value="${(ex.note||'').replace(/"/g,'&quot;')}" placeholder="Add note for trainee..." maxlength="150" style="flex:1;min-width:100px;" aria-label="Note for trainee"></div>`;
+    item.innerHTML = `<div class="edit-ex-row1"><div class="drag-handle" role="button" tabindex="0" aria-label="Drag to reorder"><span></span><span></span><span></span></div><div class="edit-ex-info"><div class="edit-ex-name">${escapeHtml(ex.name)}</div><div class="edit-ex-cat">${escapeHtml(ex.category)}</div></div><div class="sets-stepper"><button class="sets-btn" data-action="dec" aria-label="Decrease sets">\u2212</button><div class="sets-val">${ex.sets}</div><button class="sets-btn" data-action="inc" aria-label="Increase sets">+</button></div><span style="font-size:11px;color:var(--muted);">\u00D7</span><input class="reps-input" value="${escapeHtml(ex.reps)}" placeholder="reps" aria-label="Reps"><button class="edit-ex-x" aria-label="Remove exercise">\u2715</button></div><div class="edit-ex-row2"><div class="ss-pills" role="group" aria-label="Superset group">${ssPillsHTML}</div><div class="rest-pills" role="group" aria-label="Rest time"><span class="rest-label">Rest</span><div class="rest-pill ${curRest===15?'active':''}" data-rest="15" role="button" tabindex="0" aria-label="15 seconds">15</div><div class="rest-pill ${curRest===30?'active':''}" data-rest="30" role="button" tabindex="0" aria-label="30 seconds">30</div><div class="rest-pill ${curRest===60?'active':''}" data-rest="60" role="button" tabindex="0" aria-label="60 seconds">60</div><div class="rest-pill ${curRest===90?'active':''}" data-rest="90" role="button" tabindex="0" aria-label="90 seconds">90</div></div><input class="edit-note-input" value="${(ex.note||'').replace(/"/g,'&quot;')}" placeholder="Add note for trainee..." maxlength="150" style="flex:1;min-width:100px;" aria-label="Note for trainee"></div>`;
     item.querySelectorAll('.ss-pill').forEach(pill => {
       pill.addEventListener('click', e => { e.stopPropagation(); const val=parseInt(pill.dataset.ss); const idx=parseInt(item.dataset.idx); editPlanCopy[idx].supersetGroup=val||null; item.querySelectorAll('.ss-pill').forEach(p=>p.classList.toggle('active',parseInt(p.dataset.ss)===val)); });
+    });
+    // "+" button to expand superset slots (global to this edit session; re-render all rows so all get the new pill)
+    item.querySelector('.ss-pill-add')?.addEventListener('click', e => {
+      e.stopPropagation();
+      if (visibleSupersetSlots < MAX_SUPERSET_SLOTS) { visibleSupersetSlots++; renderEditList(); }
     });
     item.querySelectorAll('.rest-pill').forEach(pill => {
       pill.addEventListener('click', e => { e.stopPropagation(); const val=parseInt(pill.dataset.rest); const idx=parseInt(item.dataset.idx); editPlanCopy[idx].restTime=val; item.querySelectorAll('.rest-pill').forEach(p=>p.classList.toggle('active',parseInt(p.dataset.rest)===val)); });
